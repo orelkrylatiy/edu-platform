@@ -29,6 +29,11 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
     await visit("courses", "Курсы");
     await visit("calendar", "Активность");
     await expect(page.locator(".calendar-grid.weekly .day")).toHaveCount(7);
+    const firstPeriod = await page.locator(".calendar-toolbar h2").textContent();
+    await page.getByRole("button", { name: "Следующая неделя или месяц" }).click();
+    await expect(page.locator(".calendar-toolbar h2")).not.toHaveText(firstPeriod);
+    await page.getByRole("button", { name: "Предыдущая неделя или месяц" }).click();
+    await expect(page.locator(".calendar-toolbar h2")).toHaveText(firstPeriod);
     await page.getByRole("button", { name: "Месяц", exact: true }).click();
     expect(await page.locator(".calendar-grid.monthly .day").count()).toBeGreaterThanOrEqual(28);
     await visit("focus", "Фокус");
