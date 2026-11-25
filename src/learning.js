@@ -28,3 +28,19 @@ export function monthCells(year, month) {
 export function remaining(timer, now = Date.now()) {
   return timer.end ? Math.max(0, Math.ceil((timer.end - now) / 1000)) : timer.left;
 }
+
+export function getWeekDays(date = new Date()) {
+  const start = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+  start.setDate(start.getDate() - (start.getDay()+6)%7);
+  return Array.from({length:7},(_,index) => {const d=new Date(start);d.setDate(d.getDate()+index);return d;});
+}
+export function weekTotal(activity, anchor = new Date()) {
+  return getWeekDays(anchor).reduce((sum,d) => sum + (activity[dateKey(d)] || 0),0);
+}
+export function studyStreak(activity, anchor = new Date()) {
+  const date = new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate());
+  if (!activity[dateKey(date)]) date.setDate(date.getDate()-1);
+  let count=0;
+  while (activity[dateKey(date)] > 0 && count < 10000) {count++;date.setDate(date.getDate()-1);}
+  return count;
+}

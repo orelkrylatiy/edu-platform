@@ -2,11 +2,26 @@ import { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUpRight, ArrowRight, BookOpen, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, Target, X } from "lucide-react";
-import { activity, dateKey, lessonComplete, monthCells, progress, remaining } from "./learning.js";
+import { ArrowUpRight, ArrowRight, BookOpen, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, Target, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine } from "lucide-react";
+import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak } from "./learning.js";
 import "./style.css";
 
-const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["calendar", "Активность", "Activity"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Компетенции", "Skills"], ["settings", "Настройки", "Settings"]];
+const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
+const navIcons = { home: ScanLine, courses: LibraryBig, calendar: CalendarDays, focus: Clock, artifacts: NotebookPen, review: RotateCcw, skills: ChartNoAxesColumn, settings: Settings };
+function PixelArt() {
+  const cells = Array.from({length: 19 * 19}, (_,i) => {
+    const x = i % 19, y = Math.floor(i / 19);
+    const l = x >= 1 && x <= 4 && y >= 3 && y <= 10;
+    const r = x >= 14 && x <= 17 && y >= 3 && y <= 10;
+    const bridge = x >= 5 && x <= 13 && y >= 12 && y <= 14;
+    const arms = y >= 15 && y <= 17 && ((x >= 4 && x <= 7) || (x >= 11 && x <= 14));
+    const center = x >= 8 && x <= 10 && y >= 15 && y <= 17;
+    const active = l || r || bridge || arms || center;
+    const shade = (x * 7 + y * 11) % 5;
+    return <i key={i} className={active ? "pixel p" + shade : "pixel"} />;
+  });
+  return <div className="pixel-visual" aria-hidden="true"><div className="pixel-matrix">{cells}</div><div className="pixel-caption">BUILD / LEARN / REPEAT</div></div>;
+}
 const modes = [["tutor", "Наставник", "Tutor"], ["reviewer", "Ревью", "Reviewer"], ["interviewer", "Интервью", "Interviewer"], ["stakeholder", "Заказчик", "Stakeholder"], ["planner", "Планировщик", "Planner"]];
 const readLocal = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
@@ -33,7 +48,7 @@ function App() {
   const [page, setPage] = useState("home");
   const [courseId, setCourseId] = useState(readLocal("course", "system-analyst"));
   const [lessonId, setLessonId] = useState(readLocal("lesson", "sa-01"));
-  const [theme, setTheme] = useState(readLocal("theme", "light"));
+  const [theme, setTheme] = useState(readLocal("theme", "dark"));
   const [language, setLanguage] = useState(readLocal("lang", "ru"));
   const [sidebar, setSidebar] = useState(() => window.innerWidth > 650);
   const [chatOpen, setChatOpen] = useState(false);
@@ -138,28 +153,55 @@ function App() {
   const totalSeconds = Object.values(days).reduce((a, b) => a + b, 0);
   const today = days[dateKey()] || 0;
   const fmt = (value) => Math.floor(value / 60) + " " + t("мин", "min");
+  const weekSeconds = weekTotal(days, new Date());
+  const lastWeekSeconds = weekTotal(days, new Date(Date.now() - 7 * 86400000));
+  const weeklyDelta = Math.round((weekSeconds - lastWeekSeconds) / 60);
+  const streak = studyStreak(days, new Date());
+  const activeWeek = getWeekDays(new Date()).filter(d => (days[dateKey(d)] || 0) > 0).length;
+  const lowSkill = course?.skills.find(skill => Number.isInteger(records["skill:" + course.id + ":" + skill]) && records["skill:" + course.id + ":" + skill] < 3);
+  const insightTitle = lowSkill ? t("Время закрепить " + lowSkill, "Revisit " + lowSkill)
+    : weekSeconds === 0 ? t("Начни с одной сессии", "Start with one session")
+    : weeklyDelta > 0 ? t("Ты набираешь темп", "You're building momentum")
+    : t("Сохрани ритм", "Keep your rhythm");
+  const insightBody = lowSkill ? t("По твоей самооценке эта тема пока ниже 3/4. Попробуй новую задачу без подсказок.", "Your self-rating is below 3/4. Try a fresh task independently.")
+    : weekSeconds === 0 ? t("На этой неделе ещё нет фокус-сессий. 25 минут сегодня — хорошее начало.", "No focus sessions yet this week. Twenty-five minutes is a good start.")
+    : weeklyDelta > 0 ? t("На этой неделе уже " + fmt(weekSeconds) + " — на " + weeklyDelta + " мин больше предыдущей.", "This week: " + fmt(weekSeconds) + ", up " + weeklyDelta + " min from last week.")
+    : t("На этой неделе " + activeWeek + " активных дней и " + fmt(weekSeconds) + " практики. Продолжай без перегрузки.", activeWeek + " active days and " + fmt(weekSeconds) + " this week. Keep it sustainable.");
 
   return <div className="app">
     <header className="topbar">
       <button className="icon" aria-label={t("Навигация", "Navigation")} onClick={() => setSidebar(!sidebar)}><Menu size={19} /></button>
-      <button className="brand" onClick={() => setPage("home")}><span className="logo">L.</span><span>learning<span className="muted"> / workspace</span></span></button>
-      <div className="top-right"><span className="status"><i /> {t("Личное пространство", "Personal workspace")}</span><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button></div>
+      <button className="brand" onClick={() => setPage("home")}><span className="logo">L<span className="logo-star">✳</span></span><span>LEARNING<span className="brand-accent">/</span>WORKSPACE</span></button>
+      <div className="top-right"><span className="status"><i /> {t("ЛИЧНОЕ ПРОСТРАНСТВО", "PERSONAL SPACE")}</span><button className="top-timer" onClick={() => setPage("focus")} title={t("Открыть таймер", "Open focus timer")}><Clock size={14} /> {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</button><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button></div>
     </header>
     {error && <div className="error" role="alert">{error}<button className="icon" onClick={() => setError("")} aria-label="Close"><X size={16} /></button></div>}
     <div className={"layout " + (sidebar ? "has-nav " : "") + (chatOpen && lesson ? "has-chat" : "")}>
       {sidebar && <aside className="sidebar">
-        <div className="side-label">{t("ПРОСТРАНСТВО", "WORKSPACE")}<button className="icon" onClick={() => setSidebar(false)} aria-label="Collapse navigation"><PanelLeftClose size={16} /></button></div>
-        {nav.map(([id, ru, en]) => <button key={id} className={"nav-item " + (page === id ? "selected" : "")} onClick={() => setPage(id)}>{t(ru, en)}<ChevronRight size={14} /></button>)}
-        <div className="side-label course-label">{t("ТЕКУЩИЙ КУРС", "CURRENT COURSE")}</div>
+        <div className="side-label">{t("НАВИГАЦИЯ", "NAVIGATION")}<button className="icon" onClick={() => setSidebar(false)} aria-label="Collapse navigation"><PanelLeftClose size={16} /></button></div>
+        {nav.map(([id, ru, en]) => { const Icon = navIcons[id]; return <button key={id} className={"nav-item " + (page === id ? "selected" : "")} onClick={() => { setPage(id); if (window.innerWidth <= 650) setSidebar(false); }}><Icon size={17} /><span>{t(ru, en)}</span><ChevronRight size={14} className="nav-arrow" /></button>; })}
+        <div className="side-label course-label">{t("ПРОГРАММА", "PROGRAM")}</div>
         {course && <><strong className="side-course">{course.title}</strong><div className="bar"><i style={{ width: stats.percent + "%" }} /></div><small className="muted">{stats.percent}%</small>
-        <div className="lessons">{course.lessons.map((l, i) => <button key={l.id} className={"lesson-link " + (page === "lesson" && l.id === lesson?.id ? "selected" : "")} onClick={() => openLesson(course, l)}><span className="mono">{String(i + 1).padStart(2, "0")}</span><span>{l.title}</span>{lessonComplete(l, records) && <Check size={14} />}</button>)}</div></>}
+        <div className="lessons"><span className="side-label sub-label">{t("УРОКИ / ДНИ", "LESSONS / DAYS")}</span>{course.lessons.map((l, i) => <button key={l.id} className={"lesson-link " + (page === "lesson" && l.id === lesson?.id ? "selected" : "")} onClick={() => openLesson(course, l)}><span className="mono">{String(i + 1).padStart(2, "0")}</span><span>{l.title}</span>{lessonComplete(l, records) && <Check size={14} />}</button>)}</div></>}
       </aside>}
       <main className="main">
         {!ready ? <div className="empty">{error ? t("Проверь запуск сервера и авторизацию.", "Check server and authentication.") : t("Загрузка пространства…", "Loading workspace…")}</div> : <>
         {page === "home" && <>
-          <section className="hero"><div className="eyebrow"><span className="dot" /> {new Intl.DateTimeFormat(language, { dateStyle: "full" }).format(new Date())}</div><div className="hero-index">01 / THE WORK OF LEARNING</div><h1>{t("Сегодня — ещё", "Today is another")}<br /><em>{t("один шаг.", "step forward.")}</em></h1><p>{t("Давай. Ты можешь сделать это сегодня. Главное — начать с одной конкретной задачи.", "You can do this today. Start with one concrete task.")}</p><button className="primary" disabled={!next} onClick={() => openLesson(course, next)}>{t("Продолжить обучение", "Continue learning")} <ArrowRight size={18} /></button></section>
-          <section className="metrics"><div><span>{t("ПРОГРЕСС КУРСА", "COURSE PROGRESS")}</span><strong>{stats.percent}<small>%</small></strong><p>{stats.done} / {stats.total} {t("заданий", "tasks")}</p></div><div><span>{t("СЕГОДНЯ В ФОКУСЕ", "FOCUSED TODAY")}</span><strong>{Math.floor(today / 60)}<small>m</small></strong><p>{t("Всего", "Total")}: {fmt(totalSeconds)}</p></div><div><span>{t("КОНТРОЛЬНЫЕ ТОЧКИ", "CHECKPOINTS")}</span><strong>{stats.passed}<small>/{stats.gates}</small></strong><p>{t("Самостоятельная практика", "Independent practice")}</p></div></section>
-          <div className="two-col"><section className="card"><div className="section-head"><span className="eyebrow">{t("СЛЕДУЮЩИЙ ШАГ", "NEXT UP")}</span><BookOpen size={18} /></div><h2>{next?.title}</h2><p className="muted">{course?.title} · {next?.minutes} min</p><button className="text-button" onClick={() => openLesson(course, next)}>{t("Открыть урок", "Open lesson")} <ArrowUpRight size={16} /></button></section><section className="card"><div className="section-head"><span className="eyebrow">{t("РЕКОМЕНДАЦИЯ", "RECOMMENDATION")}</span><Target size={18} /></div><h2>{today < 1500 ? t("Одна сессия фокуса", "One focus session") : t("Закрепи материал", "Reinforce your learning")}</h2><p className="muted">{today < 1500 ? t("Начни с 25 минут без отвлечений.", "Start with 25 distraction-free minutes.") : t("Попробуй ответить на вопрос без подсказки.", "Try answering without hints.")}</p><button className="text-button" onClick={() => { setMode("planner"); openChat(); }}>{t("Спросить AI", "Ask AI")} <ArrowUpRight size={16} /></button></section></div>
+          <div className="page-kicker"><span className="signal" /> WORKSPACE / 001 <span className="kicker-right">{new Intl.DateTimeFormat(language, {weekday:"long",day:"numeric",month:"long"}).format(new Date())}</span></div>
+          <section className="hero">
+            <div className="hero-copy"><div className="eyebrow hero-eyebrow">&gt; {t("ТВОЯ ТРАЕКТОРИЯ / НЕ ОСТАНАВЛИВАЙСЯ", "YOUR PATH / KEEP MOVING")}</div>
+            <h1>{t("Учёба — это", "Make learning")}<br /><span>{t("система.", "a system.")}</span></h1>
+            <p>{t("Маленькие действия. Видимый прогресс. Глубокое понимание. Продолжим с того места, где ты остановился.", "Small actions. Visible progress. Real understanding. Pick up where you left off.")}</p>
+            <div className="hero-actions"><button className="primary" disabled={!next} onClick={() => openLesson(course, next)}>{t("Продолжить", "Continue learning")} <ArrowUpRight size={17} /></button><button className="ghost" onClick={() => setPage("focus")}><Play size={15} /> {t("Начать фокус", "Start focus")}</button></div>
+            <div className="hero-bottom"><span><i className="tiny-led" /> SYSTEM / ACTIVE</span><span>PROGRESS: {String(stats.percent).padStart(2,"0")}%</span></div></div>
+            <PixelArt />
+          </section>
+          <div className="section-caption"><span>01 — {t("ТВОЯ СТАТИСТИКА", "YOUR NUMBERS")}</span><span>{t("ДАННЫЕ ИЗ ТВОИХ СЕССИЙ", "FROM YOUR STUDY SESSIONS")}</span></div>
+          <section className="metrics"><div><span>{t("ЭТА НЕДЕЛЯ", "THIS WEEK")}</span><strong>{Math.floor(weekSeconds/60)}<small>min</small></strong><p>{activeWeek} / 7 {t("активных дней", "active days")}</p></div><div><span>{t("КУРС ПРОЙДЕН", "COURSE COMPLETION")}</span><strong>{stats.percent}<small>%</small></strong><p>{stats.done} / {stats.total} {t("задач", "tasks")}</p></div><div><span>{t("СЕРИЯ", "STUDY STREAK")}</span><strong>{streak}<small>{t("дн.", "days")}</small></strong><p>{t("Постоянство важнее темпа", "Consistency over intensity")}</p></div></section>
+          <div className="two-col">
+            <section className="card next-card"><div className="section-head"><span className="eyebrow">02 / {t("СЛЕДУЮЩЕЕ ДЕЙСТВИЕ", "NEXT ACTION")}</span><ArrowUpRight size={17} /></div><div className="card-content"><span className="card-mono">{course?.title} / {next?.module}</span><h2>{next?.title}</h2><p>{t("Твой следующий урок", "Your next lesson")} · {next?.minutes} min</p></div><button className="inline-link" onClick={() => openLesson(course,next)}>{t("Перейти к уроку", "Open lesson")} <ArrowRight size={17} /></button></section>
+            <section className="card insight-card"><div className="section-head"><span className="eyebrow">03 / {t("НА ОСНОВЕ ПРОГРЕССА", "BASED ON YOUR DATA")}</span><Sparkles size={17}/></div><div className="card-content"><span className="card-mono">{t("ПЕРСОНАЛЬНОЕ НАБЛЮДЕНИЕ", "PERSONAL INSIGHT")}</span><h2>{insightTitle}</h2><p>{insightBody}</p></div><button className="inline-link" onClick={() => {setMode("planner");openChat();}}>{t("Обсудить с наставником", "Discuss with mentor")} <ArrowRight size={17}/></button></section>
+          </div>
+          <div className="section-caption"><span>04 — {t("УЧЕБНЫЙ РИТМ", "LEARNING RHYTHM")}</span><button className="inline-link" onClick={() => setPage("calendar")}>{t("Вся активность", "All activity")} <ArrowUpRight size={15}/></button></div>
           <Calendar month={month} setMonth={setMonth} days={days} t={t} language={language} />
         </>}
         {page === "courses" && <><PageTitle eyebrow="LIBRARY" title={t("Твои курсы", "Your courses")} /><div className="course-grid">{courses.map((c) => {const p = progress(c, records); return <section className="card course-card" key={c.id}><span className="eyebrow">{c.lessons.length} LESSONS</span><h2>{c.title}</h2><p>{c.description}</p><div className="bar"><i style={{ width: p.percent + "%" }} /></div><div className="section-head"><span>{p.percent}%</span><button className="text-button" onClick={() => openLesson(c, c.lessons.find((l) => !lessonComplete(l, records)) || c.lessons[0])}>{t("Открыть", "Open")} <ArrowRight size={17} /></button></div></section>;})}</div></>}
@@ -173,7 +215,28 @@ function App() {
           <section className="card note-card"><h2>{t("Личные заметки", "Personal notes")}</h2><Editor key={lesson.id} draftKey={"note:" + lesson.id} label={t("Мысли, выводы, вопросы", "Thoughts, takeaways, questions")} initial={records["note:" + lesson.id] || ""} onSave={(value) => save("note", lesson.id, value)} t={t} /></section>
           <div className="lesson-nav"><button className="secondary" disabled={course.lessons.indexOf(lesson) === 0} onClick={() => openLesson(course, course.lessons[course.lessons.indexOf(lesson) - 1])}><ChevronLeft size={16} /> {t("Назад", "Previous")}</button><button className="primary" disabled={course.lessons.indexOf(lesson) === course.lessons.length - 1} onClick={() => openLesson(course, course.lessons[course.lessons.indexOf(lesson) + 1])}>{t("Следующий урок", "Next lesson")} <ArrowRight size={16} /></button></div>
         </>}
-        {page === "calendar" && <><PageTitle eyebrow="ACTIVITY / TIME" title={t("Время в фокусе", "Time in focus")} /><section className="metrics"><div><span>{t("СЕГОДНЯ", "TODAY")}</span><strong>{Math.floor(today / 60)}<small>m</small></strong></div><div><span>{t("ВСЕГО", "ALL TIME")}</span><strong>{Math.floor(totalSeconds / 60)}<small>m</small></strong></div><div><span>{t("АКТИВНЫХ ДНЕЙ", "ACTIVE DAYS")}</span><strong>{Object.keys(days).length}</strong></div></section><Calendar month={month} setMonth={setMonth} days={days} t={t} language={language} /></>}
+        {page === "calendar" && <>
+          <PageTitle eyebrow="ACTIVITY / 07 DAYS" title={t("Активность", "Activity")} />
+          <div className="page-intro">{t("Учебный ритм без лишней гонки. Выбери день, чтобы посмотреть время и сессии.", "Your study rhythm without the pressure. Select a day to explore sessions.")}</div>
+          <section className="metrics"><div><span>{t("ЭТА НЕДЕЛЯ", "THIS WEEK")}</span><strong>{Math.floor(weekSeconds/60)}<small>min</small></strong><p>{activeWeek} {t("активных дней", "active days")}</p></div><div><span>{t("ПРОШЛАЯ НЕДЕЛЯ", "LAST WEEK")}</span><strong>{Math.floor(lastWeekSeconds/60)}<small>min</small></strong><p>{weeklyDelta > 0 ? "+" : ""}{weeklyDelta} {t("мин к прошлой", "min vs last week")}</p></div><div><span>{t("ВСЕГО ВРЕМЕНИ", "ALL-TIME FOCUS")}</span><strong>{Math.floor(totalSeconds/3600)}<small>h</small> {Math.floor(totalSeconds%3600/60)}<small>m</small></strong><p>{Object.keys(days).length} {t("дней с занятиями", "days studied")}</p></div></section>
+          <Calendar month={month} setMonth={setMonth} days={days} t={t} language={language} records={records} />
+          <section className="card data-notes"><div className="section-head"><span className="eyebrow">DATA / INTERPRETATION</span><ChartNoAxesColumn size={18}/></div><h2>{insightTitle}</h2><p>{insightBody}</p><p className="muted">{t("Статистика основана на сохранённых фокус-сессиях, а не на времени открытой страницы.", "Metrics reflect saved focus sessions, not time with a page open.")}</p></section>
+        </>}
+        {page === "focus" && <>
+          <div className="page-kicker"><span className="signal" /> FOCUS / SESSION <span className="kicker-right">{t("НЕ ОТВЛЕКАЙСЯ / ДЕЛАЙ", "STAY PRESENT / KEEP GOING")}</span></div>
+          <section className="focus-room">
+            <div className="eyebrow">&gt; {t("ПРОСТРАНСТВО ДЛЯ СОСРЕДОТОЧЕННОЙ РАБОТЫ", "A SPACE FOR DEEP WORK")}</div>
+            <h1>{t("Меньше шума.", "Less noise.")}<br/><span>{t("Больше сути.", "More depth.")}</span></h1>
+            <div className="focus-time" aria-label="Timer">{String(Math.floor(seconds/60)).padStart(2,"0")}<span>:</span>{String(seconds%60).padStart(2,"0")}</div>
+            <div className="focus-tools">
+              <button className="primary" disabled={savingTimer || !ready || seconds===0} aria-label={timer.end ? "Pause" : "Start"} onClick={toggleTimer}>{timer.end ? <Pause size={18}/> : <Play size={18}/>} {timer.end ? t("Пауза", "Pause") : t("Начать", "Start")}</button>
+              <button className="secondary" disabled={savingTimer || !ready || !timer.id} aria-label="Save session and reset" onClick={() => finishTimer(timer,timer.length - remaining(timer))}><RotateCcw size={17}/>{t("Завершить и сохранить", "Finish & save")}</button>
+              <select aria-label="Focus or break duration" disabled={Boolean(timer.id)} value={timer.length} onChange={(e) => setTimer({length:+e.target.value,left:+e.target.value,end:null,id:null,started:null})}><option value={1500}>25 min</option><option value={3000}>50 min</option><option value={300}>5 min · break</option></select>
+            </div>
+            <div className="focus-foot"><span><i className="tiny-led"/> {timer.end ? t("СЕССИЯ ИДЁТ", "SESSION RUNNING") : timer.id ? t("НА ПАУЗЕ", "PAUSED") : t("ГОТОВ К РАБОТЕ", "READY")}</span><span>{t("Время сохраняется после завершения сессии", "Time is saved when the session ends")}</span></div>
+          </section>
+          <div className="two-col focus-cards"><section className="card"><div className="eyebrow">TODAY / {t("В ФОКУСЕ", "FOCUS")}</div><h2>{fmt(today)}</h2><p>{t("Время завершённых сессий сегодня", "Completed focus time today")}</p></section><section className="card"><div className="eyebrow">WEEK / {t("В ФОКУСЕ", "FOCUS")}</div><h2>{fmt(weekSeconds)}</h2><p>{t("Время завершённых сессий за неделю", "Completed focus time this week")}</p></section></div>
+        </>}
         {page === "artifacts" && <><PageTitle eyebrow="YOUR WORK" title={t("Твои материалы", "Your artifacts")} /><p className="muted">{t("Все сохранённые ответы и заметки по курсам.", "All saved course answers and notes.")}</p>{courses.flatMap((c) => c.lessons.flatMap((l) => [{ id: l.id, title: t("Заметки", "Notes"), value: records["note:" + l.id] }, ...l.tasks.map((task) => ({ id: task.id, title: task.text, value: records["answer:" + task.id] }))].filter((item) => item.value).map((item) => <section className="card artifact" key={item.id}><div className="section-head"><span className="eyebrow">{c.title} / {l.title}</span><button className="text-button" onClick={() => openLesson(c, l)}>{t("Урок", "Lesson")} <ArrowUpRight size={15} /></button></div><h2>{item.title}</h2><div className="prose"><Md>{item.value}</Md></div></section>)))}{!Object.keys(records).some((key) => (key.startsWith("answer:") || key.startsWith("note:")) && records[key]) && <div className="card empty">{t("Здесь появятся твои первые сохранённые материалы.", "Your saved work will appear here.")}</div>}</>}
         {page === "review" && <><PageTitle eyebrow="PRACTICE / REVIEW" title={t("Повторение", "Review")} /><p className="muted">{t("Возвращайся к навыкам ниже 3/4 и незавершённым проверкам. Самооценка не заменяет самостоятельное решение.", "Revisit skills below 3/4 and unfinished assessments. Self-rating does not replace independent work.")}</p>{courses.map((c) => <section className="card skill-card" key={c.id}><h2>{c.title}</h2>{c.skills.filter((skill) => Number.isInteger(records["skill:" + c.id + ":" + skill]) && records["skill:" + c.id + ":" + skill] < 3).map((skill) => <div className="section-head review-row" key={skill}><span>{skill} · {records["skill:" + c.id + ":" + skill]}/4</span><button className="text-button" onClick={() => {const l = c.lessons.find((l) => l.module === skill) || c.lessons[0]; openLesson(c, l); setMode("tutor"); openChat();}}>{t("Повторить", "Review")} <ArrowRight size={16} /></button></div>)}{c.lessons.filter((l) => l.tasks.some((task) => ["gate","assessment"].includes(task.type) && records["task:" + task.id] !== true) && l.tasks.some((task) => records["task:" + task.id] === true)).map((l) => <div className="section-head review-row" key={l.id}><span>{l.title}</span><button className="text-button" onClick={() => openLesson(c, l)}>{t("Проверка", "Assessment")} <ArrowRight size={16} /></button></div>)}<button className="text-button" onClick={() => {setCourseId(c.id); setLessonId(c.lessons[0].id); setTaskId(""); setMode("planner"); setChatOpen(true);}}>{t("План повторения с AI", "AI review plan")} <ArrowUpRight size={16} /></button></section>)}</>}
         {page === "skills" && <><PageTitle eyebrow="SCORECARD" title={t("Карта компетенций", "Skill map")} /><p className="muted">{t("Самооценка 0–4. Оцени самостоятельное применение, а не просмотр уроков.", "Self-assessment 0–4. Rate independent ability, not watched lessons.")}</p>{courses.map((c) => <section className="card skill-card" key={c.id}><h2>{c.title}</h2>{c.skills.map((skill) => <div className="skill-row" key={skill}><span>{skill}</span><div className="skill-options">{[0,1,2,3,4].map((n) => <button className={records["skill:" + c.id + ":" + skill] === n ? "chosen" : ""} key={n} onClick={() => save("skill", c.id + ":" + skill, n)}>{n}</button>)}</div><small className="muted">{records["skill:" + c.id + ":" + skill] === undefined ? t("Не оценено", "Unrated") : t("Оценено", "Rated")}</small></div>)}</section>)}</>}
@@ -182,7 +245,8 @@ function App() {
       </main>
       {chatOpen && lesson && <aside className="chat" ref={chatPanel}><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
     </div>
-    <footer className="focus"><div className="focus-label"><span className="dot" /><span>{t("РЕЖИМ ФОКУСА", "FOCUS MODE")}</span></div><div className="time" aria-label="Timer">{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</div><button className="icon" disabled={savingTimer || !ready || seconds === 0} aria-label={timer.end ? "Pause" : "Start"} onClick={toggleTimer}>{timer.end ? <Pause size={20} /> : <Play size={20} />}</button><button className="icon" disabled={savingTimer || !ready || !timer.id} aria-label="Save session and reset" onClick={() => finishTimer(timer, timer.length - remaining(timer))}><RotateCcw size={19} /></button><select aria-label="Focus or break duration" disabled={Boolean(timer.id)} value={timer.length} onChange={(e) => setTimer({ length: +e.target.value, left: +e.target.value, end: null, id: null, started: null })}><option value={1500}>25 min</option><option value={3000}>50 min</option><option value={300}>5 min break</option></select><div className="focus-spacer" /><button className="text-button" onClick={() => { setMode("tutor"); openChat(); }}><MessageCircle size={18} /><span>AI Mentor</span></button></footer>
+
+  </div>;
   </div>;
 }
 
@@ -214,10 +278,30 @@ function Editor({ label, initial, onSave, t, draftKey }) {
   }, [value, saved]);
   return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => { const next = e.target.value; localStorage.setItem("draft:" + draftKey, JSON.stringify(next)); setValue(next); }} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={() => persist(value)}>{t("Сохранить", "Save")}</button></div></div>;
 }
-function Calendar({ month, setMonth, days, t, language }) {
+function Calendar({ month, setMonth, days, t, language, records = {} }) {
+  const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState(dateKey());
-  const cells = monthCells(month.getFullYear(), month.getMonth());
-  return <section className="card calendar"><div className="section-head"><div><span className="eyebrow">{t("РИТМ ОБУЧЕНИЯ", "LEARNING RHYTHM")}</span><h2>{new Intl.DateTimeFormat(language, { month: "long", year: "numeric" }).format(month)}</h2></div><div className="calendar-nav"><button className="icon" aria-label="Previous month" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth()-1, 1))}><ChevronLeft size={18} /></button><button className="icon" aria-label="Next month" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth()+1, 1))}><ChevronRight size={18} /></button></div></div><div className="calendar-grid">{(language === "ru" ? ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"] : ["Mo","Tu","We","Th","Fr","Sa","Su"]).map((d) => <span className="weekday" key={d}>{d}</span>)}{cells.map((d,i) => d ? <button key={dateKey(d)} title={Math.floor((days[dateKey(d)] || 0)/60) + " min"} className={"day " + (days[dateKey(d)] ? "active-day " : "") + (dateKey(d) === selected ? "day-selected" : "")} onClick={() => setSelected(dateKey(d))}>{d.getDate()}{days[dateKey(d)] ? <i /> : null}</button> : <span key={"empty"+i} />)}</div><p className="muted calendar-caption"><CalendarDays size={16} /> {selected} · {Math.floor((days[selected] || 0)/60)} min</p></section>;
+  const anchor = new Date(month.getFullYear(), month.getMonth(), month.getDate());
+  const currentWeek = getWeekDays(anchor);
+  const cells = expanded ? monthCells(month.getFullYear(), month.getMonth()) : currentWeek;
+  const labels = language === "ru" ? ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"] : ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const formatter = new Intl.DateTimeFormat(language, { day: "numeric", month: "long" });
+  const from = currentWeek[0], to = currentWeek[6];
+  const label = expanded ? new Intl.DateTimeFormat(language, {month:"long",year:"numeric"}).format(anchor)
+    : formatter.format(from) + " — " + formatter.format(to);
+  const selectedSessions = Object.entries(records).filter(([key,value]) => key.startsWith("session:") && value?.date === selected).map(([,value]) => value);
+  const dayTime = days[selected] || 0;
+  function move(delta) { const d = new Date(anchor); if (expanded) d.setMonth(d.getMonth() + delta); else d.setDate(d.getDate() + delta*7); setMonth(d); }
+  function choose(d) { setSelected(dateKey(d)); }
+  return <section className="card calendar">
+    <div className="calendar-toolbar"><div><span className="eyebrow">WEEKLY / {t("КАЛЕНДАРЬ", "CALENDAR")}</span><h2>{label}</h2></div><div className="calendar-controls"><div className="segmented"><button className={!expanded ? "active" : ""} onClick={() => setExpanded(false)}>{t("Неделя", "Week")}</button><button className={expanded ? "active" : ""} onClick={() => setExpanded(true)}>{t("Месяц", "Month")}</button></div><button className="calendar-today" onClick={() => {const today = new Date();setMonth(today);setSelected(dateKey(today));}}>{t("Сегодня", "Today")}</button><button className="icon" aria-label={t("Предыдущая неделя или месяц", "Previous period")} onClick={() => move(-1)}><ChevronLeft size={18}/></button><button className="icon" aria-label={t("Следующая неделя или месяц", "Next period")} onClick={() => move(1)}><ChevronRight size={18}/></button></div></div>
+    <div className={"calendar-grid " + (expanded ? "monthly" : "weekly")}>
+      {labels.map(l => <span className="weekday" key={l}>{l}</span>)}
+      {cells.map((d,i) => d ? <button key={dateKey(d)} title={Math.floor((days[dateKey(d)] || 0)/60) + " min"} className={"day " + (days[dateKey(d)] ? "active-day " : "") + (dateKey(d)===selected ? "day-selected " : "") + (dateKey(d)===dateKey() ? "today " : "")} onClick={() => choose(d)}><span className="day-number">{String(d.getDate()).padStart(2,"0")}</span><span className="day-minutes">{days[dateKey(d)] ? Math.floor(days[dateKey(d)]/60)+"m" : "—"}</span><span className="day-track"><i style={{width:Math.min(100,Math.round((days[dateKey(d)] || 0)/5400*100))+"%"}}/></span></button> : <span className="empty-day" key={"empty"+i}/>)}
+    </div>
+    <div className="calendar-detail"><div><span className="eyebrow">{t("ВЫБРАННЫЙ ДЕНЬ", "SELECTED DAY")}</span><strong>{new Intl.DateTimeFormat(language,{weekday:"long",day:"numeric",month:"long"}).format(new Date(selected+"T12:00:00"))}</strong></div><div className="day-summary"><strong>{Math.floor(dayTime/60)} <small>min</small></strong><span>{selectedSessions.length} {t("сессий", "sessions")}</span></div></div>
+    {selectedSessions.length > 0 && <div className="session-list">{selectedSessions.map((session,i) => <div key={i}><Clock size={14}/><span>{t("Фокус-сессия", "Focus session")} {i+1}</span><strong>{Math.floor(session.seconds/60)} min</strong></div>)}</div>}
+  </section>;
 }
 
 createRoot(document.getElementById("root")).render(<App />);
