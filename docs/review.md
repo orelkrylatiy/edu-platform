@@ -10,7 +10,7 @@
 - CI: lint, formatting, tests, build for GitHub and GitLab.
 
 ## Remaining release checks
-- Visual QA in actual desktop/mobile browsers; keyboard/accessibility audit.
+- Playwright desktop/mobile smoke test and screenshot artifacts added; inspect results. Full keyboard/accessibility audit still pending.
 - Live provider smoke tests with owner's configured credentials, especially OpenCode.
 - HTTPS reverse proxy, rate limiting, backup restore drill, VPS deployment.
 - Lock dependency graph and enforce formatter checks against committed files; current CI runs formatting before check.

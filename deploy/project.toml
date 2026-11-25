@@ -1,0 +1,12 @@
+[project]
+type = "service"
+delivery = "source"
+keep_releases = 5
+healthcheck_url = "http://127.0.0.1:8000/health"
+build_commands = [["npm", "install"], ["npm", "run", "build"], ["python3", "-m", "venv", ".venv"], [".venv/bin/pip", "install", "-r", "requirements.txt", "-r", "requirements-humanizer.txt"]]
+build_timeout_seconds = 1800
+shared_files = [".env"]
+shared_dirs = ["data", "content/private"]
+
+[service]
+unit = "edu-platform.service"
