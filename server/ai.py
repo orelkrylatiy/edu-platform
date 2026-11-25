@@ -1,17 +1,19 @@
 import os
+from importlib.util import find_spec
 import shutil
 
 import httpx
 
 
 def configured():
+    installed = find_spec("humanizer_framework") is not None
     return {
         "auto": True,
         "openai": bool(os.getenv("OPENAI_API_KEY")),
         "glm": bool(os.getenv("ZAI_API_KEY")),
-        "humanizer": os.getenv("WORKSPACE_ENABLE_HUMANIZER") == "1",
+        "humanizer": installed and os.getenv("WORKSPACE_ENABLE_HUMANIZER") == "1",
         "opencode": (
-            os.getenv("WORKSPACE_ENABLE_OPENCODE") == "1"
+            installed and os.getenv("WORKSPACE_ENABLE_OPENCODE") == "1"
             and bool(os.getenv("HUMANIZER_OPENCODE_MODEL"))
             and bool(shutil.which("opencode"))
         ),
@@ -62,7 +64,7 @@ def generate(provider, messages):
         response = client.post(
             url,
             headers={"Authorization": f"Bearer {key}"},
-            json={"model": model, "messages": messages},
+            json={"model": model, "messages": messages, "max_tokens": 3000},
         )
         response.raise_for_status()
         answer = response.json()["choices"][0]["message"]["content"]

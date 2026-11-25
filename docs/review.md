@@ -21,3 +21,6 @@
 CI review: first lint/test/build run passed. The subsequent related-artifacts change triggered Ruff E741; renamed the ambiguous loop variable. Re-run CI on final commit before merging.
 
 Browser CI initially failed before running tests because ubuntu-latest resolved to Ubuntu 26.04, unsupported by Playwright 1.52. Pinned Ubuntu 24.04 and updated Playwright to 1.65.1. Updated Vite to 6.4.5 and ESLint maintenance releases, added a high-severity npm audit gate. All must be rechecked on final commit.
+
+## Second review
+The first actual browser run found a checkbox state race. Added optimistic state and rollback with per-record serialized writes. Notes now serialize save operations; draft keys are cleared only after the matching value is persisted. Corrected failed timer retry duration, scoped unsent chat drafts, strict state validation, disabled remote Markdown images and fixed provider availability reporting. CI must pass before merge.

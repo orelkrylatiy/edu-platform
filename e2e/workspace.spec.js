@@ -8,17 +8,19 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Диагностика", exact: true })).toBeVisible();
   const checkbox = page.getByRole("checkbox").first();
   await checkbox.check();
+  await expect(checkbox).toBeEnabled();
   await expect(checkbox).toBeChecked();
   const note = page.getByRole("textbox", { name: "Мысли, выводы, вопросы" });
   await note.fill("My persistent note");
   await expect(page.locator(".note-card").getByText("Сохранено", { exact: true })).toBeVisible();
   await page.reload();
+  await expect(page.getByRole("heading", { name: /Сегодня/ })).toBeVisible();
   await page.getByRole("button", { name: /01 Диагностика/ }).click();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
   await expect(page.getByRole("textbox", { name: "Мысли, выводы, вопросы" })).toHaveValue("My persistent note");
   await page.getByRole("button", { name: "Сменить тему" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await page.getByRole("button", { name: "AI mentor", exact: true }).first().click();
+  await page.locator(".lesson-top").getByRole("button", { name: "AI mentor" }).click();
   await expect(page.locator(".chat")).toBeVisible();
   await expect(page.locator(".context")).toContainText("Диагностика");
   await page.screenshot({ path: "test-results/lesson-dark.png", fullPage: true });
@@ -34,6 +36,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.locator(".active-day")).toHaveCount(1);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
+  await expect(page.getByRole("heading", { name: /Сегодня/ })).toBeVisible();
   await expect(page.locator(".sidebar")).toHaveCount(0);
   await page.getByRole("button", { name: "Навигация" }).click();
   await expect(page.locator(".sidebar")).toBeVisible();

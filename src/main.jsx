@@ -20,11 +20,13 @@ async function api(path, options = {}) {
   return response.json();
 }
 function Md({ children }) {
-  return <Markdown remarkPlugins={[remarkGfm]} components={{ a: (props) => <a {...props} target="_blank" rel="noreferrer noopener" /> }}>{children}</Markdown>;
+  return <Markdown remarkPlugins={[remarkGfm]} components={{ a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer noopener">{children}</a>, img: ({ alt }) => <span>[{alt || "image"}]</span> }}>{children}</Markdown>;
 }
 function App() {
   const [courses, setCourses] = useState([]);
   const [records, setRecords] = useState({});
+  const [pendingTasks, setPendingTasks] = useState({});
+  const writes = useRef(new Map());
   const [providers, setProviders] = useState({});
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
@@ -39,7 +41,7 @@ function App() {
   const [taskId, setTaskId] = useState("");
   const [mode, setMode] = useState("tutor");
   const [provider, setProvider] = useState(readLocal("provider", "auto"));
-  const [draft, setDraft] = useState("");
+  const [drafts, setDrafts] = useState({});
   const [busy, setBusy] = useState(false);
   const [month, setMonth] = useState(new Date());
   const [timer, setTimer] = useState(() => readLocal("timer-v1", { length: 1500, left: 1500, end: null, id: null, started: null }));
@@ -68,20 +70,42 @@ function App() {
   const scope = taskId || lesson?.id;
   const chatKey = scope + ":" + mode;
   const messages = records["chat:" + chatKey] || [];
+  const draft = drafts[chatKey] || "";
+  const setDraft = (value) => setDrafts((old) => ({ ...old, [chatKey]: value }));
 
   async function save(kind, id, value) {
-    try {
-      await api("state/" + kind + "/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify({ value }) });
-      setRecords((old) => ({ ...old, [kind + ":" + id]: value }));
-      return true;
-    } catch (e) { setError(e.message); return false; }
+    const key = kind + ":" + id;
+    const previous = writes.current.get(key) || Promise.resolve();
+    const operation = previous.then(async () => {
+      try {
+        await api("state/" + kind + "/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify({ value }) });
+        setRecords((old) => ({ ...old, [key]: value }));
+        if (kind === "note" || kind === "answer") {
+          if (readLocal("draft:" + key, null) === value) localStorage.removeItem("draft:" + key);
+        }
+        return true;
+      } catch (e) { setError(e.message); return false; }
+    });
+    writes.current.set(key, operation);
+    const ok = await operation;
+    if (writes.current.get(key) === operation) writes.current.delete(key);
+    return ok;
+  }
+  async function toggleTask(id, checked) {
+    const key = "task:" + id;
+    if (writes.current.has(key)) return;
+    const previous = records[key] === true;
+    setPendingTasks((old) => ({ ...old, [id]: true }));
+    setRecords((old) => ({ ...old, [key]: checked }));
+    if (!await save("task", id, checked)) setRecords((old) => ({ ...old, [key]: previous }));
+    setPendingTasks((old) => ({ ...old, [id]: false }));
   }
   async function finishTimer(current, elapsed) {
     if (completing.current || !current.id) return;
     completing.current = true; setSavingTimer(true);
     const ok = current.length === 300 || elapsed <= 0 || await save("session", current.id, { seconds: elapsed, date: dateKey(new Date(current.started)), lesson: current.lesson });
     if (ok) setTimer({ length: current.length, left: current.length, end: null, id: null, started: null });
-    else setTimer((old) => ({ ...old, end: null, left: 0 }));
+    else setTimer((old) => ({ ...old, end: null, left: Math.max(0, current.length - elapsed) }));
     completing.current = false; setSavingTimer(false);
   }
   useEffect(() => {
@@ -104,7 +128,7 @@ function App() {
     try {
       const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: taskId || null, text, mode, provider, language }) });
       setRecords((old) => ({ ...old, ["chat:" + key]: result.messages }));
-    } catch (e) { setError(e.message); setDraft(text); }
+    } catch (e) { setError(e.message); setDrafts((old) => ({ ...old, [key]: old[key] || text })); }
     finally { setBusy(false); }
   }
   function exportData() {
@@ -145,7 +169,7 @@ function App() {
           <div className="lesson-meta"><Clock size={15} /> {lesson.minutes} min <span>·</span> {lesson.tasks.filter((x) => records["task:" + x.id]).length}/{lesson.tasks.length} {t("заданий", "tasks")}</div>
           <article className="prose"><Md>{lesson.body}</Md></article>
           <h2 className="heading">{t("Задания", "Tasks")}</h2>
-          {lesson.tasks.map((task) => <section key={task.id} className="task"><div className="task-main"><div className="check-row"><input aria-label={task.text} type="checkbox" checked={records["task:" + task.id] === true} onChange={(e) => save("task", task.id, e.target.checked)} /><div className="task-copy"><Md>{task.text}</Md><small className="eyebrow task-type">{task.type}{task.optional ? " · optional" : ""}</small></div></div><button className="icon" aria-label="Discuss task" onClick={() => openChat(task.id)}><MessageCircle size={18} /></button></div>{task.type !== "theory" && <Editor key={task.id} draftKey={"answer:" + task.id} label={t("Мой ответ / артефакт", "My answer / artifact")} initial={records["answer:" + task.id] || ""} onSave={(value) => save("answer", task.id, value)} t={t} />}</section>)}
+          {lesson.tasks.map((task) => <section key={task.id} className="task"><div className="task-main"><div className="check-row"><input aria-label={task.text} type="checkbox" checked={records["task:" + task.id] === true} disabled={Boolean(pendingTasks[task.id])} onChange={(e) => toggleTask(task.id, e.target.checked)} /><div className="task-copy"><Md>{task.text}</Md><small className="eyebrow task-type">{task.type}{task.optional ? " · optional" : ""}</small></div></div><button className="icon" aria-label="Discuss task" onClick={() => openChat(task.id)}><MessageCircle size={18} /></button></div>{task.type !== "theory" && <Editor key={task.id} draftKey={"answer:" + task.id} label={t("Мой ответ / артефакт", "My answer / artifact")} initial={records["answer:" + task.id] || ""} onSave={(value) => save("answer", task.id, value)} t={t} />}</section>)}
           <section className="card note-card"><h2>{t("Личные заметки", "Personal notes")}</h2><Editor key={lesson.id} draftKey={"note:" + lesson.id} label={t("Мысли, выводы, вопросы", "Thoughts, takeaways, questions")} initial={records["note:" + lesson.id] || ""} onSave={(value) => save("note", lesson.id, value)} t={t} /></section>
           <div className="lesson-nav"><button className="secondary" disabled={course.lessons.indexOf(lesson) === 0} onClick={() => openLesson(course, course.lessons[course.lessons.indexOf(lesson) - 1])}><ChevronLeft size={16} /> {t("Назад", "Previous")}</button><button className="primary" disabled={course.lessons.indexOf(lesson) === course.lessons.length - 1} onClick={() => openLesson(course, course.lessons[course.lessons.indexOf(lesson) + 1])}>{t("Следующий урок", "Next lesson")} <ArrowRight size={16} /></button></div>
         </>}
@@ -167,24 +191,28 @@ function Editor({ label, initial, onSave, t, draftKey }) {
   const [value, setValue] = useState(() => readLocal("draft:" + draftKey, initial));
   const [saved, setSaved] = useState(initial);
   const [pending, setPending] = useState(false);
+  const inFlight = useRef(false);
   const [preview, setPreview] = useState(false);
   const saveRef = useRef(onSave);
   saveRef.current = onSave;
+  async function persist(snapshot) {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setPending(true);
+    try { if (await saveRef.current(snapshot)) setSaved(snapshot); }
+    finally { inFlight.current = false; setPending(false); }
+  }
   useEffect(() => {
-    if (value === saved) { localStorage.removeItem("draft:" + draftKey); return; }
+    if (value === saved || pending) return;
     localStorage.setItem("draft:" + draftKey, JSON.stringify(value));
-    const id = setTimeout(async () => {
-      setPending(true);
-      if (await saveRef.current(value)) setSaved(value);
-      setPending(false);
-    }, 1200);
+    const id = setTimeout(() => { void persist(value); }, 1200);
     return () => clearTimeout(id);
-  }, [value, saved, draftKey]);
+  }, [value, saved, draftKey, pending]);
   useEffect(() => {
     function warn(e) { if (value !== saved) { e.preventDefault(); e.returnValue = ""; } }
     window.addEventListener("beforeunload", warn); return () => window.removeEventListener("beforeunload", warn);
   }, [value, saved]);
-  return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => { const next = e.target.value; localStorage.setItem("draft:" + draftKey, JSON.stringify(next)); setValue(next); }} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={async () => { setPending(true); if (await onSave(value)) setSaved(value); setPending(false); }}>{t("Сохранить", "Save")}</button></div></div>;
+  return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => { const next = e.target.value; localStorage.setItem("draft:" + draftKey, JSON.stringify(next)); setValue(next); }} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={() => persist(value)}>{t("Сохранить", "Save")}</button></div></div>;
 }
 function Calendar({ month, setMonth, days, t, language }) {
   const [selected, setSelected] = useState(dateKey());

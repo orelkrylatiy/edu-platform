@@ -10,7 +10,7 @@ from typing import Literal
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictBool, StrictInt, StrictStr
 from starlette.responses import JSONResponse
 
 from .ai import configured, generate
@@ -71,7 +71,7 @@ def providers():
 
 
 class Record(BaseModel):
-    value: str | bool | int | dict | list | None
+    value: StrictStr | StrictBool | StrictInt | dict | list | None
 
 
 @app.put("/api/state/{kind}/{key}", dependencies=[Depends(auth)])
@@ -150,12 +150,12 @@ def run_chat(req: ChatRequest):
         "course": course["title"],
         "lesson": lesson,
         "task": task,
-        "note": store.get("note", req.lesson_id, ""),
-        "answer": store.get("answer", scope, ""),
+        "note": store.get("note", req.lesson_id, "")[:5000],
+        "answer": store.get("answer", scope, "")[:10000],
         "lesson_answers": {t["id"]: store.get("answer", t["id"], "")[:3000] for t in lesson["tasks"]},
         "related_artifacts": [
             {"lesson": related["title"], "task": task_item["text"], "answer": store.get("answer", task_item["id"], "")[:2000]}
-            for related in course["lessons"] if related["id"] != lesson["id"] and related["module"] == lesson["module"]
+            for related in course["lessons"] if related["id"] != lesson["id"]
             for task_item in related["tasks"] if store.get("answer", task_item["id"], "")
         ][:8],
         "progress": [
@@ -186,6 +186,8 @@ def run_chat(req: ChatRequest):
         answer, used = generate(req.provider, messages)
     except Exception:
         raise HTTPException(503, "AI unavailable. Check provider configuration.") from None
+    if not isinstance(answer, str) or not answer.strip():
+        raise HTTPException(503, "AI returned an empty response")
     answer = answer[:24000]
     history += [
         {"role": "user", "content": req.text, "id": secrets.token_hex(8)},

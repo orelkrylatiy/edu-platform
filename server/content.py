@@ -11,6 +11,8 @@ def load_courses():
     private = {p.name: p for p in (ROOT / "content/private").glob("*.json")}
     for path in sorted((public | private).values()):
         course = json.loads(path.read_text(encoding="utf-8"))
+        if not course["lessons"] or not course["title"] or not isinstance(course["skills"], list):
+            raise ValueError("Invalid course")
         for item in [course, *course["lessons"]]:
             key = item["id"]
             if key in ids:
