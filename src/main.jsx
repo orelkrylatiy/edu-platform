@@ -245,8 +245,6 @@ function App() {
       </main>
       {chatOpen && lesson && <aside className="chat" ref={chatPanel}><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
     </div>
-
-  </div>;
   </div>;
 }
 
