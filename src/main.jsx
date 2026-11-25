@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUpRight, ArrowRight, BookOpen, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, Target, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine } from "lucide-react";
+import { ArrowUpRight, ArrowRight, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine } from "lucide-react";
 import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak } from "./learning.js";
 import "./style.css";
 

@@ -2,9 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Сегодня/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Учёба — это/ })).toBeVisible();
   await page.screenshot({ path: "test-results/dashboard-desktop.png", fullPage: true });
-  await page.getByRole("button", { name: "Продолжить обучение" }).click();
+  await page.locator(".hero").getByRole("button", { name: "Продолжить" }).click();
   await expect(page.getByRole("heading", { name: "Диагностика", exact: true })).toBeVisible();
   const checkbox = page.getByRole("checkbox").first();
   await checkbox.check();
@@ -14,7 +14,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await note.fill("My persistent note");
   await expect(page.locator(".note-card").getByText("Сохранено", { exact: true })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: /Сегодня/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Учёба — это/ })).toBeVisible();
   await page.getByRole("button", { name: /01 Диагностика/ }).click();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
   await expect(page.getByRole("textbox", { name: "Мысли, выводы, вопросы" })).toHaveValue("My persistent note");
@@ -25,12 +25,14 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.locator(".context")).toContainText("Диагностика");
   await page.screenshot({ path: "test-results/lesson-dark.png", fullPage: true });
   await page.getByRole("button", { name: "Close chat" }).click();
+  await page.getByRole("button", { name: "Фокус", exact: true }).click();
+  await expect(page.getByRole("heading", { name: /Меньше шума/ })).toBeVisible();
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await expect(page.getByRole("button", { name: "Pause", exact: true })).toBeVisible();
   await page.waitForTimeout(1500);
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   await page.getByRole("button", { name: "Save session and reset" }).click();
-  await expect(page.locator(".time")).toHaveText("25:00");
+  await expect(page.locator(".focus-time")).toHaveText("25:00");
   await page.getByRole("button", { name: "Активность" }).click();
   await expect(page.getByRole("heading", { name: "Время в фокусе" })).toBeVisible();
   await expect(page.locator(".active-day")).toHaveCount(1);

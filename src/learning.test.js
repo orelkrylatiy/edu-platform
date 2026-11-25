@@ -16,3 +16,19 @@ test("timer uses absolute deadline", () => {
   assert.equal(remaining({ end: 5000, left: 20 }, 2500), 3);
   assert.equal(remaining({ end: 5000 }, 8000), 0);
 });
+
+import { getWeekDays, weekTotal, studyStreak } from "./learning.js";
+test("week starts on Monday even across month", () => {
+  const dates = getWeekDays(new Date(2026,10,1));
+  assert.equal(dates[0].getDay(), 1);
+  assert.equal(dates[0].getDate(), 26);
+  assert.equal(dates[6].getDate(), 1);
+});
+test("weekly seconds use active week only", () => {
+  const entries = {"2026-10-26":1500, "2026-11-01":3000, "2026-11-02":100};
+  assert.equal(weekTotal(entries,new Date(2026,10,1)),4500);
+});
+test("streak allows today to be unfinished", () => {
+  assert.equal(studyStreak({"2026-11-24":100,"2026-11-25":100},new Date(2026,10,26)),2);
+  assert.equal(studyStreak({},new Date(2026,10,26)),0);
+});
