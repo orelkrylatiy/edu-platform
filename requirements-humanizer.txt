@@ -1,0 +1,1 @@
+humanizer-framework @ git+https://github.com/orelkrylatiy/humanizer-framework.git@7cca10a86a8cf31c9cced0990b06506974d42804
