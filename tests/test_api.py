@@ -21,7 +21,7 @@ def test_chat_context(monkeypatch, tmp_path):
     monkeypatch.setenv("WORKSPACE_PASSWORD", "test-password")
     monkeypatch.setattr(module, "store", Store(tmp_path / "db.sqlite"))
     def fake(provider, messages):
-        assert "interviewer" not in messages[0]["content"] or messages
+        assert "Ask one question at a time" in messages[0]["content"]
         assert "Learning context" in messages[1]["content"]
         return "Question", provider
     monkeypatch.setattr(module, "generate", fake)

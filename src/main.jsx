@@ -33,7 +33,7 @@ function App() {
   const [lessonId, setLessonId] = useState(readLocal("lesson", "sa-01"));
   const [theme, setTheme] = useState(readLocal("theme", "light"));
   const [language, setLanguage] = useState(readLocal("lang", "ru"));
-  const [sidebar, setSidebar] = useState(true);
+  const [sidebar, setSidebar] = useState(() => window.innerWidth > 650);
   const [chatOpen, setChatOpen] = useState(false);
   const [taskId, setTaskId] = useState("");
   const [mode, setMode] = useState("tutor");
@@ -77,7 +77,7 @@ function App() {
   async function finishTimer(current, elapsed) {
     if (completing.current || !current.id) return;
     completing.current = true; setSavingTimer(true);
-    const ok = elapsed <= 0 || await save("session", current.id, { seconds: elapsed, date: dateKey(new Date(current.started)), lesson: current.lesson });
+    const ok = current.length === 300 || elapsed <= 0 || await save("session", current.id, { seconds: elapsed, date: dateKey(new Date(current.started)), lesson: current.lesson });
     if (ok) setTimer({ length: current.length, left: current.length, end: null, id: null, started: null });
     completing.current = false; setSavingTimer(false);
   }
@@ -91,7 +91,7 @@ function App() {
     if (timer.end) setTimer((old) => ({ ...old, end: null, left: remaining(old) }));
     else setTimer((old) => ({ ...old, end: Date.now() + old.left * 1000, id: old.id || crypto.randomUUID(), started: old.started || Date.now(), lesson: old.lesson || lesson?.id }));
   }
-  function openLesson(c, l) { setCourseId(c.id); setLessonId(l.id); setTaskId(""); setPage("lesson"); }
+  function openLesson(c, l) { if (!c || !l) return; setCourseId(c.id); setLessonId(l.id); setTaskId(""); setPage("lesson"); }
   function openChat(id = "") { setTaskId(id); setChatOpen(true); }
   async function send(event) {
     event.preventDefault();
@@ -142,8 +142,8 @@ function App() {
           <div className="lesson-meta"><Clock size={15} /> {lesson.minutes} min <span>·</span> {lesson.tasks.filter((x) => records["task:" + x.id]).length}/{lesson.tasks.length} {t("заданий", "tasks")}</div>
           <article className="prose"><Md>{lesson.body}</Md></article>
           <h2 className="heading">{t("Задания", "Tasks")}</h2>
-          {lesson.tasks.map((task) => <section key={task.id} className="task"><div className="task-main"><label className="check-row"><input type="checkbox" checked={records["task:" + task.id] === true} onChange={(e) => save("task", task.id, e.target.checked)} /><span>{task.text}<small className="eyebrow task-type">{task.type}{task.optional ? " · optional" : ""}</small></span></label><button className="icon" aria-label="Discuss task" onClick={() => openChat(task.id)}><MessageCircle size={18} /></button></div>{task.type !== "theory" && <Editor key={task.id} label={t("Мой ответ / артефакт", "My answer / artifact")} initial={records["answer:" + task.id] || ""} onSave={(value) => save("answer", task.id, value)} t={t} />}</section>)}
-          <section className="card note-card"><h2>{t("Личные заметки", "Personal notes")}</h2><Editor key={lesson.id} label={t("Мысли, выводы, вопросы", "Thoughts, takeaways, questions")} initial={records["note:" + lesson.id] || ""} onSave={(value) => save("note", lesson.id, value)} t={t} /></section>
+          {lesson.tasks.map((task) => <section key={task.id} className="task"><div className="task-main"><label className="check-row"><input type="checkbox" checked={records["task:" + task.id] === true} onChange={(e) => save("task", task.id, e.target.checked)} /><span>{task.text}<small className="eyebrow task-type">{task.type}{task.optional ? " · optional" : ""}</small></span></label><button className="icon" aria-label="Discuss task" onClick={() => openChat(task.id)}><MessageCircle size={18} /></button></div>{task.type !== "theory" && <Editor key={task.id} draftKey={"answer:" + task.id} label={t("Мой ответ / артефакт", "My answer / artifact")} initial={records["answer:" + task.id] || ""} onSave={(value) => save("answer", task.id, value)} t={t} />}</section>)}
+          <section className="card note-card"><h2>{t("Личные заметки", "Personal notes")}</h2><Editor key={lesson.id} draftKey={"note:" + lesson.id} label={t("Мысли, выводы, вопросы", "Thoughts, takeaways, questions")} initial={records["note:" + lesson.id] || ""} onSave={(value) => save("note", lesson.id, value)} t={t} /></section>
           <div className="lesson-nav"><button className="secondary" disabled={course.lessons.indexOf(lesson) === 0} onClick={() => openLesson(course, course.lessons[course.lessons.indexOf(lesson) - 1])}><ChevronLeft size={16} /> {t("Назад", "Previous")}</button><button className="primary" disabled={course.lessons.indexOf(lesson) === course.lessons.length - 1} onClick={() => openLesson(course, course.lessons[course.lessons.indexOf(lesson) + 1])}>{t("Следующий урок", "Next lesson")} <ArrowRight size={16} /></button></div>
         </>}
         {page === "calendar" && <><PageTitle eyebrow="ACTIVITY / TIME" title={t("Время в фокусе", "Time in focus")} /><section className="metrics"><div><span>{t("СЕГОДНЯ", "TODAY")}</span><strong>{Math.floor(today / 60)}<small>m</small></strong></div><div><span>{t("ВСЕГО", "ALL TIME")}</span><strong>{Math.floor(totalSeconds / 60)}<small>m</small></strong></div><div><span>{t("АКТИВНЫХ ДНЕЙ", "ACTIVE DAYS")}</span><strong>{Object.keys(days).length}</strong></div></section><Calendar month={month} setMonth={setMonth} days={days} t={t} language={language} /></>}
@@ -153,21 +153,33 @@ function App() {
       </main>
       {chatOpen && lesson && <aside className="chat"><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
     </div>
-    <footer className="focus"><div className="focus-label"><span className="dot" /><span>{t("РЕЖИМ ФОКУСА", "FOCUS MODE")}</span></div><div className="time" aria-label="Timer">{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</div><button className="icon" disabled={savingTimer || !ready || seconds === 0} aria-label={timer.end ? "Pause" : "Start"} onClick={toggleTimer}>{timer.end ? <Pause size={20} /> : <Play size={20} />}</button><button className="icon" disabled={savingTimer || !ready || !timer.id} aria-label="Save session and reset" onClick={() => finishTimer(timer, timer.length - remaining(timer))}><RotateCcw size={19} /></button><select aria-label="Focus duration" disabled={Boolean(timer.id)} value={timer.length} onChange={(e) => setTimer({ length: +e.target.value, left: +e.target.value, end: null, id: null, started: null })}><option value={1500}>25 min</option><option value={3000}>50 min</option><option value={300}>5 min</option></select><div className="focus-spacer" /><button className="text-button" onClick={() => { setMode("tutor"); openChat(); }}><MessageCircle size={18} /><span>AI Mentor</span></button></footer>
+    <footer className="focus"><div className="focus-label"><span className="dot" /><span>{t("РЕЖИМ ФОКУСА", "FOCUS MODE")}</span></div><div className="time" aria-label="Timer">{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</div><button className="icon" disabled={savingTimer || !ready || seconds === 0} aria-label={timer.end ? "Pause" : "Start"} onClick={toggleTimer}>{timer.end ? <Pause size={20} /> : <Play size={20} />}</button><button className="icon" disabled={savingTimer || !ready || !timer.id} aria-label="Save session and reset" onClick={() => finishTimer(timer, timer.length - remaining(timer))}><RotateCcw size={19} /></button><select aria-label="Focus or break duration" disabled={Boolean(timer.id)} value={timer.length} onChange={(e) => setTimer({ length: +e.target.value, left: +e.target.value, end: null, id: null, started: null })}><option value={1500}>25 min</option><option value={3000}>50 min</option><option value={300}>5 min break</option></select><div className="focus-spacer" /><button className="text-button" onClick={() => { setMode("tutor"); openChat(); }}><MessageCircle size={18} /><span>AI Mentor</span></button></footer>
   </div>;
 }
 
 function PageTitle({ eyebrow, title }) { return <div className="page-title"><span className="eyebrow">{eyebrow}</span><h1>{title}</h1></div>; }
-function Editor({ label, initial, onSave, t }) {
-  const [value, setValue] = useState(initial);
+function Editor({ label, initial, onSave, t, draftKey }) {
+  const [value, setValue] = useState(() => readLocal("draft:" + draftKey, initial));
   const [saved, setSaved] = useState(initial);
   const [pending, setPending] = useState(false);
   const [preview, setPreview] = useState(false);
+  const saveRef = useRef(onSave);
+  saveRef.current = onSave;
+  useEffect(() => {
+    if (value === saved) { localStorage.removeItem("draft:" + draftKey); return; }
+    localStorage.setItem("draft:" + draftKey, JSON.stringify(value));
+    const id = setTimeout(async () => {
+      setPending(true);
+      if (await saveRef.current(value)) setSaved(value);
+      setPending(false);
+    }, 1200);
+    return () => clearTimeout(id);
+  }, [value, saved, draftKey]);
   useEffect(() => {
     function warn(e) { if (value !== saved) { e.preventDefault(); e.returnValue = ""; } }
     window.addEventListener("beforeunload", warn); return () => window.removeEventListener("beforeunload", warn);
   }, [value, saved]);
-  return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => setValue(e.target.value)} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={async () => { setPending(true); if (await onSave(value)) setSaved(value); setPending(false); }}>{t("Сохранить", "Save")}</button></div></div>;
+  return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => { const next = e.target.value; localStorage.setItem("draft:" + draftKey, JSON.stringify(next)); setValue(next); }} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={async () => { setPending(true); if (await onSave(value)) setSaved(value); setPending(false); }}>{t("Сохранить", "Save")}</button></div></div>;
 }
 function Calendar({ month, setMonth, days, t, language }) {
   const [selected, setSelected] = useState(dateKey());

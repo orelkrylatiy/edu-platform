@@ -7,9 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def load_courses():
     courses = []
     ids = set()
-    for path in sorted((ROOT / "content").glob("courses/*.json")) + sorted(
-        (ROOT / "content/private").glob("*.json")
-    ):
+    public = {p.name: p for p in (ROOT / "content/courses").glob("*.json")}
+    private = {p.name: p for p in (ROOT / "content/private").glob("*.json")}
+    for path in sorted((public | private).values()):
         course = json.loads(path.read_text(encoding="utf-8"))
         for item in [course, *course["lessons"]]:
             key = item["id"]

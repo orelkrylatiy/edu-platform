@@ -2,6 +2,8 @@ import hmac
 import json
 import os
 import secrets
+from datetime import date
+from threading import Lock
 from pathlib import Path
 from typing import Literal
 
@@ -9,6 +11,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+from starlette.responses import JSONResponse
 
 from .ai import configured, generate
 from .content import ROOT, load_courses
@@ -17,7 +20,8 @@ from .store import Store
 app = FastAPI(title="Learning Workspace", docs_url=None, redoc_url=None, openapi_url=None)
 security = HTTPBasic()
 store = Store(Path(os.getenv("WORKSPACE_DB", str(ROOT / "data/workspace.sqlite3"))))
-KINDS = {"task", "note", "answer", "skill", "session", "settings", "chat"}
+KINDS = {"task", "note", "answer", "skill", "session", "settings"}
+chat_lock = Lock()
 
 
 def auth(credentials: HTTPBasicCredentials = Depends(security)):
@@ -35,7 +39,7 @@ async def protect(request: Request, call_next):
     if request.url.path != "/health":
         if request.method not in {"GET", "HEAD", "OPTIONS"}:
             if request.headers.get("x-workspace") != "1":
-                return __import__("starlette.responses", fromlist=["JSONResponse"]).JSONResponse(
+                return JSONResponse(
                     {"detail": "Missing workspace header"}, status_code=403
                 )
     response = await call_next(request)
@@ -91,6 +95,11 @@ def save(kind: str, key: str, record: Record):
         or len(value["date"]) != 10
     ):
         raise HTTPException(422, "Invalid session")
+    if kind == "session":
+        try:
+            date.fromisoformat(value["date"])
+        except ValueError:
+            raise HTTPException(422, "Invalid session date") from None
     store.put(kind, key, value)
     return {"saved": True}
 
@@ -106,6 +115,15 @@ class ChatRequest(BaseModel):
 
 @app.post("/api/chat", dependencies=[Depends(auth)])
 def chat(req: ChatRequest):
+    if not chat_lock.acquire(blocking=False):
+        raise HTTPException(409, "Another AI request is running")
+    try:
+        return run_chat(req)
+    finally:
+        chat_lock.release()
+
+
+def run_chat(req: ChatRequest):
     course = lesson = None
     for item in load_courses():
         for candidate in item["lessons"]:
@@ -162,6 +180,7 @@ def chat(req: ChatRequest):
         answer, used = generate(req.provider, messages)
     except Exception:
         raise HTTPException(503, "AI unavailable. Check provider configuration.") from None
+    answer = answer[:24000]
     history += [
         {"role": "user", "content": req.text, "id": secrets.token_hex(8)},
         {"role": "assistant", "content": answer, "provider": used, "id": secrets.token_hex(8)},
@@ -179,7 +198,6 @@ if (ROOT / "dist").is_dir():
                 credentials = await security(request)
                 auth(credentials)
             except HTTPException as exc:
-                from starlette.responses import JSONResponse
                 return JSONResponse({"detail": exc.detail}, exc.status_code, headers=exc.headers)
         return await call_next(request)
 

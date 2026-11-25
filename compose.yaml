@@ -8,6 +8,7 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - workspace-data:/app/data
+      - ./content/private:/app/content/private:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD","python","-c","import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
