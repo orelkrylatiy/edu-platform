@@ -21,8 +21,8 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
     await visit("courses", "Курсы");
     await visit("calendar", "Активность");
     await expect(page.locator(".calendar-grid.weekly .day")).toHaveCount(7);
-    await page.getByRole("button", { name: "Месяц" }).click();
-    await expect(page.locator(".calendar-grid.monthly .day").count()).resolves.toBeGreaterThanOrEqual(28);
+    await page.getByRole("button", { name: "Месяц", exact: true }).click();
+    expect(await page.locator(".calendar-grid.monthly .day").count()).toBeGreaterThanOrEqual(28);
     await visit("focus", "Фокус");
     await visit("artifacts", "Материалы");
     await visit("review", "Повторение");
@@ -44,9 +44,10 @@ test("light mode remains legible and calendar expands", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Сменить тему" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.waitForTimeout(250);
   await page.screenshot({ path: "test-results/light-overview.png", fullPage: true });
   await page.locator(".nav-item").filter({ hasText: "Активность" }).click();
-  await page.getByRole("button", { name: "Месяц" }).click();
+  await page.getByRole("button", { name: "Месяц", exact: true }).click();
   await expect(page.locator(".calendar-grid.monthly")).toBeVisible();
   await page.screenshot({ path: "test-results/light-calendar-month.png", fullPage: true });
 });

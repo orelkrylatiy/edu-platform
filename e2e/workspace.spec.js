@@ -19,6 +19,8 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.getByRole("checkbox").first()).toBeChecked();
   await expect(page.getByRole("textbox", { name: "Мысли, выводы, вопросы" })).toHaveValue("My persistent note");
   await page.getByRole("button", { name: "Сменить тему" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByRole("button", { name: "Сменить тему" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.locator(".lesson-top").getByRole("button", { name: "AI mentor" }).click();
   await expect(page.locator(".chat")).toBeVisible();
