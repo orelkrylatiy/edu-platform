@@ -14,6 +14,7 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
         await page.locator(".nav-item").filter({ hasText: label }).click();
       }
       await expect(page.locator(".main")).toBeVisible();
+      await page.waitForTimeout(250);
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       await page.screenshot({ path: "test-results/" + view.name + "-" + id + ".png", fullPage: true });
     }
@@ -33,9 +34,11 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
     await page.locator(".course-card").first().getByRole("button", { name: "Открыть" }).click();
     await expect(page.locator(".task").first()).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.waitForTimeout(250);
     await page.screenshot({ path: "test-results/" + view.name + "-lesson.png", fullPage: true });
     await page.locator(".lesson-top").getByRole("button", { name: "AI mentor" }).click();
     await expect(page.locator(".chat")).toBeVisible();
+    await page.waitForTimeout(250);
     await page.screenshot({ path: "test-results/" + view.name + "-mentor.png", fullPage: true });
   }
 });
