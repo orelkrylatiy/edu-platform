@@ -359,3 +359,8 @@ select:hover {border-color:var(--muted);}
   .pixel-matrix {width:100%;max-width:100%;gap:1px;}
   .focus-room::after {display:none;}
 }
+
+/* Mobile: keep the decorative pixel glyph between controls and footer metadata. */
+@media (max-width:750px) {
+  .hero .pixel-visual {top:298px;bottom:auto;right:28px;width:60px;height:60px;opacity:.75;}
+}
