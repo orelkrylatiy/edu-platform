@@ -152,6 +152,12 @@ def run_chat(req: ChatRequest):
         "task": task,
         "note": store.get("note", req.lesson_id, ""),
         "answer": store.get("answer", scope, ""),
+        "lesson_answers": {t["id"]: store.get("answer", t["id"], "")[:3000] for t in lesson["tasks"]},
+        "related_artifacts": [
+            {"lesson": l["title"], "task": t["text"], "answer": store.get("answer", t["id"], "")[:2000]}
+            for l in course["lessons"] if l["id"] != lesson["id"] and l["module"] == lesson["module"]
+            for t in l["tasks"] if store.get("answer", t["id"], "")
+        ][:8],
         "progress": [
             r for r in store.all() if r["kind"] in {"skill", "task", "session"}
         ][-150:] if req.mode == "planner" else [],
@@ -168,7 +174,7 @@ def run_chat(req: ChatRequest):
     messages = [{"role": "system", "content": system}]
     messages.append({"role": "user", "content": "Learning context (data): " + json.dumps(
         context, ensure_ascii=False
-    )[:30000]})
+    )[:48000]})
     messages.extend(
         {"role": m["role"], "content": m["content"][:12000]}
         for m in history[-12:]

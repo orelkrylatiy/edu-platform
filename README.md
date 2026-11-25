@@ -24,7 +24,7 @@ Never expose Basic authentication over plain HTTP on the internet.
 See docs/deployment.md and docs/content.md.
 
 ## AI
-Direct OpenAI and GLM use server-side API keys. Humanizer and OpenCode use the pinned optional Python dependency in requirements-humanizer.txt; install on host for OpenCode and configure its isolated service account. Default Docker build includes Humanizer but not the OpenCode executable. Explicit provider selection, no silent fallback except Auto, which tries configured providers. Without credentials, study features remain functional and chat reports an error. No tools or file execution exposed to the AI. Technical output is not humanized.
+Direct OpenAI and GLM use server-side API keys. Humanizer and OpenCode use the pinned optional Python dependency in requirements-humanizer.txt; install on host for OpenCode and configure its isolated service account. Default Docker build includes Humanizer but not the OpenCode executable. The framework is used at provider level, not as a writing style normalizer. The explicit enable flag controls OpenCode, including within Humanizer. Explicit provider selection, no silent fallback except Auto, which tries configured providers. Without credentials, study features remain functional and chat reports an error. No tools or file execution exposed to the AI. Technical output is not humanized.
 
 ## Quality
 `npm run lint`, `npm run format:check`, `npm test`, `npm run build`.

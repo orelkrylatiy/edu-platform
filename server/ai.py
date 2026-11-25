@@ -31,9 +31,21 @@ def generate(provider, messages):
         raise RuntimeError("Provider not configured")
     if provider in {"humanizer", "opencode"}:
         if provider == "humanizer":
-            from humanizer_framework.providers.default_chain import default_provider
+            from humanizer_framework.providers.harness import HarnessProvider
+            from humanizer_framework.providers.zai_http import ZaiAnthropicProvider
+            from humanizer_framework.providers.opencode_api import openai_api_provider
+            from humanizer_framework.providers.cli import OpenCodeCLIProvider
 
-            adapter = default_provider()
+            candidates = []
+            if os.getenv("ZAI_API_KEY"):
+                candidates.append(ZaiAnthropicProvider(model=os.getenv("ZAI_MODEL", "glm-5.3-flash"), api_key_env=("ZAI_API_KEY",)))
+            if configured()["opencode"]:
+                candidates.append(OpenCodeCLIProvider(model=os.environ["HUMANIZER_OPENCODE_MODEL"]))
+            if os.getenv("OPENAI_API_KEY"):
+                candidates.append(openai_api_provider(os.getenv("OPENAI_MODEL", "gpt-4.1-mini"), credential_source_env="OPENAI_API_KEY"))
+            if not candidates:
+                raise RuntimeError("Humanizer has no enabled provider")
+            adapter = HarnessProvider(candidates)
         else:
             from humanizer_framework.providers.cli import OpenCodeCLIProvider
 
