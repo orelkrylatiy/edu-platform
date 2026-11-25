@@ -4,6 +4,7 @@ web-check:
   image: node:22
   script:
     - npm install
+    - npm audit --audit-level=high
     - npm run lint
     - npm run format
     - npm run format:check
@@ -27,7 +28,7 @@ web-build:
     paths: [dist/]
 browser-check:
   stage: test
-  image: mcr.microsoft.com/playwright:v1.52.0-noble
+  image: mcr.microsoft.com/playwright:v1.65.1-noble
   script:
     - apt-get update && apt-get install -y python3 python3-venv
     - python3 -m venv .venv

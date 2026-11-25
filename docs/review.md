@@ -19,3 +19,5 @@
 - Local drafts are browser-specific; concurrent edits from multiple tabs/devices are last-write-wins.
 
 CI review: first lint/test/build run passed. The subsequent related-artifacts change triggered Ruff E741; renamed the ambiguous loop variable. Re-run CI on final commit before merging.
+
+Browser CI initially failed before running tests because ubuntu-latest resolved to Ubuntu 26.04, unsupported by Playwright 1.52. Pinned Ubuntu 24.04 and updated Playwright to 1.65.1. Updated Vite to 6.4.5 and ESLint maintenance releases, added a high-severity npm audit gate. All must be rechecked on final commit.
