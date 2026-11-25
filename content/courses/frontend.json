@@ -1,0 +1,57 @@
+{
+  "id": "frontend",
+  "title": "Frontend Engineering",
+  "description": "Практический трек JavaScript, TypeScript и React",
+  "skills": [
+    "JavaScript",
+    "TypeScript",
+    "React"
+  ],
+  "lessons": [
+    {
+      "id": "fe-1",
+      "title": "Типы и асинхронность",
+      "module": "JavaScript",
+      "minutes": 90,
+      "body": "## Практика\nРеши задачу самостоятельно, объясни выбранное решение и ограничения.",
+      "tasks": [
+        {
+          "id": "fe-1-practice",
+          "text": "Создать небольшой пример и проверить его без AI-генерации",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "fe-2",
+      "title": "Generics и narrowing",
+      "module": "TypeScript",
+      "minutes": 90,
+      "body": "## Практика\nРеши задачу самостоятельно, объясни выбранное решение и ограничения.",
+      "tasks": [
+        {
+          "id": "fe-2-practice",
+          "text": "Создать небольшой пример и проверить его без AI-генерации",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "fe-3",
+      "title": "Компоненты и состояние",
+      "module": "React",
+      "minutes": 90,
+      "body": "## Практика\nРеши задачу самостоятельно, объясни выбранное решение и ограничения.",
+      "tasks": [
+        {
+          "id": "fe-3-practice",
+          "text": "Создать небольшой пример и проверить его без AI-генерации",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    }
+  ]
+}

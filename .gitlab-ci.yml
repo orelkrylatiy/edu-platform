@@ -1,0 +1,27 @@
+stages: [test, build]
+web-check:
+  stage: test
+  image: node:22
+  script:
+    - npm install
+    - npm run lint
+    - npm run format
+    - npm run format:check
+    - npm test
+server-check:
+  stage: test
+  image: python:3.12
+  script:
+    - pip install -r requirements-dev.txt
+    - ruff check server tests
+    - ruff format server tests
+    - ruff format --check server tests
+    - pytest
+web-build:
+  stage: build
+  image: node:22
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths: [dist/]
