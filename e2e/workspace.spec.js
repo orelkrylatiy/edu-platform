@@ -40,7 +40,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.locator(".active-day")).toHaveCount(1);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
-  await expect(page.getByRole("heading", { name: /Сегодня/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Учёба — это/ })).toBeVisible();
   await expect(page.locator(".sidebar")).toHaveCount(0);
   await page.getByRole("button", { name: "Навигация" }).click();
   await expect(page.locator(".sidebar")).toBeVisible();
