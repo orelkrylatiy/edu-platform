@@ -349,3 +349,13 @@ select:hover {border-color:var(--muted);}
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after {transition:none!important;animation:none!important;scroll-behavior:auto!important;}
 }
+
+/* Visual QA corrections: decorative geometry must never cross interactive content. */
+.hero-actions {position:relative;z-index:2;}
+.focus-room>* {position:relative;z-index:1;}
+.focus-room::after {z-index:0;}
+@media (max-width:750px) {
+  .pixel-visual {width:84px;height:84px;right:22px;bottom:18px;opacity:.62;z-index:0;}
+  .pixel-matrix {width:100%;max-width:100%;gap:1px;}
+  .focus-room::after {display:none;}
+}

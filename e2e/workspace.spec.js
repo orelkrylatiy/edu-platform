@@ -36,7 +36,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await page.getByRole("button", { name: "Save session and reset" }).click();
   await expect(page.locator(".focus-time")).toHaveText("25:00");
   await page.getByRole("button", { name: "Активность" }).click();
-  await expect(page.getByRole("heading", { name: "Время в фокусе" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Активность" })).toBeVisible();
   await expect(page.locator(".active-day")).toHaveCount(1);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
