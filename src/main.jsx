@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowUpRight, ArrowRight, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine } from "lucide-react";
-import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak } from "./learning.js";
+import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak, advanceCalendar } from "./learning.js";
 import "./style.css";
 
 const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
@@ -289,7 +289,7 @@ function Calendar({ month, setMonth, days, t, language, records = {} }) {
     : formatter.format(from) + " — " + formatter.format(to);
   const selectedSessions = Object.entries(records).filter(([key,value]) => key.startsWith("session:") && value?.date === selected).map(([,value]) => value);
   const dayTime = days[selected] || 0;
-  function move(delta) { const d = new Date(anchor); if (expanded) d.setMonth(d.getMonth() + delta); else d.setDate(d.getDate() + delta*7); setMonth(d);setSelected(dateKey(d)); }
+  function move(delta) { const d = advanceCalendar(anchor, expanded, delta); setMonth(d); setSelected(dateKey(d)); }
   function choose(d) { setSelected(dateKey(d)); }
   return <section className="card calendar">
     <div className="calendar-toolbar"><div><span className="eyebrow">WEEKLY / {t("КАЛЕНДАРЬ", "CALENDAR")}</span><h2>{label}</h2></div><div className="calendar-controls"><div className="segmented"><button className={!expanded ? "active" : ""} onClick={() => setExpanded(false)}>{t("Неделя", "Week")}</button><button className={expanded ? "active" : ""} onClick={() => setExpanded(true)}>{t("Месяц", "Month")}</button></div><button className="calendar-today" onClick={() => {const today = new Date();setMonth(today);setSelected(dateKey(today));}}>{t("Сегодня", "Today")}</button><button className="icon" aria-label={t("Предыдущая неделя или месяц", "Previous period")} onClick={() => move(-1)}><ChevronLeft size={18}/></button><button className="icon" aria-label={t("Следующая неделя или месяц", "Next period")} onClick={() => move(1)}><ChevronRight size={18}/></button></div></div>

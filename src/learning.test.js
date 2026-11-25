@@ -32,3 +32,11 @@ test("streak allows today to be unfinished", () => {
   assert.equal(studyStreak({"2026-11-24":100,"2026-11-25":100},new Date(2026,10,26)),2);
   assert.equal(studyStreak({},new Date(2026,10,26)),0);
 });
+
+import { advanceCalendar } from "./learning.js";
+test("month navigation never skips February after January 31", () => {
+  const next = advanceCalendar(new Date(2027,0,31),true,1);
+  assert.equal(next.getFullYear(),2027);
+  assert.equal(next.getMonth(),1);
+  assert.equal(next.getDate(),1);
+});

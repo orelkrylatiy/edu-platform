@@ -44,3 +44,10 @@ export function studyStreak(activity, anchor = new Date()) {
   while (activity[dateKey(date)] > 0 && count < 10000) {count++;date.setDate(date.getDate()-1);}
   return count;
 }
+
+export function advanceCalendar(anchor, expanded, delta) {
+  if (expanded) return new Date(anchor.getFullYear(), anchor.getMonth()+delta, 1);
+  const date = new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate());
+  date.setDate(date.getDate() + delta*7);
+  return date;
+}
