@@ -20,7 +20,7 @@ def configured():
 
 def generate(provider, messages):
     if provider == "auto":
-        for candidate in ("glm", "openai", "humanizer", "opencode"):
+        for candidate in ("humanizer", "glm", "openai", "opencode"):
             if configured()[candidate]:
                 try:
                     return generate(candidate, messages)
@@ -33,7 +33,6 @@ def generate(provider, messages):
         if provider == "humanizer":
             from humanizer_framework.providers.harness import HarnessProvider
             from humanizer_framework.providers.zai_http import ZaiAnthropicProvider
-            from humanizer_framework.providers.opencode_api import openai_api_provider
             from humanizer_framework.providers.cli import OpenCodeCLIProvider
 
             candidates = []
@@ -42,7 +41,7 @@ def generate(provider, messages):
             if configured()["opencode"]:
                 candidates.append(OpenCodeCLIProvider(model=os.environ["HUMANIZER_OPENCODE_MODEL"]))
             if os.getenv("OPENAI_API_KEY"):
-                candidates.append(openai_api_provider(os.getenv("OPENAI_MODEL", "gpt-4.1-mini"), credential_source_env="OPENAI_API_KEY"))
+                candidates.append(DirectOpenAIProvider())
             if not candidates:
                 raise RuntimeError("Humanizer has no enabled provider")
             adapter = HarnessProvider(candidates)
@@ -70,3 +69,13 @@ def generate(provider, messages):
     if not isinstance(answer, str) or not answer.strip():
         raise RuntimeError("Empty answer")
     return answer, provider
+
+
+class DirectOpenAIProvider:
+    """Humanizer-compatible adapter which does not launch OpenCode."""
+
+    name = "openai-http"
+
+    def generate(self, messages, *, temperature=0.4, max_tokens=3000):
+        del temperature, max_tokens
+        return generate("openai", messages)[0]
