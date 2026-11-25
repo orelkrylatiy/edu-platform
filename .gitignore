@@ -8,3 +8,5 @@ __pycache__/
 data/
 content/private/
 *.sqlite*
+test-results/
+playwright-report/

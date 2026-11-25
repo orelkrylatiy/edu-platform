@@ -17,3 +17,5 @@
 - Content is a scaffold, not the complete private Practice Lab/Scorecard. Import and adapt remaining teaching materials.
 - Single-user app; no offline sync, no automatic AI grading, no integrated SQL executor, no production multi-user security.
 - Local drafts are browser-specific; concurrent edits from multiple tabs/devices are last-write-wins.
+
+CI review: first lint/test/build run passed. The subsequent related-artifacts change triggered Ruff E741; renamed the ambiguous loop variable. Re-run CI on final commit before merging.

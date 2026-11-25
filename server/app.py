@@ -154,9 +154,9 @@ def run_chat(req: ChatRequest):
         "answer": store.get("answer", scope, ""),
         "lesson_answers": {t["id"]: store.get("answer", t["id"], "")[:3000] for t in lesson["tasks"]},
         "related_artifacts": [
-            {"lesson": l["title"], "task": t["text"], "answer": store.get("answer", t["id"], "")[:2000]}
-            for l in course["lessons"] if l["id"] != lesson["id"] and l["module"] == lesson["module"]
-            for t in l["tasks"] if store.get("answer", t["id"], "")
+            {"lesson": related["title"], "task": task_item["text"], "answer": store.get("answer", task_item["id"], "")[:2000]}
+            for related in course["lessons"] if related["id"] != lesson["id"] and related["module"] == lesson["module"]
+            for task_item in related["tasks"] if store.get("answer", task_item["id"], "")
         ][:8],
         "progress": [
             r for r in store.all() if r["kind"] in {"skill", "task", "session"}

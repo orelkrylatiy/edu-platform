@@ -13,7 +13,7 @@ export default defineConfig({
     url: "http://127.0.0.1:8000/health",
     env: {
       WORKSPACE_PASSWORD: "e2e-test-only",
-      WORKSPACE_DB: "data/e2e-test.sqlite3",
+      WORKSPACE_DB: "data/e2e-" + process.pid + ".sqlite3",
     },
     reuseExistingServer: false,
   },
