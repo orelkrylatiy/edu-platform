@@ -4,6 +4,11 @@ test("source documents retain links and practice chat gets its own context", asy
   await page.goto("/");
   await page.locator(".nav-item").filter({ hasText: "Библиотека" }).click();
   await expect(page.locator(".document-reader")).toContainText("30-day Interview Intensive");
+  const internal = page.locator('.document-reader a[href^="#workspace-doc/sa-practice-lab"]').first();
+  await expect(internal).toBeVisible();
+  await internal.click();
+  await expect(page.locator(".document-tabs button.active")).toContainText("SA Practice Lab");
+  await page.locator(".document-tabs button").first().click();
   const docs = page.locator(".document-tabs button");
   await docs.nth(1).click();
   await expect(page.locator(".document-reader")).toContainText("Order Management");

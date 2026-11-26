@@ -124,3 +124,29 @@ def test_document_chat_scoped_and_history_not_truncated(monkeypatch, tmp_path):
     assert client.post(
         "/api/chat", **kw, json={**payload, "document_id": "other-doc"}
     ).status_code == 404
+
+
+
+def test_long_chat_history_is_retained(monkeypatch, tmp_path):
+    monkeypatch.setenv("WORKSPACE_PASSWORD", "test-password")
+    monkeypatch.setattr(module, "store", Store(tmp_path / "db.sqlite"))
+    lesson = next(
+        c["lessons"][0] for c in module.load_courses() if c["id"] == "system-analyst"
+    )
+    key = lesson["id"] + ":tutor"
+    previous = [
+        {"role": "assistant", "content": f"answer {index}", "id": str(index)}
+        for index in range(44)
+    ]
+    module.store.put("chat", key, previous)
+    monkeypatch.setattr(module, "generate", lambda *_: ("New answer", "mock"))
+    client = TestClient(module.app)
+    response = client.post(
+        "/api/chat",
+        auth=("learner", "test-password"),
+        headers={"X-Workspace": "1"},
+        json={"lesson_id": lesson["id"], "text": "Continue"},
+    )
+    assert response.status_code == 200
+    assert len(module.store.get("chat", key)) == 46
+    assert module.store.get("chat", key)[0]["content"] == "answer 0"

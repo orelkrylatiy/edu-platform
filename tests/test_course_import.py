@@ -39,3 +39,30 @@ def test_no_duplicate_task_ids():
     course = build_course()
     ids = [t["id"] for item in [*course["lessons"], *course["practice"]] for t in item["tasks"]]
     assert len(ids) == len(set(ids))
+
+
+
+def test_all_wiki_document_links_are_supported():
+    import re
+
+    course = build_course()
+    links = set()
+    for doc in course["documents"]:
+        links.update(re.findall(r"\\[\\[([^]#]+)", doc["body"]))
+    assert links <= {
+        "Middle System Analyst Roadmap",
+        "SA Practice Lab",
+        "SA Interview Scorecard",
+        "Interview Preparation Plan",
+    }
+
+
+def test_raw_sources_keep_original_counts_and_urls():
+    import re
+
+    course = build_course()
+    roadmap = course["documents"][0]["body"]
+    lab = course["documents"][1]["body"]
+    assert len(re.findall(r"https?://[^\\s)]+", roadmap)) == 76
+    assert len(re.findall(r"(?m)^- \\[ \\] ", roadmap)) == 119
+    assert len(re.findall(r"(?m)^- \\[ \\] ", lab)) == 13

@@ -28,6 +28,10 @@ def validate_course(course: dict, seen: set[str]) -> None:
             if not isinstance(task.get("optional"), bool):
                 raise ValueError("Task optional must be boolean")
             seen.add(task["id"])
+    for criterion in course.get("rubric", []):
+        if not criterion.get("id") or criterion["id"] in seen or criterion.get("max") != 2:
+            raise ValueError("Invalid or duplicated rubric criterion")
+        seen.add(criterion["id"])
     for doc in documents:
         if not isinstance(doc.get("body"), str):
             raise ValueError("Document requires Markdown body")
