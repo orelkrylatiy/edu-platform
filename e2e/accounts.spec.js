@@ -24,7 +24,7 @@ test("guest can browse the public catalog without exposing course content", asyn
   await page.screenshot({ path:"test-results/guest-landing-mobile.png", fullPage:true });
 });
 
-test("existing account logs in, stays signed in after reload and logs out", async ({ page }) => {
+test("existing account logs in, stays signed in after reload and logs out", async ({ page, browser }) => {
   await page.goto("/");
   await page.getByRole("button", {name:"Войти",exact:true}).first().click();
   const form = page.locator(".auth-dialog form");
@@ -39,6 +39,12 @@ test("existing account logs in, stays signed in after reload and logs out", asyn
   expect(session?.expires).toBeGreaterThan(Date.now() / 1000 + 24*86400);
   await page.reload();
   await expect(page.locator(".hero h1")).toBeVisible();
+  const sessionState = await page.context().storageState();
+  const reopenedBrowser = await browser.newContext({ storageState: sessionState });
+  const reopenedPage = await reopenedBrowser.newPage();
+  await reopenedPage.goto("/");
+  await expect(reopenedPage.locator(".hero h1")).toBeVisible();
+  await reopenedBrowser.close();
   await page.getByRole("button", {name:"Выйти из аккаунта"}).click();
   await expect(page.locator(".landing-hero")).toBeVisible();
   const privateData = await page.request.get("/api/state");
@@ -55,7 +61,7 @@ test("new account registers, chooses a course and keeps private state", async ({
   await form.getByLabel("Код приглашения").fill("e2e-test-invite");
   await form.getByRole("button", {name:"Создать аккаунт"}).click();
   await expect(page.locator(".workspace-catalog")).toBeVisible();
-  const first = page.locator(".workspace-catalog .catalog-card").first();
+  const first = page.locator(".workspace-catalog .catalog-card").filter({hasText:"Middle System Analyst"});
   await first.getByRole("button", {name:"Записаться"}).click();
   await expect(page.locator(".hero h1")).toBeVisible();
   await page.locator(".hero").getByRole("button", {name:"Продолжить"}).click();
@@ -66,6 +72,15 @@ test("new account registers, chooses a course and keeps private state", async ({
   await expect(page.locator(".hero h1")).toBeVisible();
   await page.locator(".hero").getByRole("button", {name:"Продолжить"}).click();
   await expect(page.getByRole("textbox",{name:"Мысли, выводы, вопросы"})).toHaveValue("Only student sees this.");
+  await page.locator(".nav-item").filter({hasText:"Каталог"}).click();
+  await page.locator(".workspace-catalog .catalog-card").filter({hasText:"Frontend Engineering"})
+    .getByRole("button", {name:"Записаться"}).click();
+  await expect(page.locator(".hero h1")).toBeVisible();
+  const switcher = page.getByRole("combobox", {name:"Активный курс"});
+  await expect(switcher).toBeVisible();
+  await switcher.selectOption("system-analyst");
+  await page.locator(".hero").getByRole("button", {name:"Продолжить"}).click();
+  await expect(page.getByRole("textbox", {name:"Мысли, выводы, вопросы"})).toHaveValue("Only student sees this.");
   const owner = await browser.newContext();
   const ownerPage = await owner.newPage();
   const response = await submit(ownerPage, "login", {username:"learner",password:"e2e-test-only",remember:true});

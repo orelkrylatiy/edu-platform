@@ -204,3 +204,17 @@ def test_public_content_never_reads_private_override(monkeypatch, tmp_path):
     monkeypatch.setattr(content, "ROOT", root)
     assert content.load_courses(public_only=True)[0]["title"] == "Public"
     assert content.load_courses(public_only=False)[0]["title"] == "PRIVATE SECRET"
+
+
+def test_legacy_basic_browser_upgrades_to_cookie_and_logout_blocks_reauth(fresh):
+    client = TestClient(module.app)
+    me = client.get("/api/auth/me", auth=("owner", "test-owner-password-123"))
+    assert me.status_code == 200
+    assert me.json()["user"]["is_owner"]
+    assert "lw_session=" in me.headers["set-cookie"]
+    assert client.get("/api/state").status_code == 200
+    assert send(client, "/api/auth/logout", {}).status_code == 200
+    # A browser may retain the old Authorization: Basic header, but explicit
+    # sign-out must not silently restore its legacy session.
+    denied = client.get("/api/auth/me", auth=("owner", "test-owner-password-123"))
+    assert denied.json()["user"] is None
