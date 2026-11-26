@@ -100,3 +100,27 @@ def test_rubric_score_validated(monkeypatch, tmp_path):
     kw = {"auth": ("learner", "test-password"), "headers": {"X-Workspace": "1"}}
     assert client.put("/api/state/rubric/sa-rubric-01", **kw, json={"value": 2}).status_code == 200
     assert client.put("/api/state/rubric/sa-rubric-01", **kw, json={"value": 4}).status_code == 422
+
+
+def test_document_chat_scoped_and_history_not_truncated(monkeypatch, tmp_path):
+    monkeypatch.setenv("WORKSPACE_PASSWORD", "test-password")
+    monkeypatch.setattr(module, "store", Store(tmp_path / "db.sqlite"))
+    course = next(c for c in module.load_courses() if c["id"] == "system-analyst")
+    lesson = course["lessons"][0]
+    document = course["documents"][1]
+
+    def generate(provider, messages):
+        assert document["title"] in messages[1]["content"]
+        assert "Order Management" in messages[1]["content"]
+        return "Review", "fake"
+
+    monkeypatch.setattr(module, "generate", generate)
+    client = TestClient(module.app)
+    kw = {"auth": ("learner", "test-password"), "headers": {"X-Workspace": "1"}}
+    payload = {"lesson_id": lesson["id"], "document_id": document["id"], "text": "Explain"}
+    response = client.post("/api/chat", **kw, json=payload)
+    assert response.status_code == 200
+    assert len(module.store.get("chat", document["id"] + ":tutor")) == 2
+    assert client.post(
+        "/api/chat", **kw, json={**payload, "document_id": "other-doc"}
+    ).status_code == 404

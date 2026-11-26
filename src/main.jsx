@@ -141,7 +141,7 @@ function App() {
   const days = activity(records);
   const seconds = remaining(timer, now);
   const next = course?.lessons.find((l) => !lessonComplete(l, records)) || course?.lessons.at(-1);
-  const scope = taskId || lesson?.id;
+  const scope = page === "knowledge" && selectedDocument ? selectedDocument.id : (taskId || lesson?.id);
   const chatKey = scope + ":" + mode;
   const messages = records["chat:" + chatKey] || [];
   const draft = drafts[chatKey] || "";
@@ -193,7 +193,7 @@ function App() {
     else setTimer((old) => ({ ...old, end: Date.now() + old.left * 1000, id: old.id || crypto.randomUUID(), started: old.started || Date.now(), lesson: old.lesson || lesson?.id }));
   }
   function openLesson(c, l) { if (!c || !l) return; setCourseId(c.id); setLessonId(l.id); setTaskId(""); setChatOpen(false); setPage("lesson"); }
-  function openDocument(c, doc) { if (!c || !doc) return; setCourseId(c.id); setDocId(doc.id); setDocAnchor(""); setPage("knowledge"); }
+  function openDocument(c, doc) { if (!c || !doc) return; setCourseId(c.id); setDocId(doc.id); setDocAnchor(""); setTaskId(""); setChatOpen(false); setPage("knowledge"); }
   function openChat(id = "") { setTaskId(id); setChatOpen(true); }
   async function send(event) {
     event.preventDefault();
@@ -201,7 +201,7 @@ function App() {
     const text = draft.trim(); const key = chatKey;
     setBusy(true); setDraft("");
     try {
-      const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: taskId || null, text, mode, provider, language }) });
+      const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: page === "knowledge" ? null : (taskId || null), document_id: page === "knowledge" ? selectedDocument?.id : null, text, mode, provider, language }) });
       setRecords((old) => ({ ...old, ["chat:" + key]: result.messages }));
     } catch (e) { setError(e.message); setDrafts((old) => ({ ...old, [key]: old[key] || text })); }
     finally { setBusy(false); }
@@ -293,7 +293,7 @@ function App() {
           <p className="page-intro">{t("Полные исходники из Wiki, без сокращений. Внутренние ссылки открывают документы, подсказки раскрываются по нажатию.", "Complete Wiki sources, with preserved links and expandable hints.")}</p>
           {course?.documents?.length ? <>
             <div className="document-tabs">{course.documents.map((doc) => <button key={doc.id} className={selectedDocument?.id === doc.id ? "active" : ""} onClick={() => {setDocId(doc.id);setDocAnchor("");}}>{doc.title}</button>)}</div>
-            {selectedDocument && <article className="card document-reader"><div className="section-head"><span className="eyebrow">READ ONLY / {selectedDocument.title}</span>{selectedDocument.source && <a className="inline-link" href={selectedDocument.source} target="_blank" rel="noreferrer noopener">{t("Оригинал в Wiki", "Original in Wiki")} <ArrowUpRight size={15}/></a>}</div><div className="prose"><Md>{selectedDocument.body}</Md></div></article>}
+            {selectedDocument && <article className="card document-reader"><div className="section-head"><span className="eyebrow">READ ONLY / {selectedDocument.title}</span><button className="secondary" onClick={() => {setTaskId("");setChatOpen(true);}}><MessageCircle size={15}/>{t("Обсудить документ", "Discuss document")}</button>{selectedDocument.source && <a className="inline-link" href={selectedDocument.source} target="_blank" rel="noreferrer noopener">{t("Оригинал в Wiki", "Original in Wiki")} <ArrowUpRight size={15}/></a>}</div><div className="prose"><Md>{selectedDocument.body}</Md></div></article>}
           </> : <div className="card empty">{t("Дополнительные материалы пока не подключены.", "No source documents for this course yet.")}</div>}
         </>}
         {page === "calendar" && <>
@@ -329,7 +329,7 @@ function App() {
         {page === "settings" && <><PageTitle eyebrow="WORKSPACE" title={t("Настройки", "Settings")} /><section className="card settings-card"><h2>{t("Интерфейс", "Appearance")}</h2><label>{t("Тема", "Theme")}<select value={theme} onChange={(e) => setTheme(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label><label>{t("Язык", "Language")}<select value={language} onChange={(e) => setLanguage(e.target.value)}><option value="ru">Русский</option><option value="en">English</option></select></label><h2>AI provider</h2><label>{t("Провайдер", "Provider")}<select value={provider} onChange={(e) => setProvider(e.target.value)}>{["auto","openai","glm","humanizer","opencode"].map((p) => <option value={p} key={p} disabled={!providers[p]}>{p}{providers[p] ? "" : " (not configured)"}</option>)}</select></label><p className="muted">{t("Ключи задаются только на сервере. Статус означает наличие конфигурации, а не проверку соединения.", "Keys are configured on the server. Status indicates configuration, not connectivity.")}</p><h2>{t("Данные", "Data")}</h2><button className="secondary" onClick={exportData}>{t("Экспорт JSON", "Export JSON")} <ArrowUpRight size={16} /></button></section></>}
         </>}
       </main>
-      {chatOpen && lesson && <aside className="chat" ref={chatPanel}><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
+      {chatOpen && lesson && <aside className="chat" ref={chatPanel}><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {page === "knowledge" && selectedDocument ? selectedDocument.title : lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
     </div>
   </div>;
 }

@@ -7,6 +7,9 @@ test("source documents retain links and practice chat gets its own context", asy
   const docs = page.locator(".document-tabs button");
   await docs.nth(1).click();
   await expect(page.locator(".document-reader")).toContainText("Order Management");
+  await page.locator(".document-reader").getByRole("button", { name:"Обсудить документ" }).click();
+  await expect(page.locator(".context")).toContainText("SA Practice Lab");
+  await page.getByRole("button", { name:"Close chat" }).click();
   const firstHint = page.locator(".document-reader .study-hint").first();
   await expect(firstHint).toBeVisible();
   await firstHint.locator("summary").click();

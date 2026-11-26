@@ -109,6 +109,7 @@ def save(kind: str, key: str, record: Record):
 class ChatRequest(BaseModel):
     lesson_id: str = Field(max_length=180)
     task_id: str | None = Field(default=None, max_length=180)
+    document_id: str | None = Field(default=None, max_length=180)
     text: str = Field(min_length=1, max_length=12000)
     mode: Literal["tutor", "reviewer", "interviewer", "stakeholder", "planner"] = "tutor"
     provider: Literal["auto", "openai", "glm", "humanizer", "opencode"] = "auto"
@@ -136,7 +137,12 @@ def run_chat(req: ChatRequest):
     task = next((t for t in lesson["tasks"] if t["id"] == req.task_id), None)
     if req.task_id and task is None:
         raise HTTPException(404, "Task not found")
-    scope = req.task_id or req.lesson_id
+    document = next((doc for doc in course.get("documents", []) if doc["id"] == req.document_id), None)
+    if req.document_id and document is None:
+        raise HTTPException(404, "Document not found in course")
+    if req.task_id and req.document_id:
+        raise HTTPException(422, "Choose task or document context")
+    scope = req.document_id or req.task_id or req.lesson_id
     key = scope + ":" + req.mode
     history = store.get("chat", key, [])
     if not isinstance(history, list):
@@ -175,6 +181,10 @@ def run_chat(req: ChatRequest):
         "task": task,
         "note": get_saved("note", req.lesson_id)[:5000],
         "answer": get_saved("answer", scope)[:10000],
+        "selected_document": (
+            {"id": document["id"], "title": document["title"], "body": document["body"][:18000]}
+            if document else None
+        ),
         "lesson_answers": {
             t["id"]: get_saved("answer", t["id"])[:3000] for t in lesson["tasks"]
         },
@@ -218,8 +228,8 @@ def run_chat(req: ChatRequest):
         {"role": "user", "content": req.text, "id": secrets.token_hex(8)},
         {"role": "assistant", "content": answer, "provider": used, "id": secrets.token_hex(8)},
     ]
-    store.put("chat", key, history[-40:])
-    return {"messages": history[-40:], "provider": used}
+    store.put("chat", key, history)
+    return {"messages": history, "provider": used}
 
 
 # Protect the HTML and assets as well as API data.
