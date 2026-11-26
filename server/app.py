@@ -20,7 +20,7 @@ from .store import Store
 app = FastAPI(title="Learning Workspace", docs_url=None, redoc_url=None, openapi_url=None)
 security = HTTPBasic()
 store = Store(Path(os.getenv("WORKSPACE_DB", str(ROOT / "data/workspace.sqlite3"))))
-KINDS = {"task", "note", "answer", "skill", "session", "settings"}
+KINDS = {"task", "note", "answer", "skill", "session", "settings", "rubric"}
 chat_lock = Lock()
 
 
@@ -85,6 +85,8 @@ def save(kind: str, key: str, record: Record):
         raise HTTPException(422, "Task requires boolean")
     if kind == "skill" and (type(value) is not int or not 0 <= value <= 4):
         raise HTTPException(422, "Skill requires 0–4")
+    if kind == "rubric" and (type(value) is not int or not 0 <= value <= 2):
+        raise HTTPException(422, "Rubric requires 0–2")
     if kind in {"note", "answer"} and not isinstance(value, str):
         raise HTTPException(422, "Text required")
     if kind == "session" and (
@@ -107,6 +109,7 @@ def save(kind: str, key: str, record: Record):
 class ChatRequest(BaseModel):
     lesson_id: str = Field(max_length=180)
     task_id: str | None = Field(default=None, max_length=180)
+    document_id: str | None = Field(default=None, max_length=180)
     text: str = Field(min_length=1, max_length=12000)
     mode: Literal["tutor", "reviewer", "interviewer", "stakeholder", "planner"] = "tutor"
     provider: Literal["auto", "openai", "glm", "humanizer", "opencode"] = "auto"
@@ -126,7 +129,7 @@ def chat(req: ChatRequest):
 def run_chat(req: ChatRequest):
     course = lesson = None
     for item in load_courses():
-        for candidate in item["lessons"]:
+        for candidate in [*item["lessons"], *item.get("practice", [])]:
             if candidate["id"] == req.lesson_id:
                 course, lesson = item, candidate
     if lesson is None:
@@ -134,7 +137,12 @@ def run_chat(req: ChatRequest):
     task = next((t for t in lesson["tasks"] if t["id"] == req.task_id), None)
     if req.task_id and task is None:
         raise HTTPException(404, "Task not found")
-    scope = req.task_id or req.lesson_id
+    document = next((doc for doc in course.get("documents", []) if doc["id"] == req.document_id), None)
+    if req.document_id and document is None:
+        raise HTTPException(404, "Document not found in course")
+    if req.task_id and req.document_id:
+        raise HTTPException(422, "Choose task or document context")
+    scope = req.document_id or req.task_id or req.lesson_id
     key = scope + ":" + req.mode
     history = store.get("chat", key, [])
     if not isinstance(history, list):
@@ -146,20 +154,47 @@ def run_chat(req: ChatRequest):
         "stakeholder": "Roleplay a fictional business stakeholder; reveal facts only when asked.",
         "planner": "Recommend a realistic next action based on supplied progress, not invented data.",
     }
+    saved = {(item["kind"], item["id"]): item["value"] for item in store.all()}
+
+    def get_saved(kind, key, default=""):
+        value = saved.get((kind, key), default)
+        return value if isinstance(value, str) else default
+
+    related_activities = [
+        activity
+        for activity in [*course["lessons"], *course.get("practice", [])]
+        if activity["id"] != lesson["id"]
+    ]
+    related_artifacts = [
+        {
+            "lesson": activity["title"],
+            "task": task_item["text"],
+            "answer": get_saved("answer", task_item["id"])[:2000],
+        }
+        for activity in related_activities
+        for task_item in activity["tasks"]
+        if get_saved("answer", task_item["id"])
+    ][:8]
     context = {
         "course": course["title"],
         "lesson": lesson,
         "task": task,
-        "note": store.get("note", req.lesson_id, "")[:5000],
-        "answer": store.get("answer", scope, "")[:10000],
-        "lesson_answers": {t["id"]: store.get("answer", t["id"], "")[:3000] for t in lesson["tasks"]},
-        "related_artifacts": [
-            {"lesson": related["title"], "task": task_item["text"], "answer": store.get("answer", task_item["id"], "")[:2000]}
-            for related in course["lessons"] if related["id"] != lesson["id"]
-            for task_item in related["tasks"] if store.get("answer", task_item["id"], "")
-        ][:8],
+        "note": get_saved("note", req.lesson_id)[:5000],
+        "answer": get_saved("answer", scope)[:10000],
+        "selected_document": (
+            {"id": document["id"], "title": document["title"], "body": document["body"][:18000]}
+            if document else None
+        ),
+        "lesson_answers": {
+            t["id"]: get_saved("answer", t["id"])[:3000] for t in lesson["tasks"]
+        },
+        "related_artifacts": related_artifacts,
+        "rubric": course.get("rubric", []) if req.mode in {"reviewer", "interviewer"} else [],
+        "source_references": [
+            {"id": doc["id"], "title": doc["title"]} for doc in course.get("documents", [])
+        ],
         "progress": [
-            r for r in store.all() if r["kind"] in {"skill", "task", "session"}
+            r for r in store.all() if r["kind"] in {"skill", "task", "session", "rubric"}
         ][-150:] if req.mode == "planner" else [],
     }
     system = (
@@ -193,8 +228,8 @@ def run_chat(req: ChatRequest):
         {"role": "user", "content": req.text, "id": secrets.token_hex(8)},
         {"role": "assistant", "content": answer, "provider": used, "id": secrets.token_hex(8)},
     ]
-    store.put("chat", key, history[-40:])
-    return {"messages": history[-40:], "provider": used}
+    store.put("chat", key, history)
+    return {"messages": history, "provider": used}
 
 
 # Protect the HTML and assets as well as API data.

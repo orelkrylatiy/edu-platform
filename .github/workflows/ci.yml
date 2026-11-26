@@ -52,3 +52,21 @@ jobs:
         with:
           name: screenshots-and-browser-results
           path: test-results/
+  docker:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t learning-workspace:smoke .
+      - name: Start container and validate API content
+        run: |
+          set -euo pipefail
+          docker run -d --name workspace-smoke -e WORKSPACE_PASSWORD=smoke-test-password \
+            -p 127.0.0.1:18080:8000 learning-workspace:smoke
+          trap 'docker rm -f workspace-smoke || true' EXIT
+          for i in {1..25}; do
+            if curl -fsS http://127.0.0.1:18080/health >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS -u learner:smoke-test-password \
+            http://127.0.0.1:18080/api/content -o /tmp/workspace-content.json
+          python3 -c "import json; a=json.load(open('/tmp/workspace-content.json')); assert len(next(c['lessons'] for c in a if c['id']=='system-analyst'))==30"

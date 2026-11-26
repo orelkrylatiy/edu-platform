@@ -23,10 +23,15 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
       await page.waitForTimeout(250);
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       await page.evaluate(() => window.scrollTo(0, 0));
-      await page.screenshot({ path: "test-results/" + view.name + "-" + id + ".png", fullPage: true });
+      await page.screenshot({ path: "test-results/" + view.name + "-" + id + ".png", fullPage: id !== "knowledge" });
     }
     await visit("home", "Обзор");
     await visit("courses", "Курсы");
+    await visit("practice", "Практикум");
+    await expect(page.locator(".practice-card")).toHaveCount(14);
+    await visit("knowledge", "Библиотека");
+    await expect(page.locator(".document-tabs button")).toHaveCount(3);
+    await expect(page.locator(".document-reader")).toContainText("Middle System Analyst");
     await visit("calendar", "Активность");
     await expect(page.locator(".calendar-grid.weekly .day")).toHaveCount(7);
     const firstPeriod = await page.locator(".calendar-toolbar h2").textContent();

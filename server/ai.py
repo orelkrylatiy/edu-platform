@@ -11,7 +11,11 @@ def configured():
         "auto": True,
         "openai": bool(os.getenv("OPENAI_API_KEY")),
         "glm": bool(os.getenv("ZAI_API_KEY")),
-        "humanizer": installed and os.getenv("WORKSPACE_ENABLE_HUMANIZER") == "1",
+        "humanizer": installed and os.getenv("WORKSPACE_ENABLE_HUMANIZER") == "1"
+        and bool(os.getenv("ZAI_API_KEY") or os.getenv("OPENAI_API_KEY") or (
+            os.getenv("WORKSPACE_ENABLE_OPENCODE") == "1" and shutil.which("opencode")
+            and os.getenv("HUMANIZER_OPENCODE_MODEL")
+        )),
         "opencode": (
             installed and os.getenv("WORKSPACE_ENABLE_OPENCODE") == "1"
             and bool(os.getenv("HUMANIZER_OPENCODE_MODEL"))
