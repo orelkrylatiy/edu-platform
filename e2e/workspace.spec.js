@@ -5,7 +5,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Учёба — это/ })).toBeVisible();
   await page.screenshot({ path: "test-results/dashboard-desktop.png", fullPage: true });
   await page.locator(".hero").getByRole("button", { name: "Продолжить" }).click();
-  await expect(page.getByRole("heading", { name: "Диагностика", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /диагностика/i })).toBeVisible();
   const checkbox = page.getByRole("checkbox").first();
   await checkbox.check();
   await expect(checkbox).toBeEnabled();
@@ -15,7 +15,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.locator(".note-card").getByText("Сохранено", { exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByRole("heading", { name: /Учёба — это/ })).toBeVisible();
-  await page.getByRole("button", { name: /01 Диагностика/ }).click();
+  await page.getByRole("button", { name: /01.*диагностика/i }).click();
   await expect(page.getByRole("checkbox").first()).toBeChecked();
   await expect(page.getByRole("textbox", { name: "Мысли, выводы, вопросы" })).toHaveValue("My persistent note");
   await page.getByRole("button", { name: "Сменить тему" }).click();

@@ -32,6 +32,7 @@ def test_catalog_replaces_demo_skeleton_with_real_source():
     assert course["lessons"][0]["tasks"][0]["text"].startswith("Прочитать [гайд Сбера]")
     assert course["documents"][1]["id"] == "sa-practice-lab"
     assert any(a["group"] == "order-management" for a in course["practice"])
+    assert len(course["practice"]) == 14
 
 
 def test_no_duplicate_task_ids():
