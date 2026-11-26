@@ -26,7 +26,7 @@ def test_chat_context(monkeypatch, tmp_path):
         return "Question", provider
     monkeypatch.setattr(module, "generate", fake)
     client = TestClient(module.app)
-    lesson = module.load_courses()[0]["lessons"][0]
+    lesson = next(c for c in module.load_courses() if c["id"] == "system-analyst")["lessons"][0]
     response = client.post("/api/chat", auth=("learner", "test-password"), headers={"X-Workspace": "1"}, json={"lesson_id": lesson["id"], "text": "Start", "mode": "interviewer"})
     assert response.status_code == 200
     assert len(response.json()["messages"]) == 2
@@ -41,7 +41,7 @@ def test_invalid_state_and_chat_failure(monkeypatch, tmp_path):
     for value in [1, "true", None]:
         assert client.put("/api/state/task/x", auth=auth, headers=headers, json={"value": value}).status_code == 422
     assert client.put("/api/state/session/x", auth=auth, headers=headers, json={"value": {"seconds": 5, "date": "2026-02-30"}}).status_code == 422
-    lesson = module.load_courses()[0]["lessons"][0]
+    lesson = next(c for c in module.load_courses() if c["id"] == "system-analyst")["lessons"][0]
     def fail(provider, messages):
         raise RuntimeError("secret must never be returned")
     monkeypatch.setattr(module, "generate", fail)
