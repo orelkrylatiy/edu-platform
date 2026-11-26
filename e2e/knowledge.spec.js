@@ -52,3 +52,17 @@ test("learning content loads with skeleton and shows diagnostic retry", async ({
   await expect(page.locator(".skeleton-hero")).toBeVisible();
   await expect(page.locator(".hero")).toBeVisible();
 });
+
+
+test("skeleton failure offers a working retry", async ({ page }) => {
+  const failing = async (route) => {
+    await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ detail: "Service temporarily unavailable" }) });
+  };
+  await page.route("**/api/content", failing);
+  await page.goto("/");
+  await expect(page.locator(".loading-view")).toContainText("Не удалось загрузить рабочее пространство");
+  await expect(page.locator(".loading-view")).toContainText("Service temporarily unavailable");
+  await page.unroute("**/api/content", failing);
+  await page.locator(".loading-view").getByRole("button", { name: "Повторить" }).click();
+  await expect(page.locator(".hero h1")).toBeVisible();
+});

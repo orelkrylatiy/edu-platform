@@ -66,3 +66,11 @@ def test_raw_sources_keep_original_counts_and_urls():
     assert len(re.findall(r"https?://[^\s)]+", roadmap)) == 76
     assert len(re.findall(r"(?m)^- \[ \] ", roadmap)) == 119
     assert len(re.findall(r"(?m)^- \[ \] ", lab)) == 13
+
+
+def test_original_wiki_urls_are_not_fallback_names():
+    course = build_course()
+    links = {doc["id"]: doc["source"] for doc in course["documents"]}
+    assert links["sa-roadmap"].endswith("Middle%20System%20Analyst%20Roadmap.md")
+    assert links["sa-practice-lab"].endswith("SA%20Practice%20Lab.md")
+    assert links["sa-scorecard"].endswith("SA%20Interview%20Scorecard.md")

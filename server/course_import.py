@@ -222,7 +222,7 @@ def build_course() -> dict:
             "id": key,
             "title": title,
             "body": strip_frontmatter(raw[key]),
-            "source": WIKI_ROOT + filename.replace(" ", "%20"),
+            "source": WIKI_ROOT + title.replace(" ", "%20") + ".md",
             "read_only": True,
         })
     lessons = parse_days(raw["sa-roadmap"])
