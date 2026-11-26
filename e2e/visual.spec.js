@@ -23,7 +23,7 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
       await page.waitForTimeout(250);
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       await page.evaluate(() => window.scrollTo(0, 0));
-      await page.screenshot({ path: "test-results/" + view.name + "-" + id + ".png", fullPage: true });
+      await page.screenshot({ path: "test-results/" + view.name + "-" + id + ".png", fullPage: id !== "knowledge" });
     }
     await visit("home", "Обзор");
     await visit("courses", "Курсы");
