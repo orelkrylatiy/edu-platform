@@ -436,13 +436,18 @@ select:hover {border-color:var(--muted);}
 @media (min-width: 1001px) {
   .layout.has-nav {grid-template-columns:var(--nav-track) minmax(0,1fr);}
   .layout.has-chat {grid-template-columns:minmax(0,1fr) var(--chat-track);}
-  .layout.has-nav.has-chat {grid-template-columns:var(--nav-track) minmax(0,1fr) var(--chat-track);}
-  .layout.has-nav.has-chat .main {container-type:inline-size;}
+  .layout.has-nav.has-chat {
+    --chat-track:clamp(280px, var(--chat-width, 360px), min(600px, 42vw, calc(100vw - var(--nav-track) - 420px)));
+    grid-template-columns:var(--nav-track) minmax(0,1fr) var(--chat-track);
+  }
+  .layout.has-chat .main {container-type:inline-size;}
   @container (max-width: 550px) {
     .hero {grid-template-columns:1fr;}
     .pixel-visual {display:none;}
     .hero h1 {font-size:clamp(36px,8cqw,52px);}
-    .dashboard-grid,.metrics,.knowledge-layout {grid-template-columns:1fr;}
+    .two-col,.course-grid,.practice-grid,.metrics {grid-template-columns:1fr;}
+    .hero-actions {flex-wrap:wrap;}
+    .skill-row,.rubric-block .skill-row {grid-template-columns:minmax(0,1fr) auto;}
   }
 }
 @media (min-width: 751px) {
@@ -455,7 +460,7 @@ select:hover {border-color:var(--muted);}
 .sidebar-content>small {display:block;margin:0 10px;color:var(--muted);font:11px var(--mono);}
 .panel-resize {position:absolute;z-index:4;top:0;bottom:0;width:8px;cursor:col-resize;touch-action:none;outline-offset:-2px;}
 .panel-resize.resize-nav {right:-4px;}
-.panel-resize.resize-chat {left:-4px;height:auto;min-width:0;padding:0;border:0;background:transparent;display:block;}
+.panel-resize.resize-chat {left:-4px;}
 .panel-resize:hover,.panel-resize:focus-visible {background:var(--accent);opacity:.7;}
 .chat > .panel-resize.resize-chat {position:absolute;top:0;bottom:0;margin:0;}
 .chat-sessions {display:flex;gap:6px;align-items:center;margin:10px 0;}

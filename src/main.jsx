@@ -260,7 +260,9 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const days = activity(records);
   const seconds = remaining(timer, now);
   const next = course?.lessons.find((l) => !lessonComplete(l, records)) || course?.lessons.at(-1);
-  const scope = page === "knowledge" && selectedDocument ? selectedDocument.id : (taskId || lesson?.id);
+  const activeDocument = page === "knowledge" ? selectedDocument : null;
+  const activeTask = page !== "knowledge" ? lesson?.tasks.find((task) => task.id === taskId) : null;
+  const scope = activeDocument?.id || activeTask?.id || lesson?.id;
   const chatScopeKey = scope + ":" + mode;
   const sessionId = chatSessions[chatScopeKey] || "";
   const chatKey = chatScopeKey + (sessionId ? ":" + sessionId : "");
@@ -354,7 +356,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
     const text = draft.trim(); const key = chatKey;
     setBusy(true); setDraft("");
     try {
-      const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: page === "knowledge" ? null : (taskId || null), document_id: page === "knowledge" ? selectedDocument?.id : null, session_id: sessionId || null, text, mode, provider, language }) });
+      const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: activeTask?.id || null, document_id: activeDocument?.id || null, session_id: sessionId || null, text, mode, provider, language }) });
       setRecords((old) => ({ ...old, ["chat:" + key]: result.messages }));
     } catch (e) { setError(e.message); setDrafts((old) => ({ ...old, [key]: old[key] || text })); }
     finally { setBusy(false); }
@@ -483,7 +485,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
         {page === "settings" && <><PageTitle eyebrow="WORKSPACE" title={t("Настройки", "Settings")} /><section className="card settings-card"><h2>{t("Интерфейс", "Appearance")}</h2><label>{t("Тема", "Theme")}<select value={theme} onChange={(e) => setTheme(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label><label>{t("Язык", "Language")}<select value={language} onChange={(e) => setLanguage(e.target.value)}><option value="ru">Русский</option><option value="en">English</option></select></label><h2>AI provider</h2><label>{t("Провайдер", "Provider")}<select value={provider} onChange={(e) => setProvider(e.target.value)}>{["auto","openai","glm","humanizer","opencode"].map((p) => <option value={p} key={p} disabled={!providers[p]}>{p}{providers[p] ? "" : " (not configured)"}</option>)}</select></label><p className="muted">{t("Ключи задаются только на сервере. Статус означает наличие конфигурации, а не проверку соединения.", "Keys are configured on the server. Status indicates configuration, not connectivity.")}</p><h2>{t("Данные", "Data")}</h2><button className="secondary" onClick={exportData}>{t("Экспорт JSON", "Export JSON")} <ArrowUpRight size={16} /></button></section></>}
         </>}
       </main>
-      {chatOpen && lesson && <aside className="chat" id="mentor-panel" ref={chatPanel}><PanelResize side="chat" value={chatWidth} onChange={setChatWidth} t={t}/><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {page === "knowledge" && selectedDocument ? selectedDocument.title : lesson.title}{page !== "knowledge" && taskId && " / " + (lesson.tasks.find((x) => x.id === taskId)?.type || "")}</div><div className="chat-sessions">
+      {chatOpen && lesson && <aside className="chat" id="mentor-panel" ref={chatPanel}><PanelResize side="chat" value={chatWidth} onChange={setChatWidth} t={t}/><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {activeDocument?.title || lesson.title}{activeTask && " / " + activeTask.type}</div><div className="chat-sessions">
   <select aria-label={t("Сессия чата", "Chat session")} value={sessionId} onChange={(e) => selectChatSession(e.target.value)}>
     {sessionIds.map((id) => <option key={id} value={id}>{sessionLabel(id)}</option>)}
   </select>

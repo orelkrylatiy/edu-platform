@@ -67,6 +67,13 @@ test("mentor panels resize, collapse and start isolated chat sessions", async ({
   await chatHandle.focus();
   await chatHandle.press("ArrowLeft");
   expect((await chat.boundingBox()).width).toBeGreaterThan(before);
+  const dragStart = await chatHandle.boundingBox();
+  const widthBeforeDrag = (await chat.boundingBox()).width;
+  await page.mouse.move(dragStart.x + dragStart.width / 2, dragStart.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(dragStart.x - 40, dragStart.y + 100, { steps: 5 });
+  await page.mouse.up();
+  expect((await chat.boundingBox()).width).toBeGreaterThan(widthBeforeDrag);
   const navBefore = (await page.locator(".sidebar").boundingBox()).width;
   await navHandle.focus();
   await navHandle.press("ArrowRight");
@@ -97,4 +104,10 @@ test("mentor panels resize, collapse and start isolated chat sessions", async ({
   await expect(chat).toHaveCount(0);
   await page.getByRole("button", { name: "Открыть AI-чат" }).click();
   await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();
+  const savedChatWidth = (await chat.boundingBox()).width;
+  const savedNavWidth = (await page.locator(".sidebar").boundingBox()).width;
+  await page.reload();
+  await page.getByRole("button", { name: "Открыть AI-чат" }).click();
+  expect((await chat.boundingBox()).width).toBe(savedChatWidth);
+  expect((await page.locator(".sidebar").boundingBox()).width).toBe(savedNavWidth);
 });
