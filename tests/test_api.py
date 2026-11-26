@@ -49,3 +49,54 @@ def test_invalid_state_and_chat_failure(monkeypatch, tmp_path):
     assert result.status_code == 503
     assert "secret" not in result.text
     assert client.get("/api/state", auth=auth).json() == []
+
+
+def test_practice_chat_is_contextual_and_persistent(monkeypatch, tmp_path):
+    monkeypatch.setenv("WORKSPACE_PASSWORD", "test-password")
+    monkeypatch.setattr(module, "store", Store(tmp_path / "db.sqlite"))
+    practice = next(
+        c["practice"][0] for c in module.load_courses() if c["id"] == "system-analyst"
+    )
+    task = practice["tasks"][0]
+    captured = []
+
+    def fake(provider, messages):
+        captured.append(messages)
+        assert practice["title"] in messages[1]["content"]
+        assert task["text"][:60] in messages[1]["content"]
+        return "Давай уточним требования.", "test-model"
+
+    monkeypatch.setattr(module, "generate", fake)
+    client = TestClient(module.app)
+    auth = ("learner", "test-password")
+    headers = {"X-Workspace": "1"}
+    payload = {
+        "lesson_id": practice["id"],
+        "task_id": task["id"],
+        "text": "Как начать?",
+        "mode": "tutor",
+    }
+    result = client.post("/api/chat", auth=auth, headers=headers, json=payload)
+    assert result.status_code == 200
+    assert result.json()["provider"] == "test-model"
+    assert len(result.json()["messages"]) == 2
+    again = client.post(
+        "/api/chat", auth=auth, headers=headers, json={**payload, "text": "А дальше?"}
+    )
+    assert again.status_code == 200
+    assert len(again.json()["messages"]) == 4
+    assert len(captured[1]) >= 5
+    assert len(module.store.get("chat", task["id"] + ":tutor")) == 4
+    bad = client.post(
+        "/api/chat", auth=auth, headers=headers, json={**payload, "task_id": "unknown"}
+    )
+    assert bad.status_code == 404
+
+
+def test_rubric_score_validated(monkeypatch, tmp_path):
+    monkeypatch.setenv("WORKSPACE_PASSWORD", "test-password")
+    monkeypatch.setattr(module, "store", Store(tmp_path / "db.sqlite"))
+    client = TestClient(module.app)
+    kw = {"auth": ("learner", "test-password"), "headers": {"X-Workspace": "1"}}
+    assert client.put("/api/state/rubric/sa-rubric-01", **kw, json={"value": 2}).status_code == 200
+    assert client.put("/api/state/rubric/sa-rubric-01", **kw, json={"value": 4}).status_code == 422

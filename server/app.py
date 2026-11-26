@@ -20,7 +20,7 @@ from .store import Store
 app = FastAPI(title="Learning Workspace", docs_url=None, redoc_url=None, openapi_url=None)
 security = HTTPBasic()
 store = Store(Path(os.getenv("WORKSPACE_DB", str(ROOT / "data/workspace.sqlite3"))))
-KINDS = {"task", "note", "answer", "skill", "session", "settings"}
+KINDS = {"task", "note", "answer", "skill", "session", "settings", "rubric"}
 chat_lock = Lock()
 
 
@@ -85,6 +85,8 @@ def save(kind: str, key: str, record: Record):
         raise HTTPException(422, "Task requires boolean")
     if kind == "skill" and (type(value) is not int or not 0 <= value <= 4):
         raise HTTPException(422, "Skill requires 0–4")
+    if kind == "rubric" and (type(value) is not int or not 0 <= value <= 2):
+        raise HTTPException(422, "Rubric requires 0–2")
     if kind in {"note", "answer"} and not isinstance(value, str):
         raise HTTPException(422, "Text required")
     if kind == "session" and (
@@ -126,7 +128,7 @@ def chat(req: ChatRequest):
 def run_chat(req: ChatRequest):
     course = lesson = None
     for item in load_courses():
-        for candidate in item["lessons"]:
+        for candidate in [*item["lessons"], *item.get("practice", [])]:
             if candidate["id"] == req.lesson_id:
                 course, lesson = item, candidate
     if lesson is None:
@@ -146,20 +148,43 @@ def run_chat(req: ChatRequest):
         "stakeholder": "Roleplay a fictional business stakeholder; reveal facts only when asked.",
         "planner": "Recommend a realistic next action based on supplied progress, not invented data.",
     }
+    saved = {(item["kind"], item["id"]): item["value"] for item in store.all()}
+
+    def get_saved(kind, key, default=""):
+        value = saved.get((kind, key), default)
+        return value if isinstance(value, str) else default
+
+    related_activities = [
+        activity
+        for activity in [*course["lessons"], *course.get("practice", [])]
+        if activity["id"] != lesson["id"]
+    ]
+    related_artifacts = [
+        {
+            "lesson": activity["title"],
+            "task": task_item["text"],
+            "answer": get_saved("answer", task_item["id"])[:2000],
+        }
+        for activity in related_activities
+        for task_item in activity["tasks"]
+        if get_saved("answer", task_item["id"])
+    ][:8]
     context = {
         "course": course["title"],
         "lesson": lesson,
         "task": task,
-        "note": store.get("note", req.lesson_id, "")[:5000],
-        "answer": store.get("answer", scope, "")[:10000],
-        "lesson_answers": {t["id"]: store.get("answer", t["id"], "")[:3000] for t in lesson["tasks"]},
-        "related_artifacts": [
-            {"lesson": related["title"], "task": task_item["text"], "answer": store.get("answer", task_item["id"], "")[:2000]}
-            for related in course["lessons"] if related["id"] != lesson["id"]
-            for task_item in related["tasks"] if store.get("answer", task_item["id"], "")
-        ][:8],
+        "note": get_saved("note", req.lesson_id)[:5000],
+        "answer": get_saved("answer", scope)[:10000],
+        "lesson_answers": {
+            t["id"]: get_saved("answer", t["id"])[:3000] for t in lesson["tasks"]
+        },
+        "related_artifacts": related_artifacts,
+        "rubric": course.get("rubric", []) if req.mode in {"reviewer", "interviewer"} else [],
+        "source_references": [
+            {"id": doc["id"], "title": doc["title"]} for doc in course.get("documents", [])
+        ],
         "progress": [
-            r for r in store.all() if r["kind"] in {"skill", "task", "session"}
+            r for r in store.all() if r["kind"] in {"skill", "task", "session", "rubric"}
         ][-150:] if req.mode == "planner" else [],
     }
     system = (
