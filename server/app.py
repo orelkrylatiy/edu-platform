@@ -5,9 +5,10 @@ import secrets
 from datetime import date
 from threading import Lock
 from pathlib import Path
+import re
 from typing import Literal
 
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, StrictBool, StrictInt, StrictStr
@@ -18,30 +19,179 @@ from .content import ROOT, load_courses
 from .store import Store
 
 app = FastAPI(title="Learning Workspace", docs_url=None, redoc_url=None, openapi_url=None)
-security = HTTPBasic()
+security = HTTPBasic(auto_error=False)
 store = Store(Path(os.getenv("WORKSPACE_DB", str(ROOT / "data/workspace.sqlite3"))))
 KINDS = {"task", "note", "answer", "skill", "session", "settings", "rubric"}
 chat_lock = Lock()
 
 
-def auth(credentials: HTTPBasicCredentials = Depends(security)):
+COOKIE = "lw_session"
+USERNAME = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]{2,31}$")
+
+
+def user_view(user: dict):
+    return {"id": user["id"], "username": user["username"],
+            "is_owner": user["role"] == "owner"}
+
+
+def optional_user(
+    request: Request, credentials: HTTPBasicCredentials | None = Depends(security)
+):
+    session = store.resolve_session(request.cookies.get(COOKIE))
+    if session:
+        return session
+    # Compatibility for browsers which still cache the platform's original
+    # HTTP Basic credentials; new accounts authenticate with cookie sessions.
     password = os.getenv("WORKSPACE_PASSWORD", "")
-    user = os.getenv("WORKSPACE_USER", "learner")
-    if not password or not (
-        hmac.compare_digest(credentials.username.encode(), user.encode())
-        and hmac.compare_digest(credentials.password.encode(), password.encode())
-    ):
-        raise HTTPException(401, "Authentication required", {"WWW-Authenticate": "Basic"})
+    username = os.getenv("WORKSPACE_USER", "learner")
+    if credentials and password and hmac.compare_digest(
+        credentials.username.encode(), username.encode()
+    ) and hmac.compare_digest(credentials.password.encode(), password.encode()):
+        return store.owner()
+    return None
+
+
+def auth(user: dict | None = Depends(optional_user)):
+    if user is None:
+        raise HTTPException(401, "Authentication required",
+                            headers={"WWW-Authenticate": "Basic"})
+    return user
+
+
+def set_session_cookie(response: Response, token: str, lifetime: int, remember: bool):
+    response.set_cookie(
+        COOKIE, token, httponly=True, secure=os.getenv("WORKSPACE_COOKIE_SECURE", "1") == "1",
+        samesite="lax", path="/", max_age=lifetime if remember else None,
+    )
+
+
+def visible_courses(user: dict | None = None):
+    return load_courses(public_only=not user or user["role"] != "owner")
+
+
+def auth_payload(user: dict):
+    return {"user": user_view(user), "enrollments": store.enrollments(user["id"])}
+
+
+class Credentials(BaseModel):
+    username: str = Field(min_length=3, max_length=32)
+    password: str = Field(min_length=1, max_length=256)
+    remember: bool = True
+
+
+class Registration(Credentials):
+    invite_code: str = Field(default="", max_length=200)
+
+
+def throttle_key(prefix: str, request: Request, username: str = ""):
+    address = request.client.host if request.client else "unknown"
+    identity = (address + "|" + username.lower()).encode("utf-8")
+    return prefix + ":" + __import__("hashlib").sha256(identity).hexdigest()
+
+
+@app.get("/api/auth/config")
+def auth_config():
+    return {
+        "registration_enabled": os.getenv("WORKSPACE_ALLOW_REGISTRATION", "0") == "1",
+        "invite_required": bool(os.getenv("WORKSPACE_INVITE_CODE")),
+    }
+
+
+@app.get("/api/auth/me")
+def me(user: dict | None = Depends(optional_user)):
+    return auth_payload(user) if user else {"user": None, "enrollments": []}
+
+
+@app.post("/api/auth/login")
+def login(credentials: Credentials, response: Response, request: Request):
+    key = throttle_key("login", request, credentials.username)
+    if not store.throttle(key, 8, 900):
+        raise HTTPException(429, "Too many login attempts; try later")
+    user = store.authenticate(credentials.username, credentials.password)
+    if user is None:
+        raise HTTPException(401, "Invalid username or password")
+    store.clear_throttle(key)
+    token, lifetime = store.new_session(user["id"], credentials.remember)
+    set_session_cookie(response, token, lifetime, credentials.remember)
+    return auth_payload(user)
+
+
+@app.post("/api/auth/register", status_code=201)
+def register(details: Registration, response: Response, request: Request):
+    if os.getenv("WORKSPACE_ALLOW_REGISTRATION", "0") != "1":
+        raise HTTPException(403, "Registration is disabled")
+    if not USERNAME.fullmatch(details.username):
+        raise HTTPException(422, "Username: 3–32 Latin letters, digits, _ . -")
+    if not 12 <= len(details.password) <= 128:
+        raise HTTPException(422, "Password must be 12–128 characters")
+    invite = os.getenv("WORKSPACE_INVITE_CODE", "")
+    if invite and not hmac.compare_digest(details.invite_code, invite):
+        raise HTTPException(403, "Invalid invitation code")
+    key = throttle_key("registration", request)
+    if not store.throttle(key, 8, 3600):
+        raise HTTPException(429, "Too many registration attempts")
+    try:
+        user = store.create_user(details.username, details.password)
+    except ValueError:
+        raise HTTPException(409, "Username already taken") from None
+    except RuntimeError:
+        raise HTTPException(503, "Platform owner account is not configured") from None
+    token, lifetime = store.new_session(user["id"], details.remember)
+    set_session_cookie(response, token, lifetime, details.remember)
+    return auth_payload(user)
+
+
+@app.post("/api/auth/logout")
+def logout(request: Request, response: Response):
+    store.revoke_session(request.cookies.get(COOKIE))
+    response.delete_cookie(COOKIE, path="/", samesite="lax",
+                           secure=os.getenv("WORKSPACE_COOKIE_SECURE", "1") == "1")
+    return {"signed_out": True}
+
+
+@app.get("/api/catalog")
+def catalog():
+    return [
+        {
+            "id": course["id"], "title": course["title"],
+            "description": course.get("description", ""),
+            "skills": course["skills"],
+            "lessons": len(course["lessons"]),
+            "practice": len(course.get("practice", [])),
+            "minutes": sum(item.get("minutes", 0) for item in course["lessons"]),
+            "preview": [item["title"] for item in course["lessons"][:3]],
+        }
+        for course in load_courses(public_only=True)
+    ]
+
+
+@app.get("/api/enrollments", dependencies=[Depends(auth)])
+def enrollment_list(user: dict = Depends(auth)):
+    return store.enrollments(user["id"])
+
+
+@app.post("/api/enrollments/{course_id}")
+def start_course(course_id: str, user: dict = Depends(auth)):
+    visible = {course["id"] for course in visible_courses(user)}
+    if course_id not in visible:
+        raise HTTPException(404, "Course not found")
+    store.enroll(user["id"], course_id)
+    return {"enrollments": store.enrollments(user["id"])}
 
 
 @app.middleware("http")
 async def protect(request: Request, call_next):
-    if request.url.path != "/health":
-        if request.method not in {"GET", "HEAD", "OPTIONS"}:
-            if request.headers.get("x-workspace") != "1":
-                return JSONResponse(
-                    {"detail": "Missing workspace header"}, status_code=403
-                )
+    if request.method not in {"GET", "HEAD", "OPTIONS"}:
+        if request.headers.get("x-workspace") != "1":
+            return JSONResponse({"detail": "Missing workspace header"}, status_code=403)
+        origin = request.headers.get("origin")
+        if origin:
+            from urllib.parse import urlsplit
+            expected = os.getenv("WORKSPACE_PUBLIC_ORIGIN")
+            parsed = urlsplit(origin)
+            allowed = origin == expected if expected else parsed.netloc == request.headers.get("host")
+            if not allowed:
+                return JSONResponse({"detail": "Invalid request origin"}, status_code=403)
     response = await call_next(request)
     response.headers["Cache-Control"] = "no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -55,14 +205,14 @@ def health():
     return {"status": "ok"}
 
 
-@app.get("/api/content", dependencies=[Depends(auth)])
-def content():
-    return load_courses()
+@app.get("/api/content")
+def content(user: dict = Depends(auth)):
+    return visible_courses(user)
 
 
-@app.get("/api/state", dependencies=[Depends(auth)])
-def state():
-    return store.all()
+@app.get("/api/state")
+def state(user: dict = Depends(auth)):
+    return store.all(user_id=user["id"])
 
 
 @app.get("/api/providers", dependencies=[Depends(auth)])
@@ -75,7 +225,7 @@ class Record(BaseModel):
 
 
 @app.put("/api/state/{kind}/{key}", dependencies=[Depends(auth)])
-def save(kind: str, key: str, record: Record):
+def save(kind: str, key: str, record: Record, user: dict = Depends(auth)):
     if kind not in KINDS or len(key) > 180:
         raise HTTPException(400, "Invalid record")
     if len(json.dumps(record.value, ensure_ascii=False)) > 250_000:
@@ -102,7 +252,7 @@ def save(kind: str, key: str, record: Record):
             date.fromisoformat(value["date"])
         except ValueError:
             raise HTTPException(422, "Invalid session date") from None
-    store.put(kind, key, value)
+    store.put(kind, key, value, user_id=user["id"])
     return {"saved": True}
 
 
@@ -116,19 +266,35 @@ class ChatRequest(BaseModel):
     language: Literal["ru", "en"] = "ru"
 
 
-@app.post("/api/chat", dependencies=[Depends(auth)])
-def chat(req: ChatRequest):
+@app.post("/api/chat")
+def chat(req: ChatRequest, user: dict = Depends(auth)):
+    available = visible_courses(user)
+    course = next((item for item in available if any(
+        lesson["id"] == req.lesson_id
+        for lesson in [*item["lessons"], *item.get("practice", [])]
+    )), None)
+    if course is None:
+        raise HTTPException(404, "Lesson not found")
+    if not store.enrolled(user["id"], course["id"]):
+        raise HTTPException(403, "Enroll in the course first")
+    daily = int(os.getenv("WORKSPACE_AI_DAILY_LIMIT", "20"))
+    if not store.charge_ai(user["id"], daily):
+        raise HTTPException(429, "Daily AI request limit reached")
     if not chat_lock.acquire(blocking=False):
         raise HTTPException(409, "Another AI request is running")
     try:
-        return run_chat(req)
+        try:
+            return run_chat(req, user)
+        except Exception:
+            store.refund_ai(user["id"])
+            raise
     finally:
         chat_lock.release()
 
 
-def run_chat(req: ChatRequest):
+def run_chat(req: ChatRequest, user: dict):
     course = lesson = None
-    for item in load_courses():
+    for item in visible_courses(user):
         for candidate in [*item["lessons"], *item.get("practice", [])]:
             if candidate["id"] == req.lesson_id:
                 course, lesson = item, candidate
@@ -144,7 +310,7 @@ def run_chat(req: ChatRequest):
         raise HTTPException(422, "Choose task or document context")
     scope = req.document_id or req.task_id or req.lesson_id
     key = scope + ":" + req.mode
-    history = store.get("chat", key, [])
+    history = store.get("chat", key, [], user_id=user["id"])
     if not isinstance(history, list):
         history = []
     modes = {
@@ -154,7 +320,8 @@ def run_chat(req: ChatRequest):
         "stakeholder": "Roleplay a fictional business stakeholder; reveal facts only when asked.",
         "planner": "Recommend a realistic next action based on supplied progress, not invented data.",
     }
-    saved = {(item["kind"], item["id"]): item["value"] for item in store.all()}
+    all_records = store.all(user_id=user["id"])
+    saved = {(item["kind"], item["id"]): item["value"] for item in all_records}
 
     def get_saved(kind, key, default=""):
         value = saved.get((kind, key), default)
@@ -194,7 +361,7 @@ def run_chat(req: ChatRequest):
             {"id": doc["id"], "title": doc["title"]} for doc in course.get("documents", [])
         ],
         "progress": [
-            r for r in store.all() if r["kind"] in {"skill", "task", "session", "rubric"}
+            r for r in all_records if r["kind"] in {"skill", "task", "session", "rubric"}
         ][-150:] if req.mode == "planner" else [],
     }
     system = (
@@ -228,20 +395,10 @@ def run_chat(req: ChatRequest):
         {"role": "user", "content": req.text, "id": secrets.token_hex(8)},
         {"role": "assistant", "content": answer, "provider": used, "id": secrets.token_hex(8)},
     ]
-    store.put("chat", key, history)
+    store.put("chat", key, history, user_id=user["id"])
     return {"messages": history, "provider": used}
 
 
-# Protect the HTML and assets as well as API data.
+# Public assets include the landing page and login. Personal data is API-only.
 if (ROOT / "dist").is_dir():
-    @app.middleware("http")
-    async def protect_static(request: Request, call_next):
-        if not request.url.path.startswith("/api/") and request.url.path != "/health":
-            try:
-                credentials = await security(request)
-                auth(credentials)
-            except HTTPException as exc:
-                return JSONResponse({"detail": exc.detail}, exc.status_code, headers=exc.headers)
-        return await call_next(request)
-
     app.mount("/", StaticFiles(directory=ROOT / "dist", html=True), name="web")
