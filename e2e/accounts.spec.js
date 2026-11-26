@@ -92,6 +92,17 @@ test("new account registers, chooses a course and keeps private state", async ({
   await owner.close();
   await page.getByRole("button", {name:"Выйти из аккаунта"}).click();
   await expect(page.locator(".landing-hero")).toBeVisible();
+  // Check on the SAME device, not only a separate browser profile.
+  await page.getByRole("button", {name:"Войти",exact:true}).first().click();
+  const ownerForm = page.locator(".auth-dialog form");
+  await ownerForm.locator('input[name="username"]').fill("learner");
+  await ownerForm.locator('input[name="password"]').fill("e2e-test-only");
+  await ownerForm.getByRole("button", {name:"Войти"}).click();
+  await expect(page.locator(".hero h1")).toBeVisible();
+  await page.locator(".hero").getByRole("button", {name:"Продолжить"}).click();
+  await expect(page.getByRole("textbox", {name:"Мысли, выводы, вопросы"})).not.toHaveValue("Only student sees this.");
+  await page.getByRole("button", {name:"Выйти из аккаунта"}).click();
+  await expect(page.locator(".landing-hero")).toBeVisible();
   await page.getByRole("button", {name:"Войти",exact:true}).first().click();
   const relogin = page.locator(".auth-dialog form");
   await relogin.locator('input[name="username"]').fill(username);
