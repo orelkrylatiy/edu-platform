@@ -272,6 +272,7 @@ def test_short_browser_session_is_not_persistent_cookie(fresh):
         "remember": False,
     })
     assert reply.status_code == 200
-    assert "HttpOnly" in reply.headers["set-cookie"]
-    assert "Max-Age" not in reply.headers["set-cookie"]
-    assert "expires=" not in reply.headers["set-cookie"].lower()
+    session_cookie = reply.headers["set-cookie"].split("lw_session=", 1)[1]
+    assert "HttpOnly" in session_cookie
+    assert "Max-Age" not in session_cookie
+    assert "expires=" not in session_cookie.lower()
