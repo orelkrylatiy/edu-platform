@@ -1,0 +1,2350 @@
+{
+  "id": "english-speaking",
+  "title": "English Speaking · B2 → C1",
+  "description": "56 уроков · разговорный, повседневный и профессиональный английский · B2 с развитием к C1",
+  "skills": [
+    "Speaking",
+    "Listening",
+    "Grammar",
+    "Vocabulary",
+    "Pronunciation",
+    "Professional English"
+  ],
+  "provenance": "ai-assisted",
+  "reviewed": false,
+  "lessons": [
+    {
+      "id": "en-01",
+      "title": "Introductions",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nIntroduce yourself, describe your work or studies and a hobby, then answer two unexpected questions.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A business interview**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Present simple vs present perfect\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- be responsible for\n- have experience with\n- take ownership of\n- work on\n- make a decision\n\n## Speaking mission\nIntroduce yourself, describe your work or studies and a hobby, then answer two unexpected questions. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-01-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-01-language",
+          "text": "Practise Present simple vs present perfect; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-01-speaking",
+          "text": "Introduce yourself, describe your work or studies and a hobby, then answer two unexpected questions. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-01-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-01-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-02",
+      "title": "Daily routines",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDescribe your routine, screen habits and ideal day.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A digital detox podcast**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Frequency adverbs\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- tend to\n- cut down on\n- make time for\n- get into the habit of\n- on a regular basis\n\n## Speaking mission\nDescribe your routine, screen habits and ideal day. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-02-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-02-language",
+          "text": "Practise Frequency adverbs; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-02-speaking",
+          "text": "Describe your routine, screen habits and ideal day. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-02-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-02-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-03",
+      "title": "Advice",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nAdvise a friend, ask for advice in return and challenge one suggestion.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Getting advice**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Should, could, might\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- have you considered\n- you might want to\n- what would you do\n- it depends on\n- could you clarify\n\n## Speaking mission\nAdvise a friend, ask for advice in return and challenge one suggestion. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-03-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-03-language",
+          "text": "Practise Should, could, might; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-03-speaking",
+          "text": "Advise a friend, ask for advice in return and challenge one suggestion. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-03-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-03-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-04",
+      "title": "A challenging experience",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nTell a story about overcoming a difficulty and explain what changed.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A talk about motivation**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Past simple and sequencing\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- at first\n- eventually\n- turn out to\n- learn from\n- in the end\n\n## Speaking mission\nTell a story about overcoming a difficulty and explain what changed. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-04-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-04-language",
+          "text": "Practise Past simple and sequencing; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-04-speaking",
+          "text": "Tell a story about overcoming a difficulty and explain what changed. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-04-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-04-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-05",
+      "title": "Comparing choices",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nCompare remote and office work, then defend the opposite choice.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Discussing advantages and disadvantages**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Comparatives and contrast\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- on the other hand\n- whereas\n- the main benefit\n- more convenient than\n- the downside is\n\n## Speaking mission\nCompare remote and office work, then defend the opposite choice. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-05-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-05-language",
+          "text": "Practise Comparatives and contrast; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-05-speaking",
+          "text": "Compare remote and office work, then defend the opposite choice. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-05-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-05-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-06",
+      "title": "Making arrangements",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nRole-play signing up for a class or gym and clarify prices and schedules.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Joining a gym**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Question forms and polite requests\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I'd like to\n- how much does it cost\n- is there a trial\n- would it be possible\n- sign up for\n\n## Speaking mission\nRole-play signing up for a class or gym and clarify prices and schedules. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-06-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-06-language",
+          "text": "Practise Question forms and polite requests; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-06-speaking",
+          "text": "Role-play signing up for a class or gym and clarify prices and schedules. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-06-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-06-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-07",
+      "title": "Week 1 checkpoint",
+      "module": "Week 1 — Speaking foundations",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nGive a two-minute introduction and answer five minutes of spontaneous questions.\n\n## Listening\nRevisit Day 1 and a new BBC excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Retrieval and questions\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- let me put it another way\n- could you rephrase that\n\n## Speaking mission\nGive a two-minute introduction and answer five minutes of spontaneous questions. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-07-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-07-language",
+          "text": "Practise Retrieval and questions; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-07-speaking",
+          "text": "Give a two-minute introduction and answer five minutes of spontaneous questions. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-07-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-08",
+      "title": "Plans and invitations",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nOrganise a weekend or team event and agree on a plan.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Office party planning**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Will, going to and present continuous\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I'm planning to\n- how about\n- that works for me\n- make arrangements\n- I'll get back to you\n\n## Speaking mission\nOrganise a weekend or team event and agree on a plan. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-08-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-08-language",
+          "text": "Practise Will, going to and present continuous; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-08-speaking",
+          "text": "Organise a weekend or team event and agree on a plan. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-08-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-08-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-09",
+      "title": "Recommendations",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nRecommend a film or book and explain why it might not appeal to everyone.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Film reviews**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Relative clauses and intensifiers\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- well worth watching\n- what I liked most\n- not everyone's cup of tea\n- the story follows\n- I'd recommend\n\n## Speaking mission\nRecommend a film or book and explain why it might not appeal to everyone. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-09-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-09-language",
+          "text": "Practise Relative clauses and intensifiers; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-09-speaking",
+          "text": "Recommend a film or book and explain why it might not appeal to everyone. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-09-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-09-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-10",
+      "title": "Travel situations",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDescribe a city and resolve a missed connection or booking issue.\n\n## Listening\nChoose a 3–6 minute excerpt about travel or culture from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Articles and prepositions\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- get around\n- within walking distance\n- miss a connection\n- check in\n- ask for directions\n\n## Speaking mission\nDescribe a city and resolve a missed connection or booking issue. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-10-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-10-language",
+          "text": "Practise Articles and prepositions; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-10-speaking",
+          "text": "Describe a city and resolve a missed connection or booking issue. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-10-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-10-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-11",
+      "title": "Handling a problem",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nResolve a delayed order or accommodation problem politely.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Dealing with a problem**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Polite modals and requests\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I'm afraid there's a problem\n- could you look into\n- I'd appreciate\n- sort this out\n- what are my options\n\n## Speaking mission\nResolve a delayed order or accommodation problem politely. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-11-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-11-language",
+          "text": "Practise Polite modals and requests; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-11-speaking",
+          "text": "Resolve a delayed order or accommodation problem politely. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-11-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-11-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-12",
+      "title": "Health and habits",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDiscuss lifestyle changes and hypothetical obstacles.\n\n## Listening\nChoose a 3–6 minute excerpt about health or habits from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: First and second conditionals\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- stick to\n- make a change\n- in the long run\n- set a realistic goal\n- if I were you\n\n## Speaking mission\nDiscuss lifestyle changes and hypothetical obstacles. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-12-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-12-language",
+          "text": "Practise First and second conditionals; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-12-speaking",
+          "text": "Discuss lifestyle changes and hypothetical obstacles. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-12-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-12-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-13",
+      "title": "Persuasion",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nConvince a friend to join an activity and respond to objections.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Persuading someone to do something**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Giving reasons\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- give it a try\n- the good thing is\n- why not\n- it's worth\n- I see your point\n\n## Speaking mission\nConvince a friend to join an activity and respond to objections. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-13-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-13-language",
+          "text": "Practise Giving reasons; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-13-speaking",
+          "text": "Convince a friend to join an activity and respond to objections. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-13-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-13-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-14",
+      "title": "Week 2 checkpoint",
+      "module": "Week 2 — Everyday life",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nSustain ten minutes of unscripted everyday conversation.\n\n## Listening\nRevisit Day 9 and a fresh BBC excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Retrieval and follow-ups\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- tell me more about\n- what made you decide\n\n## Speaking mission\nSustain ten minutes of unscripted everyday conversation. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-14-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-14-language",
+          "text": "Practise Retrieval and follow-ups; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-14-speaking",
+          "text": "Sustain ten minutes of unscripted everyday conversation. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-14-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-15",
+      "title": "Working styles",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDiscuss meeting expectations, boundaries and preferred work arrangements.\n\n## Listening\nWatch [Flexible working](https://www.youtube.com/watch?v=8E8DQnmd4zs). If unavailable choose a similar BBC excerpt. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Hedging and contrast\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- to some extent\n- it depends on\n- set boundaries\n- flexible hours\n- in contrast\n\n## Speaking mission\nDiscuss meeting expectations, boundaries and preferred work arrangements. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-15-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-15-language",
+          "text": "Practise Hedging and contrast; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-15-speaking",
+          "text": "Discuss meeting expectations, boundaries and preferred work arrangements. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-15-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-15-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-16",
+      "title": "Diplomatic disagreement",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nChallenge an unrealistic deadline and offer an alternative.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Challenging someone's ideas**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Softening disagreement\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I see where you're coming from\n- I'm not convinced\n- my concern is\n- what if\n- another option would be\n\n## Speaking mission\nChallenge an unrealistic deadline and offer an alternative. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-16-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-16-language",
+          "text": "Practise Softening disagreement; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-16-speaking",
+          "text": "Challenge an unrealistic deadline and offer an alternative. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-16-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-16-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-17",
+      "title": "Presenting a feature",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain a fictional product feature to a nontechnical audience.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A design presentation**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Signposting and relative clauses\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- first of all\n- the idea behind\n- what this means\n- walk you through\n- to sum up\n\n## Speaking mission\nExplain a fictional product feature to a nontechnical audience. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-17-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-17-language",
+          "text": "Practise Signposting and relative clauses; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-17-speaking",
+          "text": "Explain a fictional product feature to a nontechnical audience. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-17-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-17-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-18",
+      "title": "Mentoring a colleague",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nHelp a junior colleague investigate a problem without taking over.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Giving advice**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Modals and softening\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- start by\n- have you tried\n- one thing to check\n- you could\n- let me know\n\n## Speaking mission\nHelp a junior colleague investigate a problem without taking over. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-18-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-18-language",
+          "text": "Practise Modals and softening; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-18-speaking",
+          "text": "Help a junior colleague investigate a problem without taking over. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-18-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-18-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-19",
+      "title": "Talking about metrics",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain a fictional business metric and one limitation.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Business news**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Numbers and trends\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- rose by\n- fell to\n- roughly\n- compared with\n- doesn't necessarily mean\n\n## Speaking mission\nExplain a fictional business metric and one limitation. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-19-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-19-language",
+          "text": "Practise Numbers and trends; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-19-speaking",
+          "text": "Explain a fictional business metric and one limitation. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-19-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-19-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-20",
+      "title": "Team collaboration",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nGive a stand-up update, report a blocker and request help.\n\n## Listening\nChoose a 3–6 minute excerpt about engineering teamwork from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Paraphrasing and summarising\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I'm currently working on\n- I'm blocked by\n- make progress\n- follow up on\n- to recap\n\n## Speaking mission\nGive a stand-up update, report a blocker and request help. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-20-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-20-language",
+          "text": "Practise Paraphrasing and summarising; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-20-speaking",
+          "text": "Give a stand-up update, report a blocker and request help. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-20-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-20-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-21",
+      "title": "Week 3 checkpoint",
+      "module": "Week 3 — Workplace communication",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nRun a short mock meeting and adapt when a requirement changes.\n\n## Listening\nRevisit Day 17 and a new engineering excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Retrieval and clarification\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- just to clarify\n- given the new information\n\n## Speaking mission\nRun a short mock meeting and adapt when a requirement changes. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-21-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-21-language",
+          "text": "Practise Retrieval and clarification; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-21-speaking",
+          "text": "Run a short mock meeting and adapt when a requirement changes. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-21-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-22",
+      "title": "Career narrative",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDescribe your career or study history, separating ongoing and completed events.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A business interview**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Past simple vs present perfect\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- started out\n- since then\n- move into\n- be involved in\n- develop expertise\n\n## Speaking mission\nDescribe your career or study history, separating ongoing and completed events. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-22-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-22-language",
+          "text": "Practise Past simple vs present perfect; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-22-speaking",
+          "text": "Describe your career or study history, separating ongoing and completed events. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-22-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-22-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-23",
+      "title": "Project storytelling",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDescribe a nonconfidential project using context, action and result, or label a fictional example.\n\n## Listening\nChoose a 3–6 minute excerpt about web performance or frontend from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Cause and effect\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- the challenge was\n- as a result\n- we decided to\n- the outcome was\n- looking back\n\n## Speaking mission\nDescribe a nonconfidential project using context, action and result, or label a fictional example. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-23-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-23-language",
+          "text": "Practise Cause and effect; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-23-speaking",
+          "text": "Describe a nonconfidential project using context, action and result, or label a fictional example. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-23-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-23-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-24",
+      "title": "Design trade-offs",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nCompare two design options and defend one under changing constraints.\n\n## Listening\nChoose a 3–6 minute excerpt about reliability or distributed systems from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Conditionals and comparison\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- the main trade-off\n- at the cost of\n- under these constraints\n- on balance\n- opt for\n\n## Speaking mission\nCompare two design options and defend one under changing constraints. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-24-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-24-language",
+          "text": "Practise Conditionals and comparison; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-24-speaking",
+          "text": "Compare two design options and defend one under changing constraints. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-24-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-24-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-25",
+      "title": "Explaining AI",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain an AI feature, your role if applicable and limitations.\n\n## Listening\nChoose a 3–6 minute excerpt about AI or machine learning from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Qualifiers and evidence\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- based on\n- to some degree\n- the evidence suggests\n- in this scenario\n- one limitation is\n\n## Speaking mission\nExplain an AI feature, your role if applicable and limitations. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-25-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-25-language",
+          "text": "Practise Qualifiers and evidence; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-25-speaking",
+          "text": "Explain an AI feature, your role if applicable and limitations. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-25-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-25-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-26",
+      "title": "Motivation and goals",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDiscuss the advantages and risks of joining a startup.\n\n## Listening\nWatch [Working for yourself](https://www.youtube.com/watch?v=fUn_LTwaogU). If unavailable choose a similar BBC excerpt. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Goals and future forms\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I'm drawn to\n- take initiative\n- create value\n- in the future\n- weigh up the risks\n\n## Speaking mission\nDiscuss the advantages and risks of joining a startup. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-26-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-26-language",
+          "text": "Practise Goals and future forms; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-26-speaking",
+          "text": "Discuss the advantages and risks of joining a startup. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-26-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-26-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-27",
+      "title": "Interview follow-ups",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nAnswer a technical interview question and three follow-ups without inventing experience.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Challenging someone's ideas**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Clarification and repair\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- could you clarify\n- let me rephrase\n- for instance\n- I'm not sure about\n- the reason is\n\n## Speaking mission\nAnswer a technical interview question and three follow-ups without inventing experience. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-27-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-27-language",
+          "text": "Practise Clarification and repair; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-27-speaking",
+          "text": "Answer a technical interview question and three follow-ups without inventing experience. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-27-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-27-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-28",
+      "title": "Midpoint checkpoint",
+      "module": "Week 4 — Engineering interviews",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nRepeat Day 1, then complete a fifteen-minute mixed interview.\n\n## Listening\nRevisit Day 25 and a fresh BBC or engineering excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Diagnostic review\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- what I mean is\n- to be more specific\n\n## Speaking mission\nRepeat Day 1, then complete a fifteen-minute mixed interview. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-28-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-28-language",
+          "text": "Practise Diagnostic review; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-28-speaking",
+          "text": "Repeat Day 1, then complete a fifteen-minute mixed interview. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-28-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-29",
+      "title": "Education debate",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nArgue both for and against university education.\n\n## Listening\nChoose a 3–6 minute excerpt about education or learning from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Concession\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- although\n- even though\n- to some extent\n- there is a case for\n- nevertheless\n\n## Speaking mission\nArgue both for and against university education. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-29-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-29-language",
+          "text": "Practise Concession; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-29-speaking",
+          "text": "Argue both for and against university education. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-29-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-29-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-30",
+      "title": "Technology and society",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDiscuss AI opportunities and risks while qualifying uncertain claims.\n\n## Listening\nChoose a 3–6 minute excerpt about technology and society from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Modals of certainty\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- may lead to\n- is likely to\n- can't rule out\n- depends on\n- the evidence is mixed\n\n## Speaking mission\nDiscuss AI opportunities and risks while qualifying uncertain claims. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-30-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-30-language",
+          "text": "Practise Modals of certainty; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-30-speaking",
+          "text": "Discuss AI opportunities and risks while qualifying uncertain claims. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-30-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-30-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-31",
+      "title": "Evidence and experiments",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain an experiment, its findings and one confounding factor.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A lecture about an experiment**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Passive voice\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- was measured\n- the findings suggest\n- control for\n- draw a conclusion\n- correlation\n\n## Speaking mission\nExplain an experiment, its findings and one confounding factor. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-31-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-31-language",
+          "text": "Practise Passive voice; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-31-speaking",
+          "text": "Explain an experiment, its findings and one confounding factor. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-31-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-31-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-32",
+      "title": "Money choices",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDiscuss fictional budgeting choices and justify priorities.\n\n## Listening\nChoose a 3–6 minute excerpt about money or consumer habits from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Quantifiers and comparisons\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- set aside\n- spend less on\n- a small proportion\n- make ends meet\n- prioritise\n\n## Speaking mission\nDiscuss fictional budgeting choices and justify priorities. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-32-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-32-language",
+          "text": "Practise Quantifiers and comparisons; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-32-speaking",
+          "text": "Discuss fictional budgeting choices and justify priorities. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-32-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-32-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-33",
+      "title": "Negotiating priorities",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nNegotiate a shared plan when preferences conflict.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Persuading someone to do something**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Compromise\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- meet halfway\n- make a compromise\n- non-negotiable\n- in exchange for\n- find common ground\n\n## Speaking mission\nNegotiate a shared plan when preferences conflict. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-33-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-33-language",
+          "text": "Practise Compromise; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-33-speaking",
+          "text": "Negotiate a shared plan when preferences conflict. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-33-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-33-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-34",
+      "title": "City improvements",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nPropose a city improvement and answer objections.\n\n## Listening\nChoose a 3–6 minute excerpt about transport or environment from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Hypothetical conditionals\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- invest in\n- reduce congestion\n- make it accessible\n- funding constraints\n- the long-term impact\n\n## Speaking mission\nPropose a city improvement and answer objections. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-34-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-34-language",
+          "text": "Practise Hypothetical conditionals; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-34-speaking",
+          "text": "Propose a city improvement and answer objections. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-34-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-34-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-35",
+      "title": "Week 5 checkpoint",
+      "module": "Week 5 — Opinions and debate",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nHold a structured debate and switch positions halfway.\n\n## Listening\nRevisit Day 30 and a new BBC excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Retrieval and concession\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- fair enough\n- that said\n\n## Speaking mission\nHold a structured debate and switch positions halfway. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-35-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-35-language",
+          "text": "Practise Retrieval and concession; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-35-speaking",
+          "text": "Hold a structured debate and switch positions halfway. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-35-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-36",
+      "title": "Explaining an API",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain an API with an analogy, then describe its limitations.\n\n## Listening\nChoose a 3–6 minute excerpt about APIs or web architecture from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Definitions and examples\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- in simple terms\n- acts as\n- for example\n- request and response\n- behind the scenes\n\n## Speaking mission\nExplain an API with an analogy, then describe its limitations. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-36-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-36-language",
+          "text": "Practise Definitions and examples; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-36-speaking",
+          "text": "Explain an API with an analogy, then describe its limitations. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-36-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-36-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-37",
+      "title": "Debugging and quality",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDescribe a fictional or nonconfidential bug investigation and prevention plan.\n\n## Listening\nChoose a 3–6 minute excerpt about testing or quality from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Sequencing and cause and effect\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- reproduce the issue\n- narrow down\n- root cause\n- rule out\n- prevent recurrence\n\n## Speaking mission\nDescribe a fictional or nonconfidential bug investigation and prevention plan. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-37-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-37-language",
+          "text": "Practise Sequencing and cause and effect; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-37-speaking",
+          "text": "Describe a fictional or nonconfidential bug investigation and prevention plan. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-37-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-37-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-38",
+      "title": "Data systems",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain the trade-off between consistency and latency without jargon.\n\n## Listening\nChoose a 3–6 minute excerpt about data systems from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Reformulation and comparison\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- in other words\n- roughly speaking\n- keep in sync\n- respond quickly\n- the distinction is\n\n## Speaking mission\nExplain the trade-off between consistency and latency without jargon. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-38-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-38-language",
+          "text": "Practise Reformulation and comparison; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-38-speaking",
+          "text": "Explain the trade-off between consistency and latency without jargon. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-38-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-38-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-39",
+      "title": "AI reliability",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nExplain AI reliability to a product manager and propose a verification step.\n\n## Listening\nChoose a 3–6 minute excerpt about LLMs or agent systems from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Hedging and uncertainty\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- not guaranteed\n- human oversight\n- verify the output\n- under certain conditions\n- failure mode\n\n## Speaking mission\nExplain AI reliability to a product manager and propose a verification step. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-39-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-39-language",
+          "text": "Practise Hedging and uncertainty; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-39-speaking",
+          "text": "Explain AI reliability to a product manager and propose a verification step. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-39-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-39-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-40",
+      "title": "Product pitch",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nPitch a fictional feature with problem, benefit and measurable success.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **A design presentation**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Signposting and concision\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- user pain point\n- the proposed solution\n- success would mean\n- measure impact\n- next steps\n\n## Speaking mission\nPitch a fictional feature with problem, benefit and measurable success. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-40-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-40-language",
+          "text": "Practise Signposting and concision; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-40-speaking",
+          "text": "Pitch a fictional feature with problem, benefit and measurable success. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-40-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-40-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-41",
+      "title": "Incident communication",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nSimulate a service incident update, uncertainty and next steps.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Dealing with a problem**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Polite escalation\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- we're investigating\n- current impact\n- workaround\n- keep you updated\n- next update\n\n## Speaking mission\nSimulate a service incident update, uncertainty and next steps. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-41-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-41-language",
+          "text": "Practise Polite escalation; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-41-speaking",
+          "text": "Simulate a service incident update, uncertainty and next steps. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-41-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-41-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-42",
+      "title": "Week 6 checkpoint",
+      "module": "Week 6 — Explaining complex ideas",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nExplain the same concept to a specialist and then a beginner.\n\n## Listening\nRevisit Day 36 and a new engineering excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Retrieval and audience adaptation\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- put simply\n- from a technical perspective\n\n## Speaking mission\nExplain the same concept to a specialist and then a beginner. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-42-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-42-language",
+          "text": "Practise Retrieval and audience adaptation; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-42-speaking",
+          "text": "Explain the same concept to a specialist and then a beginner. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-42-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-43",
+      "title": "Unknown vocabulary",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nSpeak on an unfamiliar topic without looking up words.\n\n## Listening\nChoose a 3–6 minute excerpt about an unfamiliar topic from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Paraphrasing\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- it's a kind of\n- similar to\n- the opposite of\n- what I'm trying to say\n- I can't recall the word\n\n## Speaking mission\nSpeak on an unfamiliar topic without looking up words. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-43-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-43-language",
+          "text": "Practise Paraphrasing; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-43-speaking",
+          "text": "Speak on an unfamiliar topic without looking up words. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-43-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-43-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-44",
+      "title": "Asking good questions",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDiscuss something unfamiliar without bluffing and ask three useful questions.\n\n## Listening\nChoose a 3–6 minute excerpt about an unfamiliar engineering topic from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Clarifying questions\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- am I right in thinking\n- what do you mean by\n- how does that differ\n- could you elaborate\n- I'm not familiar with\n\n## Speaking mission\nDiscuss something unfamiliar without bluffing and ask three useful questions. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-44-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-44-language",
+          "text": "Practise Clarifying questions; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-44-speaking",
+          "text": "Discuss something unfamiliar without bluffing and ask three useful questions. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-44-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-44-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-45",
+      "title": "Retelling advice",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nRetell someone's advice and explain how you would apply it.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Getting advice**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Reported speech\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- suggested that\n- advised me to\n- pointed out\n- mentioned that\n- take into account\n\n## Speaking mission\nRetell someone's advice and explain how you would apply it. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-45-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-45-language",
+          "text": "Practise Reported speech; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-45-speaking",
+          "text": "Retell someone's advice and explain how you would apply it. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-45-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-45-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-46",
+      "title": "Giving feedback",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nRole-play a feedback conversation and agree next steps.\n\n## Listening\nChoose a 3–6 minute excerpt about work or leadership from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Diplomatic feedback\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I've noticed\n- it might help\n- from my perspective\n- how do you see it\n- agree on\n\n## Speaking mission\nRole-play a feedback conversation and agree next steps. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-46-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-46-language",
+          "text": "Practise Diplomatic feedback; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-46-speaking",
+          "text": "Role-play a feedback conversation and agree next steps. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-46-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-46-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-47",
+      "title": "Changing constraints",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nDefend a fictional design, then revise it after a new requirement.\n\n## Listening\nChoose a 3–6 minute excerpt about architecture decisions from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Trade-offs and alternatives\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- reconsider\n- given the constraints\n- the alternative is\n- make a case for\n- change course\n\n## Speaking mission\nDefend a fictional design, then revise it after a new requirement. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-47-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-47-language",
+          "text": "Practise Trade-offs and alternatives; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-47-speaking",
+          "text": "Defend a fictional design, then revise it after a new requirement. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-47-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-47-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-48",
+      "title": "Concise answers",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nAnswer six quick questions and expand one into a structured response.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Discussing advantages and disadvantages**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Concision and sentence stress\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- in short\n- the key point\n- for example\n- overall\n- to be precise\n\n## Speaking mission\nAnswer six quick questions and expand one into a structured response. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-48-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-48-language",
+          "text": "Practise Concision and sentence stress; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-48-speaking",
+          "text": "Answer six quick questions and expand one into a structured response. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-48-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-48-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-49",
+      "title": "Week 7 checkpoint",
+      "module": "Week 7 — Speaking under pressure",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nHold ten minutes of unscripted conversation with unexpected questions.\n\n## Listening\nRevisit Day 44 and a new BBC excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Retrieval and spontaneous follow-ups\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- let me think for a moment\n- what about you\n\n## Speaking mission\nHold ten minutes of unscripted conversation with unexpected questions. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-49-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-49-language",
+          "text": "Practise Retrieval and spontaneous follow-ups; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-49-speaking",
+          "text": "Hold ten minutes of unscripted conversation with unexpected questions. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-49-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-50",
+      "title": "Retelling and reacting",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nSummarise an episode and give your opinion with two supporting reasons.\n\n## Listening\nChoose a 3–6 minute excerpt about an unfamiliar episode from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Natural transitions\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- the episode covered\n- what struck me\n- as for\n- another point\n- on the whole\n\n## Speaking mission\nSummarise an episode and give your opinion with two supporting reasons. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-50-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-50-language",
+          "text": "Practise Natural transitions; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-50-speaking",
+          "text": "Summarise an episode and give your opinion with two supporting reasons. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-50-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-50-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-51",
+      "title": "Engineering achievement",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nPresent a nonconfidential achievement or clearly fictional case and separate evidence from estimates.\n\n## Listening\nChoose a 3–6 minute excerpt about a specialist topic from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Technical collocations\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- deliver a feature\n- improve reliability\n- reduce overhead\n- measure the result\n- contribute to\n\n## Speaking mission\nPresent a nonconfidential achievement or clearly fictional case and separate evidence from estimates. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-51-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-51-language",
+          "text": "Practise Technical collocations; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-51-speaking",
+          "text": "Present a nonconfidential achievement or clearly fictional case and separate evidence from estimates. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-51-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-51-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-52",
+      "title": "Networking",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nStart a networking conversation, ask follow-ups and end it politely.\n\n## Listening\nOpen [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2) and select **Office party planning**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Small talk and polite exits\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- what brings you here\n- how do you know\n- that's interesting\n- nice talking to you\n- keep in touch\n\n## Speaking mission\nStart a networking conversation, ask follow-ups and end it politely. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-52-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-52-language",
+          "text": "Practise Small talk and polite exits; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-52-speaking",
+          "text": "Start a networking conversation, ask follow-ups and end it politely. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-52-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-52-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-53",
+      "title": "Customer value",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nPropose a fictional product change and describe how to evaluate it.\n\n## Listening\nChoose a 3–6 minute excerpt about product or startup topic from [Software Engineering Radio](https://se-radio.net/). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Value and metrics\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- address a need\n- user feedback\n- define success\n- track adoption\n- validate an assumption\n\n## Speaking mission\nPropose a fictional product change and describe how to evaluate it. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-53-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-53-language",
+          "text": "Practise Value and metrics; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-53-speaking",
+          "text": "Propose a fictional product change and describe how to evaluate it. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-53-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-53-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-54",
+      "title": "Senior discussion",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nNegotiate a design decision with a senior colleague and revise a misunderstanding.\n\n## Listening\nOpen [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2) and select **Challenging someone's ideas**. If unavailable, choose a comparable B2 clip. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Diplomacy and repair\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- I appreciate the concern\n- could we explore\n- to clarify\n- I'm open to\n- let's agree on\n\n## Speaking mission\nNegotiate a design decision with a senior colleague and revise a misunderstanding. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-54-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-54-language",
+          "text": "Practise Diplomacy and repair; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-54-speaking",
+          "text": "Negotiate a design decision with a senior colleague and revise a misunderstanding. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-54-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-54-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-55",
+      "title": "Full mock interview",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 55,
+      "body": "## Goal\nComplete a 25-minute interview, including an introduction, project story and unseen follow-ups.\n\n## Listening\nChoose a 3–6 minute excerpt about an unfamiliar BBC or engineering excerpt from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947). No specific episode is assumed to exist. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Individual error priorities\nAsk the mentor for two correction exercises, two transformations and one spontaneous response on this focus. Attempt before seeing answers.\n\n## Useful chunks\n- my contribution was\n- one challenge was\n- the result was\n- in hindsight\n- I'd approach it differently\n\n## Speaking mission\nComplete a 25-minute interview, including an introduction, project story and unseen follow-ups. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Pronunciation\nShadow 20–40 seconds of the listening clip, focusing on stress and thought groups.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-55-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-55-language",
+          "text": "Practise Individual error priorities; say and write your own example for each of the five chunks.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-55-speaking",
+          "text": "Complete a 25-minute interview, including an introduction, project story and unseen follow-ups. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-55-review",
+          "text": "Log up to three corrections, retry an independent response, and record your next priority.",
+          "type": "assessment",
+          "optional": false
+        },
+        {
+          "id": "en-55-shadowing",
+          "text": "Shadow a short excerpt and note one audible pronunciation issue if observed.",
+          "type": "practice",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-56",
+      "title": "Final diagnostic",
+      "module": "Week 8 — Consolidation",
+      "kind": "day",
+      "minutes": 30,
+      "body": "## Goal\nRepeat the initial introduction, answer new follow-ups and compare evidence with the baseline.\n\n## Listening\nRevisit Day 1 and a comparable unfamiliar excerpt. Select unfamiliar material from [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947) or [Software Engineering Radio](https://se-radio.net/) as appropriate. Listen without subtitles first; record the gist. Listen again for three details; check against the transcript or source afterward. Save the exact title and timestamps. If audio is unavailable, have a partner or external voice tool read an original passage and label it as such.\n\n## Language focus: Consolidation and transfer\nRecall examples and correct earlier errors before consulting notes.\n\n## Useful chunks\n- looking back\n- my next priority is\n\n## Speaking mission\nRepeat the initial introduction, answer new follow-ups and compare evidence with the baseline. Speak aloud without a written script; ask at least one question back. Request follow-ups one at a time. Correct up to three important issues and repeat a 60–120 second answer. The in-app mentor is text-only; use a partner, voice tool or private self-recording for actual speech.\n\n## Checkpoint\nRecord a comparable two-minute monologue, answer new questions, and compare with previous evidence. Retrieve earlier phrases before looking at notes.\n\n## Session evidence\nSave the listening source and actual score (if checked), speaking minutes (label estimates), confidence 1–5, up to three corrections, your own examples and the next priority. Revisit phrases after 1, 3, 7 and 14 days. Confirm tasks only after actual attempts.",
+      "tasks": [
+        {
+          "id": "en-56-listening",
+          "text": "Listen twice. Save source, gist and three details; record a score only if checked.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-56-language",
+          "text": "Practise Consolidation and transfer; retrieve earlier chunks and add at most two new ones.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-56-speaking",
+          "text": "Repeat the initial introduction, answer new follow-ups and compare evidence with the baseline. Speak aloud and save a brief nonconfidential summary.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-56-review",
+          "text": "Complete the independent checkpoint, record evidence and assess range, accuracy, fluency, interaction and coherence using the course scorecard.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    }
+  ],
+  "practice": [
+    {
+      "id": "en-lab-conversation",
+      "title": "Everyday conversation",
+      "module": "Speaking lab",
+      "kind": "practice",
+      "group": "role-play",
+      "minutes": 25,
+      "body": "## Scenario\nArrange a weekend with a friend whose preferences differ. Ask questions, negotiate a plan, then summarise the agreement.\n\nSpeak aloud with a partner or external voice tool. The text mentor can simulate the conversation in writing. Ask one question at a time; no model answers before attempting.",
+      "tasks": [
+        {
+          "id": "en-lab-conversation-attempt",
+          "text": "Complete the scenario without a script.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-lab-conversation-retry",
+          "text": "Identify up to three improvements, repeat the answer and save evidence.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-lab-interview",
+      "title": "Professional mock interview",
+      "module": "Speaking lab",
+      "kind": "practice",
+      "group": "interview",
+      "minutes": 25,
+      "body": "## Scenario\nGive a two-minute introduction, explain a nonconfidential or explicitly fictional project, then respond to follow-ups about decisions, results and limitations.\n\nSpeak aloud with a partner or external voice tool. The text mentor can simulate the conversation in writing. Ask one question at a time; no model answers before attempting.",
+      "tasks": [
+        {
+          "id": "en-lab-interview-attempt",
+          "text": "Complete the scenario without a script.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-lab-interview-retry",
+          "text": "Identify up to three improvements, repeat the answer and save evidence.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-lab-meeting",
+      "title": "Workplace meeting",
+      "module": "Speaking lab",
+      "kind": "practice",
+      "group": "role-play",
+      "minutes": 25,
+      "body": "## Scenario\nPresent a fictional design decision, handle a changed deadline and summarise the compromise and next steps.\n\nSpeak aloud with a partner or external voice tool. The text mentor can simulate the conversation in writing. Ask one question at a time; no model answers before attempting.",
+      "tasks": [
+        {
+          "id": "en-lab-meeting-attempt",
+          "text": "Complete the scenario without a script.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-lab-meeting-retry",
+          "text": "Identify up to three improvements, repeat the answer and save evidence.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "id": "en-lab-debate",
+      "title": "Unprepared debate",
+      "module": "Speaking lab",
+      "kind": "practice",
+      "group": "discussion",
+      "minutes": 25,
+      "body": "## Scenario\nChoose a familiar issue, state an opinion with reasons, respond to counterarguments and switch sides.\n\nSpeak aloud with a partner or external voice tool. The text mentor can simulate the conversation in writing. Ask one question at a time; no model answers before attempting.",
+      "tasks": [
+        {
+          "id": "en-lab-debate-attempt",
+          "text": "Complete the scenario without a script.",
+          "type": "practice",
+          "optional": false
+        },
+        {
+          "id": "en-lab-debate-retry",
+          "text": "Identify up to three improvements, repeat the answer and save evidence.",
+          "type": "assessment",
+          "optional": false
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "en-guide",
+      "title": "Study routine and resources",
+      "read_only": true,
+      "body": "# Study routine\nEight weeks of speaking-first B2 practice with progression toward C1; not formal CEFR certification. Initial level must be diagnosed. Use 55 minutes on regular days, 30 on review days. Warm up 5 min, listen 12 min, language 8 min, shadow 5 min, speak 20 min and log 5 min. On short days use 5 minutes listening, 10 speaking, 5 review. Aim for 15 minutes of learner speech on full days. On review days prioritise retrieval, listening, speaking and feedback.\n\n## Resources\n- [British Council B2 listening](https://learnenglish.britishcouncil.org/free-resources/listening/b2)\n- [British Council B2 speaking](https://learnenglish.britishcouncil.org/free-resources/speaking/b2)\n- [BBC 6 Minute English](https://podcasts.apple.com/gb/podcast/6-minute-english/id262026947)\n- [Software Engineering Radio](https://se-radio.net/)\n- [CEFR spoken language criteria](https://www.coe.int/en/web/common-european-framework-reference-languages/table-%203-cefr-3.3-common-reference-levels-qualitative-aspects-of-spoken-language-use)\n\nExternal resources are linked, not reproduced. Episode themes are suggestions; check availability. Optional: English File Upper-Intermediate and English Grammar in Use (use legally acquired copies).\n\n## Vocabulary\nUse chunks in your own sentences, say them aloud, and retrieve after 1, 3, 7 and 14 days. Regular days: five chunks; review days: at most two new ones.\n\n## Voice and privacy\nThe platform mentor works with text. For speech, use a conversation partner, external Voice tool or private self-recording; save only a brief nonconfidential summary. Do not assume the mentor heard audio or checked an external source. No private learner logs belong in Git.\n\nAI-assisted curriculum; editorial review pending."
+    },
+    {
+      "id": "en-scorecard",
+      "title": "Speaking scorecard and progress log",
+      "read_only": true,
+      "body": "# Speaking scorecard\nUse the same two-minute prompt on Days 1, 28 and 56 and add unseen questions. Checkpoints on Days 7, 14, 21, 28, 35, 42, 49 and 56.\n\nRate each of the five dimensions in the platform from 0 to 2: 0 = not yet demonstrated or needs substantial support; 1 = partly independent; 2 = independently demonstrated for the task. This local scale is not a CEFR level or official exam result. Confidence 1–5 is separate. Leave unevaluated criteria unrated.\n\n| Dimension | Evidence |\n| --- | --- |\n| Range | Appropriate vocabulary and varied structures |\n| Accuracy | Errors do not regularly obstruct meaning |\n| Fluency | Sustained spontaneous speech with manageable pauses |\n| Interaction | Relevant replies, questions, clarification and repair |\n| Coherence | Connected, organised ideas and clear transitions |\n\n## Log template\n- Day and date; complete or partial\n- Listening title and timestamps; actual checked score or not assessed\n- Speaking minutes (label estimates)\n- Confidence before/after (1–5)\n- Evidence for the five dimensions; pronunciation observation only if heard\n- Up to three corrections and new examples\n- Five chunks (review days: at most two new ones)\n- Next priority and review dates +1/+3/+7/+14\n\n## Targets\nAim to complete at least 45 sessions; speak independently for 2–3 minutes and handle three follow-ups; sustain a 15-minute everyday conversation; explain a professional decision and its trade-offs; retrieve at least 16 of 20 sampled phrases after a week. Compare actual evidence rather than claiming guaranteed C1. Adapt the difficulty based on results."
+    },
+    {
+      "id": "en-tutor-guide",
+      "title": "Conversation mentor protocol",
+      "read_only": true,
+      "body": "# Mentor protocol\nUse clear natural English by default; explain in simple English or Russian if explicitly requested. Ask one question at a time; wait for an attempt before giving an answer. Use warm-up, listening recap, target language, role-play, follow-ups and a final independent retry. Encourage the learner to talk most of the time in a real voice session.\n\nPrioritise intelligibility. Ask for self-correction first; give at most three high-value corrections, distinguishing errors from style. Avoid interrupting every mistake. Never infer accent from text, fabricate listening scores or invent personal experiences. Use fictional scenarios explicitly when needed. If listening is too hard, substitute B1 material temporarily; if easy, use unfamiliar native-speed material. Keep progress learner-confirmed. In text chat, provide prompts for speaking externally and assess only text actually supplied."
+    }
+  ],
+  "rubric": [
+    {
+      "id": "en-rubric-1",
+      "title": "Range: varied and appropriate vocabulary and structures",
+      "max": 2
+    },
+    {
+      "id": "en-rubric-2",
+      "title": "Accuracy: grammar and vocabulary support meaning",
+      "max": 2
+    },
+    {
+      "id": "en-rubric-3",
+      "title": "Fluency: connected spontaneous speech with manageable pauses",
+      "max": 2
+    },
+    {
+      "id": "en-rubric-4",
+      "title": "Interaction: relevant responses, questions and repair",
+      "max": 2
+    },
+    {
+      "id": "en-rubric-5",
+      "title": "Coherence: clear organisation and linking",
+      "max": 2
+    }
+  ]
+}
