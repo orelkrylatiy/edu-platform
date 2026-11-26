@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { loginAsOwner } from "./helpers.js";
+
+test.beforeEach(async ({ page }) => { await loginAsOwner(page); });
 
 test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await page.goto("/");

@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { loginAsOwner } from "./helpers.js";
+
+test.beforeEach(async ({ page }) => { await loginAsOwner(page); });
 
 test("every view renders on desktop and mobile without overflow", async ({ page }) => {
   for (const view of [

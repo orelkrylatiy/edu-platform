@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { loginAsOwner } from "./helpers.js";
+
+test.beforeEach(async ({ page }) => { await loginAsOwner(page); });
 
 test("source documents retain links and practice chat gets its own context", async ({ page }) => {
   await page.goto("/");
