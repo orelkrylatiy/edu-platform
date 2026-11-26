@@ -218,3 +218,25 @@ def test_legacy_basic_browser_upgrades_to_cookie_and_logout_blocks_reauth(fresh)
     # sign-out must not silently restore its legacy session.
     denied = client.get("/api/auth/me", auth=("owner", "test-owner-password-123"))
     assert denied.json()["user"] is None
+
+
+def test_local_vite_origin_allowed_only_in_development(fresh, monkeypatch):
+    client = TestClient(module.app)
+    result = send(client, "/api/auth/login", {
+        "username": "owner", "password": "test-owner-password-123",
+    })
+    assert result.status_code == 200
+    headers = {
+        "X-Workspace": "1",
+        "Host": "127.0.0.1:8000",
+        "Origin": "http://127.0.0.1:5173",
+    }
+    assert client.put(
+        "/api/state/note/sa-01", headers=headers,
+        json={"value": "vite-dev-note"},
+    ).status_code == 200
+    monkeypatch.setenv("WORKSPACE_COOKIE_SECURE", "1")
+    assert client.put(
+        "/api/state/note/sa-01", headers=headers,
+        json={"value": "should-not-write"},
+    ).status_code == 403

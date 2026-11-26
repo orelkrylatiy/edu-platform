@@ -203,6 +203,13 @@ async def protect(request: Request, call_next):
             expected = os.getenv("WORKSPACE_PUBLIC_ORIGIN")
             parsed = urlsplit(origin)
             allowed = origin == expected if expected else parsed.netloc == request.headers.get("host")
+            # Development-only Vite proxy: browser :5173 -> backend :8000.
+            # Never enable this exception with Secure production cookies.
+            if not allowed and not expected and os.getenv("WORKSPACE_COOKIE_SECURE", "1") == "0":
+                backend_host = (request.headers.get("host") or "").split(":")[0]
+                allowed = (parsed.scheme == "http"
+                           and parsed.hostname in {"127.0.0.1", "localhost"}
+                           and backend_host in {"127.0.0.1", "localhost"})
             if not allowed:
                 return JSONResponse({"detail": "Invalid request origin"}, status_code=403)
     response = await call_next(request)
