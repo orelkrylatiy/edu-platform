@@ -122,7 +122,7 @@ class ContentSync:
                     raise ValueError("Content response too large")
                 return response.json()
 
-            sha = get("/commits/" + quote(self.branch, safe=""))["sha"]
+            sha = get("/git/ref/heads/" + quote(self.branch, safe="/"))["object"]["sha"]
             if not SHA.fullmatch(sha):
                 raise ValueError("Invalid content version")
             if current.get("version") == sha and current.get("courses"):

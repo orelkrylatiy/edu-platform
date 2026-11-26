@@ -6,6 +6,10 @@ const submit = (page, endpoint, data) => page.request.post("/api/auth/" + endpoi
 
 test("guest can browse the public catalog without exposing course content", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/favicon.svg");
+  const favicon = await page.request.get("/favicon.svg");
+  expect(favicon.status()).toBe(200);
+  expect(favicon.headers()["content-type"]).toContain("image/svg+xml");
   await expect(page.locator(".landing-root .landing-hero h1")).toContainText("Учись глубже.");
   await expect(page.locator(".landing-catalog-wrap .catalog-card")).toHaveCount(3);
   await expect(page.locator(".landing-catalog-wrap")).toContainText("English Speaking");

@@ -50,8 +50,11 @@ Always test the first deployment against a staging domain before publishing. A g
 
 ## Optional on-demand content sync
 
-After deploying the application once, set the three CONTENT_* source settings
-from .env.example in the shared server .env and restart the service once. The
+The provided Compose and systemd service definitions default to the independent
+content branch. If the existing installed systemd unit is not updated during
+release, set the three CONTENT_* source settings from .env.example in the shared
+server .env before the one-time deployment. An explicitly empty repository
+value disables sync. The
 content cache lives beside WORKSPACE_DB and survives subsequent deployments.
 Changes on the independent content branch do not require a new deployment.
 Use owner Settings to refresh immediately, or reload the site after the interval.
