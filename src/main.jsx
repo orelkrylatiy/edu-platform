@@ -133,6 +133,8 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const stored = (key, fallback) => readLocal(accountPrefix + key, fallback);
   const [enrollments, setEnrollments] = useState(initialEnrollments);
   const [courses, setCourses] = useState([]);
+  const [contentStatus, setContentStatus] = useState(null);
+  const [syncing, setSyncing] = useState(false);
   const [records, setRecords] = useState({});
   const [pendingTasks, setPendingTasks] = useState({});
   const writes = useRef(new Map());
@@ -205,6 +207,25 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const messages = records["chat:" + chatKey] || [];
   const draft = drafts[chatKey] || "";
   const setDraft = (value) => setDrafts((old) => ({ ...old, [chatKey]: value }));
+
+  useEffect(() => {
+    if (page === "settings" && user.is_owner) {
+      api("content/status").then(setContentStatus).catch((e) => setError(e.message));
+    }
+  }, [page, user.is_owner]);
+
+  async function syncCourses() {
+    setSyncing(true);
+    try {
+      const status = await api("content/sync", { method: "POST" });
+      setContentStatus(status);
+      setCourses(await api("content"));
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   async function save(kind, id, value) {
     const key = kind + ":" + id;
@@ -402,7 +423,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
             {c.rubric.map((item) => <div className="skill-row" key={item.id}><span>{item.title}</span><div className="skill-options">{[0,1,2].map((n) => <button key={n} aria-label={item.title + " " + n} className={records["rubric:" + c.id + ":" + item.id] === n ? "chosen" : ""} onClick={() => save("rubric", c.id + ":" + item.id, n)}>{n}</button>)}</div><small className="muted">{records["rubric:" + c.id + ":" + item.id] === undefined ? t("Не оценено", "Unrated") : t("Оценено", "Rated")}</small></div>)}
             {c.documents?.some((d) => d.id === "sa-scorecard" || d.id === "en-scorecard") && <button className="inline-link" onClick={() => openDocument(c, c.documents.find((d) => d.id === "sa-scorecard" || d.id === "en-scorecard"))}>{t("Все вопросы и критерии", "All criteria and questions")} <ArrowUpRight size={16}/></button>}
           </div>}</section>)}</>}
-        {page === "settings" && <><PageTitle eyebrow="WORKSPACE" title={t("Настройки", "Settings")} /><section className="card settings-card"><h2>{t("Интерфейс", "Appearance")}</h2><label>{t("Тема", "Theme")}<select value={theme} onChange={(e) => setTheme(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label><label>{t("Язык", "Language")}<select value={language} onChange={(e) => setLanguage(e.target.value)}><option value="ru">Русский</option><option value="en">English</option></select></label><h2>AI provider</h2><label>{t("Провайдер", "Provider")}<select value={provider} onChange={(e) => setProvider(e.target.value)}>{["auto","openai","glm","humanizer","opencode"].map((p) => <option value={p} key={p} disabled={!providers[p]}>{p}{providers[p] ? "" : " (not configured)"}</option>)}</select></label><p className="muted">{t("Ключи задаются только на сервере. Статус означает наличие конфигурации, а не проверку соединения.", "Keys are configured on the server. Status indicates configuration, not connectivity.")}</p><h2>{t("Данные", "Data")}</h2><button className="secondary" onClick={exportData}>{t("Экспорт JSON", "Export JSON")} <ArrowUpRight size={16} /></button></section></>}
+        {page === "settings" && <><PageTitle eyebrow="WORKSPACE" title={t("Настройки", "Settings")} /><section className="card settings-card"><h2>{t("Интерфейс", "Appearance")}</h2><label>{t("Тема", "Theme")}<select value={theme} onChange={(e) => setTheme(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label><label>{t("Язык", "Language")}<select value={language} onChange={(e) => setLanguage(e.target.value)}><option value="ru">Русский</option><option value="en">English</option></select></label><h2>AI provider</h2><label>{t("Провайдер", "Provider")}<select value={provider} onChange={(e) => setProvider(e.target.value)}>{["auto","openai","glm","humanizer","opencode"].map((p) => <option value={p} key={p} disabled={!providers[p]}>{p}{providers[p] ? "" : " (not configured)"}</option>)}</select></label><p className="muted">{t("Ключи задаются только на сервере. Статус означает наличие конфигурации, а не проверку соединения.", "Keys are configured on the server. Status indicates configuration, not connectivity.")}</p>{user.is_owner && <><h2>{t("Учебный контент", "Course content")}</h2>{contentStatus && <><p className="muted">{contentStatus.repository || t("Встроенные курсы", "Bundled courses")} {contentStatus.branch && contentStatus.enabled ? " / " + contentStatus.branch : ""} · {contentStatus.version.slice(0, 8)}</p><p className="muted">{t("Последняя проверка", "Last check")}: {contentStatus.last_checked_at ? new Date(contentStatus.last_checked_at * 1000).toLocaleString() : "—"} · {t("Статус", "Status")}: {contentStatus.status}</p>{contentStatus.status === "error" && <p role="status">{t("Обновление не удалось. Сохранена предыдущая версия.", "Refresh failed. Previous content retained.")}</p>}<button className="secondary" disabled={syncing || !contentStatus.enabled || busy} onClick={syncCourses}>{syncing ? t("Обновление…", "Syncing…") : t("Обновить курсы", "Refresh courses")}</button></>}</>}<h2>{t("Данные", "Data")}</h2><button className="secondary" onClick={exportData}>{t("Экспорт JSON", "Export JSON")} <ArrowUpRight size={16} /></button></section></>}
         </>}
       </main>
       {chatOpen && lesson && <aside className="chat" ref={chatPanel}><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {page === "knowledge" && selectedDocument ? selectedDocument.title : lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}

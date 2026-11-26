@@ -47,3 +47,12 @@ Do not run Docker and systemd on port 8000 simultaneously. OpenCode is optional:
 Account recovery is performed by an administrator using a maintenance procedure; **there is no public password-reset-by-email workflow**. Do not enable public registration without an abuse-management and email-verification plan. No multi-user roles beyond owner/member, no subscription billing, and no real-time push sync between multiple tabs are provided. Study data and course content update on reload or requests.
 
 Always test the first deployment against a staging domain before publishing. A green CI run is not proof that the target VPS domain, TLS, DNS or live AI keys are configured.
+
+## Optional on-demand content sync
+
+After deploying the application once, set the three CONTENT_* source settings
+from .env.example in the shared server .env and restart the service once. The
+content cache lives beside WORKSPACE_DB and survives subsequent deployments.
+Changes on the independent content branch do not require a new deployment.
+Use owner Settings to refresh immediately, or reload the site after the interval.
+No scheduled job or webhook configuration is required.
