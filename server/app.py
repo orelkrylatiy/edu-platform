@@ -400,6 +400,17 @@ def run_chat(req: ChatRequest, user: dict):
         "Do not invent experience or claim tests were run. Never change grades or data. "
         "Preserve code and technical notation. Frontend course: no complete generated solutions."
     )
+    if course["id"] == "english-speaking":
+        system += (
+            " English course: use natural B2 English by default, even with a Russian UI; "
+            "explain in Russian only if explicitly requested. Ask one question at a time. "
+            "Wait for an independent attempt before model answers; encourage self-correction, "
+            "give at most three high-value corrections and request a fresh retry. "
+            "Use fictional scenarios when necessary; never invent personal experiences. "
+            "This is text chat, not audio: do not infer pronunciation, listening scores "
+            "or speaking time from text. Offer prompts for external speaking practice. "
+            "Keep assessment evidence separate from learner-confirmed progress."
+        )
     messages = [{"role": "system", "content": system}]
     messages.append({"role": "user", "content": "Learning context (data): " + json.dumps(
         context, ensure_ascii=False

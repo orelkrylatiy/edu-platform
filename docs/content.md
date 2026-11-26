@@ -145,3 +145,16 @@ The full course is substantial source material, not a claim that every lesson
 has been independently pedagogically validated. Editing the curriculum or
 adding learning exercises should preserve its original framing and be clearly
 labelled as additional material.
+
+## English Speaking course
+
+`content/courses/english-speaking.json` is a standard manifest, with 56 ordered
+lessons (`en-01` to `en-56`), eight weekly checkpoints, four speaking labs,
+three reference documents and five assessment criteria (0–2 each). This is an
+AI-assisted public curriculum adaptation, not a verbatim copy of the private
+Wiki or a sync adapter. Personal observations, private paths, learner logs and
+account data are excluded. Review source links and pedagogy before publication.
+The platform mentor is text-only; actual listening, speaking and pronunciation
+practice need external audio or a conversation partner. Record only nonconfidential
+summaries in learner state. English mentor behavior is selected by course ID.
+Do not rename lesson/task IDs or mark completion based solely on AI output.

@@ -7,7 +7,8 @@ const submit = (page, endpoint, data) => page.request.post("/api/auth/" + endpoi
 test("guest can browse the public catalog without exposing course content", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".landing-root .landing-hero h1")).toContainText("Учись глубже.");
-  await expect(page.locator(".landing-catalog-wrap .catalog-card")).toHaveCount(2);
+  await expect(page.locator(".landing-catalog-wrap .catalog-card")).toHaveCount(3);
+  await expect(page.locator(".landing-catalog-wrap")).toContainText("English Speaking");
   await expect(page.locator(".landing-catalog-wrap")).toContainText("Middle System Analyst");
   await page.screenshot({ path:"test-results/guest-landing-desktop.png", fullPage:true });
   const apiContent = await page.request.get("/api/content");
@@ -16,6 +17,7 @@ test("guest can browse the public catalog without exposing course content", asyn
   expect(publicCatalog.status()).toBe(200);
   const list = await publicCatalog.json();
   expect(list[0].lessons).toBeGreaterThan(0);
+  expect(list.find((c) => c.id === "english-speaking").lessons).toBe(56);
   expect(JSON.stringify(list)).not.toContain("source_stats");
   await page.setViewportSize({width:390,height:844});
   await page.reload();
