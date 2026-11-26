@@ -5,10 +5,10 @@ from server.content import load_courses
 def test_complete_course_import():
     course = build_course()
     assert len(course["lessons"]) == 30
-    assert [l["id"] for l in course["lessons"]] == [
+    assert [lesson_item["id"] for lesson_item in course["lessons"]] == [
         f"sa-{day:02d}" for day in range(1, 31)
     ]
-    assert sum(len(l["tasks"]) for l in course["lessons"]) == 119
+    assert sum(len(lesson_item["tasks"]) for lesson_item in course["lessons"]) == 119
     assert sum(
         t["origin"] == "source"
         for activity in course["practice"]

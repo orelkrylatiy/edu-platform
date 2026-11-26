@@ -97,7 +97,7 @@ def parse_days(text: str) -> list[dict]:
 
     if [lesson["day"] for lesson in lessons] != list(range(1, 31)):
         raise ValueError("SA roadmap must contain days 01..30 in order")
-    if sum(len(l["tasks"]) for l in lessons) != 119:
+    if sum(len(lesson_item["tasks"]) for lesson_item in lessons) != 119:
         raise ValueError("SA roadmap checkbox count drifted; review import")
     return lessons
 
@@ -245,7 +245,7 @@ def build_course() -> dict:
         "documents": documents,
         "source_stats": {
             "days": len(lessons),
-            "roadmap_tasks": sum(len(l["tasks"]) for l in lessons),
+            "roadmap_tasks": sum(len(lesson_item["tasks"]) for lesson_item in lessons),
             "lab_source_tasks": sum(
                 sum(t["origin"] == "source" for t in p["tasks"]) for p in practice
             ),
