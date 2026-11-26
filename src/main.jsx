@@ -7,7 +7,7 @@ import { activity, dateKey, lessonComplete, monthCells, progress, remaining, get
 import "./style.css";
 import { Landing, CatalogView } from "./auth.jsx";
 
-const nav = [["home", "Обзор", "Overview"], ["courses", "Мои курсы", "My courses"], ["catalog", "Каталог", "Explore"], ["practice", "Практикум", "Practice"], ["knowledge", "Библиотека", "Library"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
+const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["catalog", "Каталог", "Explore"], ["practice", "Практикум", "Practice"], ["knowledge", "Библиотека", "Library"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
 const navIcons = { home: ScanLine, courses: LibraryBig, catalog: Compass, practice: Target, knowledge: BookOpen, calendar: CalendarDays, focus: Clock, artifacts: NotebookPen, review: RotateCcw, skills: ChartNoAxesColumn, settings: Settings };
 function PixelArt() {
   const cells = Array.from({length: 19 * 19}, (_,i) => {
@@ -118,8 +118,8 @@ function App() {
     setSession({ checking: false, user: result.user, enrollments: result.enrollments });
   }
   async function signOut() {
-    try { await api("auth/logout", { method: "POST" }); }
-    finally { setSession({ checking: false, user: null, enrollments: [] }); }
+    await api("auth/logout", { method: "POST" });
+    setSession({ checking: false, user: null, enrollments: [] });
   }
   if (session.checking) return <div className="landing-root auth-bootstrap"><div className="skeleton-line medium"/><div className="skeleton-hero"><div className="skeleton-line wide"/><div className="skeleton-line short"/></div></div>;
   if (!session.user) return <><Landing catalog={catalog} config={config} onAuth={signIn} /><div className="sr-only" role="status">{authError}</div></>;
@@ -302,7 +302,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
     <header className="topbar">
       <button className="icon" aria-label={t("Навигация", "Navigation")} onClick={() => setSidebar(!sidebar)}><Menu size={19} /></button>
       <button className="brand" onClick={() => setPage("home")}><span className="logo">L<span className="logo-star">✳</span></span><span>LEARNING<span className="brand-accent">/</span>WORKSPACE</span></button>
-      <div className="top-right"><span className="account-pill" title={user.username}><UserRound size={15}/><span>{user.username}</span></span><span className="status"><i /> {t("ЛИЧНОЕ ПРОСТРАНСТВО", "PERSONAL SPACE")}</span><button className="top-timer" onClick={() => setPage("focus")} title={t("Открыть таймер", "Open focus timer")}><Clock size={14} /> {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</button><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button><button className="account-signout" onClick={onLogout} aria-label={t("Выйти из аккаунта", "Sign out")}><LogOut size={15}/><span>{t("Выйти", "Sign out")}</span></button></div>
+      <div className="top-right"><span className="account-pill" title={user.username}><UserRound size={15}/><span>{user.username}</span></span><span className="status"><i /> {t("ЛИЧНОЕ ПРОСТРАНСТВО", "PERSONAL SPACE")}</span><button className="top-timer" onClick={() => setPage("focus")} title={t("Открыть таймер", "Open focus timer")}><Clock size={14} /> {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</button><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button><button className="account-signout" onClick={() => void onLogout().catch((e) => setError(e.message))} aria-label={t("Выйти из аккаунта", "Sign out")}><LogOut size={15}/><span>{t("Выйти", "Sign out")}</span></button></div>
     </header>
     {error && <div className="error" role="alert">{error}<button className="icon" onClick={() => setError("")} aria-label="Close"><X size={16} /></button></div>}
     <div className={"layout " + (sidebar ? "has-nav " : "") + (chatOpen && lesson ? "has-chat" : "")}>
