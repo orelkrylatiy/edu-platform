@@ -37,9 +37,9 @@ def validate_course(course: dict, seen: set[str]) -> None:
             raise ValueError("Document requires Markdown body")
 
 
-def load_courses() -> list[dict]:
+def load_courses(public_only: bool = False) -> list[dict]:
     public = {p.name: p for p in (ROOT / "content/courses").glob("*.json")}
-    private = {p.name: p for p in (ROOT / "content/private").glob("*.json")}
+    private = {} if public_only else {p.name: p for p in (ROOT / "content/private").glob("*.json")}
     catalog = {**public, **private}
     courses = []
     seen = set()
