@@ -2,12 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUpRight, ArrowRight, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine } from "lucide-react";
+import { ArrowUpRight, ArrowRight, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine, Target, BookOpen } from "lucide-react";
 import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak, advanceCalendar } from "./learning.js";
 import "./style.css";
 
-const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
-const navIcons = { home: ScanLine, courses: LibraryBig, calendar: CalendarDays, focus: Clock, artifacts: NotebookPen, review: RotateCcw, skills: ChartNoAxesColumn, settings: Settings };
+const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["practice", "Практикум", "Practice"], ["knowledge", "Библиотека", "Library"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
+const navIcons = { home: ScanLine, courses: LibraryBig, practice: Target, knowledge: BookOpen, calendar: CalendarDays, focus: Clock, artifacts: NotebookPen, review: RotateCcw, skills: ChartNoAxesColumn, settings: Settings };
 function PixelArt() {
   const cells = Array.from({length: 19 * 19}, (_,i) => {
     const x = i % 19, y = Math.floor(i / 19);
@@ -34,8 +34,47 @@ async function api(path, options = {}) {
   }
   return response.json();
 }
+const wikiDocs = {
+  "Middle System Analyst Roadmap": "sa-roadmap",
+  "SA Practice Lab": "sa-practice-lab",
+  "SA Interview Scorecard": "sa-scorecard",
+};
+const interviewWikiUrl = "https://github.com/orelkrylatiy/personal-wiki/blob/main/01%20Projects/Career%20Offer/Interview%20Preparation%20Plan.md";
+function headingSlug(label) {
+  return String(label).toLocaleLowerCase().trim().replace(/[^\\p{L}\\p{N}]+/gu, "-").replace(/^-|-$/g, "");
+}
+function linkWiki(raw) {
+  return String(raw || "").replace(/\\[\\[([^\\]]+)\\]\\]/g, (original, text) => {
+    const [title, anchor] = text.split("#");
+    const doc = wikiDocs[title.trim()];
+    if (doc) return "[" + text + "](#workspace-doc/" + doc + "/" + encodeURIComponent(anchor || "") + ")";
+    if (title.trim() === "Interview Preparation Plan") return "[" + text + "](" + interviewWikiUrl + ")";
+    return original;
+  });
+}
+function RenderMarkdown({ text }) {
+  return <Markdown remarkPlugins={[remarkGfm]} components={{
+    a: ({ href, children }) => <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noreferrer noopener" : undefined}
+      onClick={(event) => {
+        if (href?.startsWith("#workspace-doc/")) {
+          event.preventDefault();
+          const [, id, anchor = ""] = href.slice(1).split("/");
+          window.dispatchEvent(new CustomEvent("workspace:open-document", { detail: { id, anchor: decodeURIComponent(anchor) } }));
+        }
+      }}>{children}</a>,
+    h2: ({ children }) => <h2 id={"doc-heading-" + headingSlug(children)}>{children}</h2>,
+    h3: ({ children }) => <h3 id={"doc-heading-" + headingSlug(children)}>{children}</h3>,
+    img: ({ alt }) => <span className="image-placeholder">[{alt || "image"}]</span>,
+  }}>{text}</Markdown>;
+}
 function Md({ children }) {
-  return <Markdown remarkPlugins={[remarkGfm]} components={{ a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer noopener">{children}</a>, img: ({ alt }) => <span>[{alt || "image"}]</span> }}>{children}</Markdown>;
+  const content = linkWiki(children);
+  return <>{content.split(/(<details>[\\s\\S]*?<\\/details>)/g).map((segment, index) => {
+    const hint = segment.match(/^<details>\\s*<summary>([\\s\\S]*?)<\\/summary>([\\s\\S]*?)<\\/details>$/);
+    return hint
+      ? <details className="study-hint" key={index}><summary>{hint[1].trim()}</summary><div className="prose"><RenderMarkdown text={hint[2].trim()} /></div></details>
+      : <RenderMarkdown key={index} text={segment} />;
+  })}</>;
 }
 function App() {
   const [courses, setCourses] = useState([]);
@@ -46,6 +85,8 @@ function App() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState("home");
+  const [docId, setDocId] = useState("sa-roadmap");
+  const [docAnchor, setDocAnchor] = useState("");
   const [courseId, setCourseId] = useState(readLocal("course", "system-analyst"));
   const [lessonId, setLessonId] = useState(readLocal("lesson", "sa-01"));
   const [theme, setTheme] = useState(readLocal("theme", "dark"));
@@ -65,6 +106,21 @@ function App() {
   const completing = useRef(false);
   const t = (ru, en) => language === "ru" ? ru : en;
   useEffect(() => { if (chatOpen && window.innerWidth <= 650) chatPanel.current?.scrollIntoView({ block: "start" }); }, [chatOpen]);
+  useEffect(() => {
+    const open = (event) => {
+      setDocId(event.detail.id);
+      setDocAnchor(event.detail.anchor || "");
+      setCourseId("system-analyst");
+      setPage("knowledge");
+    };
+    window.addEventListener("workspace:open-document", open);
+    return () => window.removeEventListener("workspace:open-document", open);
+  }, []);
+  useEffect(() => {
+    if (page !== "knowledge" || !docAnchor) return;
+    const handle = setTimeout(() => document.getElementById("doc-heading-" + headingSlug(docAnchor))?.scrollIntoView({ block:"start" }), 80);
+    return () => clearTimeout(handle);
+  }, [page, docId, docAnchor]);
 
   useEffect(() => {
     Promise.all([api("content"), api("state"), api("providers")]).then(([c, rows, p]) => {
@@ -77,7 +133,10 @@ function App() {
   useEffect(() => { localStorage.setItem("course", JSON.stringify(courseId)); localStorage.setItem("lesson", JSON.stringify(lessonId)); localStorage.setItem("provider", JSON.stringify(provider)); }, [courseId, lessonId, provider]);
 
   const course = courses.find((c) => c.id === courseId) || courses[0];
-  const lesson = course?.lessons.find((l) => l.id === lessonId) || course?.lessons[0];
+  const lesson = [...(course?.lessons || []), ...(course?.practice || [])].find((l) => l.id === lessonId) || course?.lessons[0];
+  const lessonUnits = lesson?.kind === "practice" ? (course?.practice || []) : (course?.lessons || []);
+  const lessonIndex = lessonUnits.indexOf(lesson);
+  const selectedDocument = course?.documents?.find((doc) => doc.id === docId) || course?.documents?.[0];
   const stats = course ? progress(course, records) : { done: 0, total: 0, percent: 0, passed: 0, gates: 0 };
   const days = activity(records);
   const seconds = remaining(timer, now);
@@ -133,7 +192,8 @@ function App() {
     if (timer.end) setTimer((old) => ({ ...old, end: null, left: remaining(old) }));
     else setTimer((old) => ({ ...old, end: Date.now() + old.left * 1000, id: old.id || crypto.randomUUID(), started: old.started || Date.now(), lesson: old.lesson || lesson?.id }));
   }
-  function openLesson(c, l) { if (!c || !l) return; setCourseId(c.id); setLessonId(l.id); setTaskId(""); setPage("lesson"); }
+  function openLesson(c, l) { if (!c || !l) return; setCourseId(c.id); setLessonId(l.id); setTaskId(""); setChatOpen(false); setPage("lesson"); }
+  function openDocument(c, doc) { if (!c || !doc) return; setCourseId(c.id); setDocId(doc.id); setDocAnchor(""); setPage("knowledge"); }
   function openChat(id = "") { setTaskId(id); setChatOpen(true); }
   async function send(event) {
     event.preventDefault();
@@ -181,10 +241,15 @@ function App() {
         {nav.map(([id, ru, en]) => { const Icon = navIcons[id]; return <button key={id} className={"nav-item " + (page === id ? "selected" : "")} onClick={() => { setPage(id); if (window.innerWidth <= 650) setSidebar(false); }}><Icon size={17} /><span>{t(ru, en)}</span><ChevronRight size={14} className="nav-arrow" /></button>; })}
         <div className="side-label course-label">{t("ПРОГРАММА", "PROGRAM")}</div>
         {course && <><strong className="side-course">{course.title}</strong><div className="bar"><i style={{ width: stats.percent + "%" }} /></div><small className="muted">{stats.percent}%</small>
-        <div className="lessons"><span className="side-label sub-label">{t("УРОКИ / ДНИ", "LESSONS / DAYS")}</span>{course.lessons.map((l, i) => <button key={l.id} className={"lesson-link " + (page === "lesson" && l.id === lesson?.id ? "selected" : "")} onClick={() => openLesson(course, l)}><span className="mono">{String(i + 1).padStart(2, "0")}</span><span>{l.title}</span>{lessonComplete(l, records) && <Check size={14} />}</button>)}</div></>}
+        <div className="lessons"><span className="side-label sub-label">{t("УРОКИ / ДНИ", "LESSONS / DAYS")}</span>{course.lessons.map((l, i) => <button key={l.id} className={"lesson-link " + (page === "lesson" && l.id === lesson?.id ? "selected" : "")} onClick={() => openLesson(course, l)}><span className="mono">{String(i + 1).padStart(2, "0")}</span><span>{l.title}</span>{lessonComplete(l, records) && <Check size={14} />}</button>)}</div>
+        {Boolean(course.practice?.length) && <div className="side-group"><div className="side-label sub-label">PRACTICE LAB</div><button className="lesson-link" onClick={() => setPage("practice")}><Target size={14} /> {t("Открыть практикум", "Open practice")}</button></div>}
+        {Boolean(course.documents?.length) && <div className="side-group"><div className="side-label sub-label">SOURCE MATERIALS</div>{course.documents.map((doc) => <button key={doc.id} className="lesson-link" onClick={() => openDocument(course, doc)}><BookOpen size={14}/><span>{doc.title}</span></button>)}</div>}
+        </>}
       </aside>}
       <main className="main">
-        {!ready ? <div className="empty">{error ? t("Проверь запуск сервера и авторизацию.", "Check server and authentication.") : t("Загрузка пространства…", "Loading workspace…")}</div> : <>
+        {!ready ? <div className="loading-view" aria-busy={!error}>{error ? <div className="card"><h2>{t("Не удалось загрузить рабочее пространство", "Unable to load workspace")}</h2><p>{error}</p><button className="secondary" onClick={() => window.location.reload()}>{t("Повторить", "Retry")}</button></div>
+          : <><div className="skeleton-line short" /><div className="skeleton-hero"><div className="skeleton-line wide" /><div className="skeleton-line medium" /><div className="skeleton-line short" /></div><div className="skeleton-grid"><div className="skeleton-block" /><div className="skeleton-block" /><div className="skeleton-block" /></div><div className="skeleton-grid"><div className="skeleton-block tall" /><div className="skeleton-block tall" /></div></>}
+        </div> : <>
         {page === "home" && <>
           <div className="page-kicker"><span className="signal" /> WORKSPACE / 001 <span className="kicker-right">{new Intl.DateTimeFormat(language, {weekday:"long",day:"numeric",month:"long"}).format(new Date())}</span></div>
           <section className="hero">
