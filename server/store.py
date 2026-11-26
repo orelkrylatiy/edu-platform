@@ -192,6 +192,7 @@ class Store:
         lifetime = 30 * 86400 if remember else 12 * 3600
         now = int(time.time())
         with self.connect() as db:
+            db.execute("DELETE FROM sessions WHERE expires_at<=?", (now,))
             db.execute(
                 "INSERT INTO sessions(token_hash,user_id,expires_at,created_at) "
                 "VALUES(?,?,?,?)",

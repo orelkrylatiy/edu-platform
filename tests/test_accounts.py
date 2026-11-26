@@ -263,3 +263,15 @@ def test_chat_lock_is_per_account_not_global(fresh, monkeypatch):
     for _ in range(3):
         assert send(clients[0], "/api/chat", {"lesson_id": lesson_id, "text": "A"}).status_code == 200
     assert send(clients[0], "/api/chat", {"lesson_id": lesson_id, "text": "A"}).status_code == 429
+
+
+def test_short_browser_session_is_not_persistent_cookie(fresh):
+    client = TestClient(module.app)
+    reply = send(client, "/api/auth/login", {
+        "username": "owner", "password": "test-owner-password-123",
+        "remember": False,
+    })
+    assert reply.status_code == 200
+    assert "HttpOnly" in reply.headers["set-cookie"]
+    assert "Max-Age" not in reply.headers["set-cookie"]
+    assert "expires=" not in reply.headers["set-cookie"].lower()
