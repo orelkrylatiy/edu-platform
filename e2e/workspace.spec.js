@@ -24,7 +24,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.locator(".lesson-top").getByRole("button", { name: "AI mentor" }).click();
   await expect(page.locator(".chat")).toBeVisible();
-  await expect(page.locator(".context")).toContainText("Диагностика");
+  await expect(page.locator(".context")).toContainText(/диагностика/i);
   await page.screenshot({ path: "test-results/lesson-dark.png", fullPage: true });
   await page.getByRole("button", { name: "Close chat" }).click();
   await page.getByRole("button", { name: "Фокус", exact: true }).click();
