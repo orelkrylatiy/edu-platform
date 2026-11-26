@@ -3,10 +3,13 @@
 ## Services
 
 ```text
-Browser (React + Vite production assets)
-    | HTTPS + Basic Authentication (reverse proxy)
-FastAPI + Uvicorn (one process, single-user application)
-    |- /api/content: content-as-code course loader
+Guest landing + learner workspace (React + Vite assets)
+    | HTTPS + HttpOnly session cookie (reverse proxy)
+FastAPI + Uvicorn (per-account state, session login and course enrollment)
+    |- /api/auth/*: login, registration, logout, persistent sessions
+    |- /api/catalog: public-safe course discovery
+    |- /api/enrollments: account-specific course selection
+    |- /api/content: authenticated content-as-code course loader
     |- /api/state: SQLite persistent records
     |- /api/chat: scoped mentor chat
     |- /api/providers: configured provider status
@@ -16,13 +19,13 @@ FastAPI + Uvicorn (one process, single-user application)
     |   |- Humanizer HarnessProvider (optional installed dependency)
     |   `- OpenCode CLI (optional, isolated service account)
     `- /health: unauthenticated liveness
-SQLite: tasks, answers, notes, rubric, sessions, chat history
-Browser localStorage: drafts, UI preferences and timer deadline
+SQLite: users/argon2id, hashed session tokens, enrollments, per-user records, AI quotas
+Browser localStorage: user-id-namespaced drafts, UI preferences and timer deadline
 ```
 
 Every API write requires authenticated same-origin credentials and the
 `X-Workspace: 1` header. Keep the reverse proxy on HTTPS and rate-limit
-chat in production. AI keys never enter the frontend. The backend never
+chat in production. Per-user daily AI quotas and independent chat locks are enforced. AI keys never enter the frontend. The backend never
 executes the mentor's output as code; Markdown images are blocked from
 automatic network fetching.
 
@@ -39,14 +42,16 @@ an AI mock is not an end-to-end test with live GLM/OpenAI credentials.
 ## SQLite and resilience
 
 `server/store.py` uses SQLite with WAL, UPSERT and a primary key over
-(kind,id). Run the online backup via `python scripts/backup.py SOURCE DEST`
+(user_id,kind,id) for active state; the previous (kind,id) table is preserved
+for non-destructive migration. Run the online backup via `python scripts/backup.py SOURCE DEST`
 and periodically perform a restore drill. Do not back up a single live WAL
 database file by naive copying while writes are in progress.
 
-The SPA uses debounced text saves and browser-local draft recovery. Mobile
+The SPA uses debounced text saves and per-account browser-local draft recovery. Mobile
 view uses the same API, so data syncs across browsers after reload.
-Simultaneous device edits currently use last-write-wins. No multi-user
-identity or per-user database separation is implemented.
+Simultaneous device edits currently use last-write-wins. Each user owns disjoint
+`user_records` rows and `enrollments` records; legacy rows are copied to the
+bootstrap owner.
 
 ## Content and progress
 
@@ -65,7 +70,7 @@ so no link or explanatory note is omitted from the structured view.
   Settings indicates configuration, not that a request was accepted.
 - No server-sent token streaming, semantic search, vector DB or background
   learning agent is implemented. They are deliberately out of the MVP.
-- Authentication is single-user HTTP Basic; do not expose via HTTP.
+- Authentication is multi-user Argon2id + HttpOnly SameSite=Lax cookie (Secure on HTTPS), with legacy owner Basic compatibility during transition. Registration is off by default; an invite code is recommended. No email-based password reset, email verification or billing is provided.
 - No data-import restore screen yet; export/backup remain supported.
 - The original Wiki labels all three source files AI-assisted and unreviewed.
   Editorial correctness is separate from faithful technical import.

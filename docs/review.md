@@ -1,3 +1,7 @@
+# Historical review (superseded)
+
+This file describes the original single-user implementation before the multi-account release. For current architecture, security and deployment guidance, see [architecture.md](architecture.md) and [deployment.md](deployment.md). Historical statements below are **not** current release limitations.
+
 # Initial engineering review
 
 ## Implemented
