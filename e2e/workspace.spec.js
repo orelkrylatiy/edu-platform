@@ -52,3 +52,49 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: "test-results/dashboard-mobile.png", fullPage: true });
 });
+
+
+test("mentor panels resize, collapse and start isolated chat sessions", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page.locator(".hero").getByRole("button", { name: "Продолжить" }).click();
+  await page.getByRole("button", { name: "Открыть AI-чат" }).click();
+  const chat = page.locator(".chat");
+  await expect(chat).toBeVisible();
+  const chatHandle = page.getByRole("separator", { name: "Ширина чата" });
+  const navHandle = page.getByRole("separator", { name: "Ширина навигации" });
+  const before = (await chat.boundingBox()).width;
+  await chatHandle.focus();
+  await chatHandle.press("ArrowLeft");
+  expect((await chat.boundingBox()).width).toBeGreaterThan(before);
+  const navBefore = (await page.locator(".sidebar").boundingBox()).width;
+  await navHandle.focus();
+  await navHandle.press("ArrowRight");
+  expect((await page.locator(".sidebar").boundingBox()).width).toBeGreaterThan(navBefore);
+  await page.getByRole("button", { name: "Интервью", exact: true }).hover();
+  await expect(page.getByRole("tooltip")).toContainText("без подсказок");
+  await page.getByRole("button", { name: "Интервью", exact: true }).click();
+  const requests = [];
+  await page.route("**/api/chat", async (route) => {
+    const body = route.request().postDataJSON();
+    requests.push(body);
+    await route.fulfill({ json: { messages: [{ role: "user", content: body.text }, { role: "assistant", content: "Ответ" }] } });
+  });
+  const input = chat.getByRole("textbox", { name: "Message" });
+  await input.fill("Первый вопрос");
+  await chat.getByRole("button", { name: "Отправить" }).click();
+  await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();
+  await chat.getByRole("button", { name: "+ Новый чат", exact: true }).click();
+  await expect(chat.getByText("Первый вопрос", { exact: true })).toHaveCount(0);
+  await input.fill("Второй вопрос");
+  await chat.getByRole("button", { name: "Отправить" }).click();
+  await expect(chat.getByText("Второй вопрос", { exact: true })).toBeVisible();
+  expect(requests[0].session_id).toBeNull();
+  expect(requests[1].session_id).toMatch(/^[a-f0-9-]{36}$/);
+  await chat.getByRole("combobox", { name: "Сессия чата" }).selectOption("");
+  await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Свернуть AI-чат" }).click();
+  await expect(chat).toHaveCount(0);
+  await page.getByRole("button", { name: "Открыть AI-чат" }).click();
+  await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();
+});

@@ -286,6 +286,7 @@ class ChatRequest(BaseModel):
     lesson_id: str = Field(max_length=180)
     task_id: str | None = Field(default=None, max_length=180)
     document_id: str | None = Field(default=None, max_length=180)
+    session_id: str | None = Field(default=None, pattern=r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     text: str = Field(min_length=1, max_length=12000)
     mode: Literal["tutor", "reviewer", "interviewer", "stakeholder", "planner"] = "tutor"
     provider: Literal["auto", "openai", "glm", "humanizer", "opencode"] = "auto"
@@ -337,6 +338,8 @@ def run_chat(req: ChatRequest, user: dict):
         raise HTTPException(422, "Choose task or document context")
     scope = req.document_id or req.task_id or req.lesson_id
     key = scope + ":" + req.mode
+    if req.session_id:
+        key += ":" + req.session_id
     history = store.get("chat", key, [], user_id=user["id"])
     if not isinstance(history, list):
         history = []
