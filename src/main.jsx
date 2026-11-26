@@ -85,9 +85,11 @@ function migrateLegacyLocal(user) {
   const previousKeys = ["theme", "lang", "course", "lesson", "provider", "timer-v1"];
   Object.keys(localStorage).filter((key) => key.startsWith("draft:")).forEach((key) => previousKeys.push(key));
   previousKeys.forEach((key) => {
-    if (localStorage.getItem(prefix + key) == null && localStorage.getItem(key) != null) {
-      localStorage.setItem(prefix + key, localStorage.getItem(key));
-    }
+    const legacy = localStorage.getItem(key);
+    if (legacy === null) return;
+    if (localStorage.getItem(prefix + key) === null) localStorage.setItem(prefix + key, legacy);
+    // Delete the origin-global draft only after the owner-scoped copy is safe.
+    if (localStorage.getItem(prefix + key) !== null) localStorage.removeItem(key);
   });
   localStorage.setItem(prefix + "legacy-imported", "1");
 }
@@ -122,7 +124,7 @@ function App() {
     setSession({ checking: false, user: null, enrollments: [] });
   }
   if (session.checking) return <div className="landing-root auth-bootstrap"><div className="skeleton-line medium"/><div className="skeleton-hero"><div className="skeleton-line wide"/><div className="skeleton-line short"/></div></div>;
-  if (!session.user) return <><Landing catalog={catalog} config={config} onAuth={signIn} /><div className="sr-only" role="status">{authError}</div></>;
+  if (!session.user) return <><Landing catalog={catalog} config={config} onAuth={signIn} />{authError && <div className="guest-api-error" role="alert">{authError}<button onClick={() => window.location.reload()}>Повторить загрузку</button></div>}</>;
   return <Workspace key={session.user.id} user={session.user} initialEnrollments={session.enrollments} onLogout={signOut}/>;
 }
 
@@ -186,6 +188,9 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   useEffect(() => { localStorage.setItem(accountPrefix + "course", JSON.stringify(courseId)); localStorage.setItem(accountPrefix + "lesson", JSON.stringify(lessonId)); localStorage.setItem(accountPrefix + "provider", JSON.stringify(provider)); }, [courseId, lessonId, provider]);
 
   const enrolledCourses = courses.filter((c) => enrollments.includes(c.id));
+  useEffect(() => {
+    if (ready && enrolledCourses.length === 0) setPage("catalog");
+  }, [ready, enrolledCourses.length]);
   const course = enrolledCourses.find((c) => c.id === courseId) || enrolledCourses[0];
   const lesson = [...(course?.lessons || []), ...(course?.practice || [])].find((l) => l.id === lessonId) || course?.lessons[0];
   const lessonUnits = lesson?.kind === "practice" ? (course?.practice || []) : (course?.lessons || []);
