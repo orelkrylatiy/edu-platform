@@ -240,3 +240,26 @@ def test_local_vite_origin_allowed_only_in_development(fresh, monkeypatch):
         "/api/state/note/sa-01", headers=headers,
         json={"value": "should-not-write"},
     ).status_code == 403
+
+
+def test_chat_lock_is_per_account_not_global(fresh, monkeypatch):
+    clients = [TestClient(module.app), TestClient(module.app)]
+    for index, client in enumerate(clients):
+        assert send(client, "/api/auth/register", {
+            "username": f"parallel_{index}", "password": "a-strong-password-longer",
+            "invite_code": "only-for-invitees",
+        }).status_code == 201
+        assert send(client, "/api/enrollments/system-analyst", {}).status_code == 200
+    ids = [client.get("/api/auth/me").json()["user"]["id"] for client in clients]
+    module.chat_locks[ids[0]].acquire()
+    lesson_id = next(c for c in module.load_courses() if c["id"] == "system-analyst")["lessons"][0]["id"]
+    monkeypatch.setattr(module, "generate", lambda *_: ("Answer", "test"))
+    try:
+        assert send(clients[0], "/api/chat", {"lesson_id": lesson_id, "text": "A"}).status_code == 409
+        assert send(clients[1], "/api/chat", {"lesson_id": lesson_id, "text": "B"}).status_code == 200
+    finally:
+        module.chat_locks[ids[0]].release()
+    # The rejected request did not consume account A's daily AI budget.
+    for _ in range(3):
+        assert send(clients[0], "/api/chat", {"lesson_id": lesson_id, "text": "A"}).status_code == 200
+    assert send(clients[0], "/api/chat", {"lesson_id": lesson_id, "text": "A"}).status_code == 429
