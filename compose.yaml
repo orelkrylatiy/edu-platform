@@ -4,6 +4,9 @@ services:
     env_file: .env
     environment:
       WORKSPACE_DB: /app/data/workspace.sqlite3
+      CONTENT_REPOSITORY: ${CONTENT_REPOSITORY-orelkrylatiy/edu-platform}
+      CONTENT_BRANCH: ${CONTENT_BRANCH-content}
+      CONTENT_SYNC_INTERVAL: ${CONTENT_SYNC_INTERVAL-3600}
     ports:
       - "127.0.0.1:8000:8000"
     volumes:

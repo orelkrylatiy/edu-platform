@@ -211,9 +211,9 @@ def parse_rubric(text: str) -> list[dict]:
     return result
 
 
-def build_course() -> dict:
+def build_course(sources: Path = SOURCES) -> dict:
     raw = {
-        key: (SOURCES / filename).read_text(encoding="utf-8")
+        key: (sources / filename).read_text(encoding="utf-8")
         for key, (filename, _) in ORIGINALS.items()
     }
     documents = []

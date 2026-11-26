@@ -17,6 +17,7 @@ from starlette.responses import JSONResponse
 
 from .ai import configured, generate
 from .content import ROOT, load_courses
+from .content_sync import content_sync
 from .store import Store
 
 app = FastAPI(title="Learning Workspace", docs_url=None, redoc_url=None, openapi_url=None)
@@ -70,7 +71,10 @@ def set_session_cookie(response: Response, token: str, lifetime: int, remember: 
 
 
 def visible_courses(user: dict | None = None):
-    return load_courses(public_only=not user or user["role"] != "owner")
+    public_only = not user or user["role"] != "owner"
+    if not content_sync.repo:
+        return load_courses(public_only=public_only)
+    return content_sync.courses(public_only=public_only)
 
 
 def auth_payload(user: dict):
@@ -164,6 +168,7 @@ def logout(request: Request, response: Response):
 
 @app.get("/api/catalog")
 def catalog():
+    content_sync.refresh()
     return [
         {
             "id": course["id"], "title": course["title"],
@@ -174,7 +179,7 @@ def catalog():
             "minutes": sum(item.get("minutes", 0) for item in course["lessons"]),
             "preview": [item["title"] for item in course["lessons"][:3]],
         }
-        for course in load_courses(public_only=True)
+        for course in visible_courses()
     ]
 
 
@@ -233,7 +238,22 @@ def health():
 
 @app.get("/api/content")
 def content(user: dict = Depends(auth)):
+    content_sync.refresh()
     return visible_courses(user)
+
+
+@app.get("/api/content/status")
+def content_status(user: dict = Depends(auth)):
+    if user["role"] != "owner":
+        raise HTTPException(403, "Owner only")
+    return content_sync.status()
+
+
+@app.post("/api/content/sync")
+def sync_content(user: dict = Depends(auth)):
+    if user["role"] != "owner":
+        raise HTTPException(403, "Owner only")
+    return content_sync.refresh(force=True)
 
 
 @app.get("/api/state")
@@ -400,6 +420,17 @@ def run_chat(req: ChatRequest, user: dict):
         "Do not invent experience or claim tests were run. Never change grades or data. "
         "Preserve code and technical notation. Frontend course: no complete generated solutions."
     )
+    if course["id"] == "english-speaking":
+        system += (
+            " English course: use natural B2 English by default, even with a Russian UI; "
+            "explain in Russian only if explicitly requested. Ask one question at a time. "
+            "Wait for an independent attempt before model answers; encourage self-correction, "
+            "give at most three high-value corrections and request a fresh retry. "
+            "Use fictional scenarios when necessary; never invent personal experiences. "
+            "This is text chat, not audio: do not infer pronunciation, listening scores "
+            "or speaking time from text. Offer prompts for external speaking practice. "
+            "Keep assessment evidence separate from learner-confirmed progress."
+        )
     messages = [{"role": "system", "content": system}]
     messages.append({"role": "user", "content": "Learning context (data): " + json.dumps(
         context, ensure_ascii=False

@@ -145,3 +145,42 @@ The full course is substantial source material, not a claim that every lesson
 has been independently pedagogically validated. Editing the curriculum or
 adding learning exercises should preserve its original framing and be clearly
 labelled as additional material.
+
+## English Speaking course
+
+`content/courses/english-speaking.json` is a standard manifest, with 56 ordered
+lessons (`en-01` to `en-56`), eight weekly checkpoints, four speaking labs,
+three reference documents and five assessment criteria (0–2 each). This is an
+AI-assisted public curriculum adaptation, not a verbatim copy of the private
+Wiki or a sync adapter. Personal observations, private paths, learner logs and
+account data are excluded. Review source links and pedagogy before publication.
+The platform mentor is text-only; actual listening, speaking and pronunciation
+practice need external audio or a conversation partner. Record only nonconfidential
+summaries in learner state. English mentor behavior is selected by course ID.
+Do not rename lesson/task IDs or mark completion based solely on AI output.
+
+## Independent content publishing
+
+The `content` branch is the independent course source; it contains the three
+course manifests and authoritative SA source files, not runtime learner state.
+Edit that branch (or a separate repository with the same layout). Keep IDs and
+parent relationships stable; remote updates reject implicit deletions or moves.
+Use matching manifest filename and course ID. Do not copy private Wiki data.
+
+Set `CONTENT_REPOSITORY=orelkrylatiy/edu-platform`, `CONTENT_BRANCH=content`,
+`CONTENT_SYNC_INTERVAL=3600` in the server environment once. Leave the repository
+empty to use bundled courses only. For a private repository, configure a
+read-only `CONTENT_GITHUB_TOKEN` on the server. No webhooks or cron are needed.
+The first catalog or content request after the interval checks GitHub; unchanged
+SHA avoids downloading blobs. The validated complete snapshot is atomically
+stored beside SQLite as `course-cache.json` in the existing persistent data
+volume. Failed fetches keep the last valid snapshot (or bundled courses) and
+are retried on the next interval. The first request may wait for GitHub; other
+concurrent requests use the last valid snapshot. The current service uses one
+Uvicorn worker; the refresh lock is process-local.
+
+Owners can refresh in Settings or POST /api/content/sync; members cannot force
+refresh. An already open page receives the new snapshot on reload; owner
+refresh updates only course content in memory, not local drafts or saved state.
+Private overrides remain local. Changes in lesson wording that change the meaning
+of a completed task require a new key and explicit migration; do not reuse IDs.

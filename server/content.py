@@ -37,20 +37,30 @@ def validate_course(course: dict, seen: set[str]) -> None:
             raise ValueError("Document requires Markdown body")
 
 
-def load_courses(public_only: bool = False) -> list[dict]:
-    public = {p.name: p for p in (ROOT / "content/courses").glob("*.json")}
-    private = {} if public_only else {p.name: p for p in (ROOT / "content/private").glob("*.json")}
-    catalog = {**public, **private}
-    courses = []
-    seen = set()
-    for name, path in sorted(catalog.items()):
-        if name == "system-analyst.json" and (SOURCES / "roadmap.md").exists():
-            if name in private:
-                course = json.loads(path.read_text(encoding="utf-8"))
+def load_courses(
+    public_only: bool = False,
+    *,
+    public_root: Path | None = None,
+    public_courses: list[dict] | None = None,
+) -> list[dict]:
+    root = public_root if public_root is not None else ROOT
+    sources = root / "content/system-analyst/source" if public_root is not None else SOURCES
+    if public_courses is None:
+        public = {}
+        for path in sorted((root / "content/courses").glob("*.json")):
+            if path.name == "system-analyst.json" and (sources / "roadmap.md").exists():
+                course = build_course(sources)
             else:
-                course = build_course()
-        else:
-            course = json.loads(path.read_text(encoding="utf-8"))
+                course = json.loads(path.read_text(encoding="utf-8"))
+            public[path.name] = course
+    else:
+        public = {course["id"] + ".json": course for course in public_courses}
+    if not public_only:
+        for path in sorted((ROOT / "content/private").glob("*.json")):
+            public[path.name] = json.loads(path.read_text(encoding="utf-8"))
+    seen = set()
+    courses = []
+    for _, course in sorted(public.items()):
         validate_course(course, seen)
         courses.append(course)
     return courses
