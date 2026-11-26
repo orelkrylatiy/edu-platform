@@ -2,12 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUpRight, ArrowRight, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine, Target, BookOpen } from "lucide-react";
+import { ArrowUpRight, ArrowRight, LogOut, UserRound, Compass, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine, Target, BookOpen } from "lucide-react";
 import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak, advanceCalendar } from "./learning.js";
 import "./style.css";
+import { Landing, CatalogView } from "./auth.jsx";
 
-const nav = [["home", "Обзор", "Overview"], ["courses", "Курсы", "Courses"], ["practice", "Практикум", "Practice"], ["knowledge", "Библиотека", "Library"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
-const navIcons = { home: ScanLine, courses: LibraryBig, practice: Target, knowledge: BookOpen, calendar: CalendarDays, focus: Clock, artifacts: NotebookPen, review: RotateCcw, skills: ChartNoAxesColumn, settings: Settings };
+const nav = [["home", "Обзор", "Overview"], ["courses", "Мои курсы", "My courses"], ["catalog", "Каталог", "Explore"], ["practice", "Практикум", "Practice"], ["knowledge", "Библиотека", "Library"], ["calendar", "Активность", "Activity"], ["focus", "Фокус", "Focus"], ["artifacts", "Материалы", "Artifacts"], ["review", "Повторение", "Review"], ["skills", "Навыки", "Skills"], ["settings", "Настройки", "Settings"]];
+const navIcons = { home: ScanLine, courses: LibraryBig, catalog: Compass, practice: Target, knowledge: BookOpen, calendar: CalendarDays, focus: Clock, artifacts: NotebookPen, review: RotateCcw, skills: ChartNoAxesColumn, settings: Settings };
 function PixelArt() {
   const cells = Array.from({length: 19 * 19}, (_,i) => {
     const x = i % 19, y = Math.floor(i / 19);
@@ -27,9 +28,10 @@ const readLocal = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
 };
 async function api(path, options = {}) {
-  const response = await fetch("/api/" + path, { ...options, headers: { "Content-Type": "application/json", "X-Workspace": "1", ...options.headers } });
+  const response = await fetch("/api/" + path, { credentials: "same-origin", ...options, headers: { "Content-Type": "application/json", "X-Workspace": "1", ...options.headers } });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
+    if (response.status === 401 && !["auth/login", "auth/register"].includes(path)) window.dispatchEvent(new Event("workspace:session-expired"));
     throw new Error(typeof body.detail === "string" ? body.detail : "HTTP " + response.status);
   }
   return response.json();
@@ -76,7 +78,58 @@ function Md({ children }) {
       : <RenderMarkdown key={index} text={segment} />;
   })}</>;
 }
+function migrateLegacyLocal(user) {
+  if (!user.is_owner) return;
+  const prefix = "account:" + user.id + ":";
+  if (localStorage.getItem(prefix + "legacy-imported")) return;
+  const previousKeys = ["theme", "lang", "course", "lesson", "provider", "timer-v1"];
+  Object.keys(localStorage).filter((key) => key.startsWith("draft:")).forEach((key) => previousKeys.push(key));
+  previousKeys.forEach((key) => {
+    if (localStorage.getItem(prefix + key) == null && localStorage.getItem(key) != null) {
+      localStorage.setItem(prefix + key, localStorage.getItem(key));
+    }
+  });
+  localStorage.setItem(prefix + "legacy-imported", "1");
+}
+
 function App() {
+  const [session, setSession] = useState({ checking: true, user: null, enrollments: [] });
+  const [catalog, setCatalog] = useState([]);
+  const [config, setConfig] = useState({ registration_enabled: false, invite_required: false });
+  const [authError, setAuthError] = useState("");
+  useEffect(() => {
+    let active = true;
+    Promise.allSettled([api("auth/me"), api("catalog"), api("auth/config")]).then(([account, list, settings]) => {
+      if (!active) return;
+      if (account.status === "fulfilled" && account.value.user) migrateLegacyLocal(account.value.user);
+      if (list.status === "fulfilled") setCatalog(list.value);
+      if (settings.status === "fulfilled") setConfig(settings.value);
+      if (account.status === "rejected") setAuthError(account.reason?.message || "Connection failed");
+      setSession({ checking: false, user: account.status === "fulfilled" ? account.value.user : null, enrollments: account.status === "fulfilled" ? account.value.enrollments : [] });
+    });
+    const expired = () => setSession({ checking: false, user: null, enrollments: [] });
+    window.addEventListener("workspace:session-expired", expired);
+    return () => { active = false; window.removeEventListener("workspace:session-expired", expired); };
+  }, []);
+  async function signIn(mode, form) {
+    const result = await api("auth/" + (mode === "register" ? "register" : "login"), { method: "POST", body: JSON.stringify(form) });
+    migrateLegacyLocal(result.user);
+    setAuthError("");
+    setSession({ checking: false, user: result.user, enrollments: result.enrollments });
+  }
+  async function signOut() {
+    try { await api("auth/logout", { method: "POST" }); }
+    finally { setSession({ checking: false, user: null, enrollments: [] }); }
+  }
+  if (session.checking) return <div className="landing-root auth-bootstrap"><div className="skeleton-line medium"/><div className="skeleton-hero"><div className="skeleton-line wide"/><div className="skeleton-line short"/></div></div>;
+  if (!session.user) return <><Landing catalog={catalog} config={config} onAuth={signIn} /><div className="sr-only" role="status">{authError}</div></>;
+  return <Workspace key={session.user.id} user={session.user} initialEnrollments={session.enrollments} onLogout={signOut}/>;
+}
+
+function Workspace({ user, initialEnrollments, onLogout }) {
+  const accountPrefix = "account:" + user.id + ":";
+  const stored = (key, fallback) => readLocal(accountPrefix + key, fallback);
+  const [enrollments, setEnrollments] = useState(initialEnrollments);
   const [courses, setCourses] = useState([]);
   const [records, setRecords] = useState({});
   const [pendingTasks, setPendingTasks] = useState({});
@@ -84,23 +137,23 @@ function App() {
   const [providers, setProviders] = useState({});
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState(initialEnrollments.length ? "home" : "catalog");
   const [docId, setDocId] = useState("sa-roadmap");
   const [docAnchor, setDocAnchor] = useState("");
-  const [courseId, setCourseId] = useState(readLocal("course", "system-analyst"));
-  const [lessonId, setLessonId] = useState(readLocal("lesson", "sa-01"));
-  const [theme, setTheme] = useState(readLocal("theme", "dark"));
-  const [language, setLanguage] = useState(readLocal("lang", "ru"));
+  const [courseId, setCourseId] = useState(stored("course", "system-analyst"));
+  const [lessonId, setLessonId] = useState(stored("lesson", "sa-01"));
+  const [theme, setTheme] = useState(stored("theme", "dark"));
+  const [language, setLanguage] = useState(stored("lang", "ru"));
   const [sidebar, setSidebar] = useState(() => window.innerWidth > 650);
   const [chatOpen, setChatOpen] = useState(false);
   const chatPanel = useRef(null);
   const [taskId, setTaskId] = useState("");
   const [mode, setMode] = useState("tutor");
-  const [provider, setProvider] = useState(readLocal("provider", "auto"));
+  const [provider, setProvider] = useState(stored("provider", "auto"));
   const [drafts, setDrafts] = useState({});
   const [busy, setBusy] = useState(false);
   const [month, setMonth] = useState(new Date());
-  const [timer, setTimer] = useState(() => readLocal("timer-v1", { length: 1500, left: 1500, end: null, id: null, started: null }));
+  const [timer, setTimer] = useState(() => stored("timer-v1", { length: 1500, left: 1500, end: null, id: null, started: null }));
   const [now, setNow] = useState(Date.now());
   const [savingTimer, setSavingTimer] = useState(false);
   const completing = useRef(false);
@@ -127,12 +180,13 @@ function App() {
       setCourses(c); setRecords(Object.fromEntries(rows.map((r) => [r.kind + ":" + r.id, r.value]))); setProviders(p); setReady(true);
     }).catch((e) => setError(e.message));
   }, []);
-  useEffect(() => { document.documentElement.dataset.theme = theme; document.documentElement.lang = language; localStorage.setItem("theme", JSON.stringify(theme)); localStorage.setItem("lang", JSON.stringify(language)); }, [theme, language]);
-  useEffect(() => { localStorage.setItem("timer-v1", JSON.stringify(timer)); }, [timer]);
+  useEffect(() => { document.documentElement.dataset.theme = theme; document.documentElement.lang = language; localStorage.setItem(accountPrefix + "theme", JSON.stringify(theme)); localStorage.setItem(accountPrefix + "lang", JSON.stringify(language)); }, [theme, language]);
+  useEffect(() => { localStorage.setItem(accountPrefix + "timer-v1", JSON.stringify(timer)); }, [timer]);
   useEffect(() => { const id = setInterval(() => setNow(Date.now()), 500); return () => clearInterval(id); }, []);
-  useEffect(() => { localStorage.setItem("course", JSON.stringify(courseId)); localStorage.setItem("lesson", JSON.stringify(lessonId)); localStorage.setItem("provider", JSON.stringify(provider)); }, [courseId, lessonId, provider]);
+  useEffect(() => { localStorage.setItem(accountPrefix + "course", JSON.stringify(courseId)); localStorage.setItem(accountPrefix + "lesson", JSON.stringify(lessonId)); localStorage.setItem(accountPrefix + "provider", JSON.stringify(provider)); }, [courseId, lessonId, provider]);
 
-  const course = courses.find((c) => c.id === courseId) || courses[0];
+  const enrolledCourses = courses.filter((c) => enrollments.includes(c.id));
+  const course = enrolledCourses.find((c) => c.id === courseId) || enrolledCourses[0];
   const lesson = [...(course?.lessons || []), ...(course?.practice || [])].find((l) => l.id === lessonId) || course?.lessons[0];
   const lessonUnits = lesson?.kind === "practice" ? (course?.practice || []) : (course?.lessons || []);
   const lessonIndex = lessonUnits.indexOf(lesson);
@@ -155,7 +209,7 @@ function App() {
         await api("state/" + kind + "/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify({ value }) });
         setRecords((old) => ({ ...old, [key]: value }));
         if (kind === "note" || kind === "answer") {
-          if (readLocal("draft:" + key, null) === value) localStorage.removeItem("draft:" + key);
+          if (stored("draft:" + key, null) === value) localStorage.removeItem(accountPrefix + "draft:" + key);
         }
         return true;
       } catch (e) { setError(e.message); return false; }
@@ -192,6 +246,22 @@ function App() {
     if (timer.end) setTimer((old) => ({ ...old, end: null, left: remaining(old) }));
     else setTimer((old) => ({ ...old, end: Date.now() + old.left * 1000, id: old.id || crypto.randomUUID(), started: old.started || Date.now(), lesson: old.lesson || lesson?.id }));
   }
+  async function enrollCourse(c) {
+    try {
+      const result = await api("enrollments/" + encodeURIComponent(c.id), { method: "POST" });
+      setEnrollments(result.enrollments);
+      setCourseId(c.id);
+      setLessonId(c.lessons[0].id);
+      setPage("home");
+      setChatOpen(false);
+    } catch (e) { setError(e.message); }
+  }
+  function openCourse(c) {
+    if (!c || !enrollments.includes(c.id)) return;
+    setCourseId(c.id);
+    setLessonId(c.lessons[0].id);
+    setPage("home");
+  }
   function openLesson(c, l) { if (!c || !l) return; setCourseId(c.id); setLessonId(l.id); setTaskId(""); setChatOpen(false); setPage("lesson"); }
   function openDocument(c, doc) { if (!c || !doc) return; setCourseId(c.id); setDocId(doc.id); setDocAnchor(""); setTaskId(""); setChatOpen(false); setPage("knowledge"); }
   function openChat(id = "") { setTaskId(id); setChatOpen(true); }
@@ -207,7 +277,7 @@ function App() {
     finally { setBusy(false); }
   }
   function exportData() {
-    const blob = new Blob([JSON.stringify({ version: 1, records }, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify({ version: 2, account: user.username, records }, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "learning-workspace-" + dateKey() + ".json"; a.click(); URL.revokeObjectURL(url);
   }
   const totalSeconds = Object.values(days).reduce((a, b) => a + b, 0);
@@ -232,7 +302,7 @@ function App() {
     <header className="topbar">
       <button className="icon" aria-label={t("Навигация", "Navigation")} onClick={() => setSidebar(!sidebar)}><Menu size={19} /></button>
       <button className="brand" onClick={() => setPage("home")}><span className="logo">L<span className="logo-star">✳</span></span><span>LEARNING<span className="brand-accent">/</span>WORKSPACE</span></button>
-      <div className="top-right"><span className="status"><i /> {t("ЛИЧНОЕ ПРОСТРАНСТВО", "PERSONAL SPACE")}</span><button className="top-timer" onClick={() => setPage("focus")} title={t("Открыть таймер", "Open focus timer")}><Clock size={14} /> {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</button><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button></div>
+      <div className="top-right"><span className="account-pill" title={user.username}><UserRound size={15}/><span>{user.username}</span></span><span className="status"><i /> {t("ЛИЧНОЕ ПРОСТРАНСТВО", "PERSONAL SPACE")}</span><button className="top-timer" onClick={() => setPage("focus")} title={t("Открыть таймер", "Open focus timer")}><Clock size={14} /> {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</button><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button><button className="account-signout" onClick={onLogout} aria-label={t("Выйти из аккаунта", "Sign out")}><LogOut size={15}/><span>{t("Выйти", "Sign out")}</span></button></div>
     </header>
     {error && <div className="error" role="alert">{error}<button className="icon" onClick={() => setError("")} aria-label="Close"><X size={16} /></button></div>}
     <div className={"layout " + (sidebar ? "has-nav " : "") + (chatOpen && lesson ? "has-chat" : "")}>
@@ -240,7 +310,7 @@ function App() {
         <div className="side-label">{t("НАВИГАЦИЯ", "NAVIGATION")}<button className="icon" onClick={() => setSidebar(false)} aria-label="Collapse navigation"><PanelLeftClose size={16} /></button></div>
         {nav.map(([id, ru, en]) => { const Icon = navIcons[id]; return <button key={id} className={"nav-item " + (page === id ? "selected" : "")} onClick={() => { setPage(id); if (window.innerWidth <= 650) setSidebar(false); }}><Icon size={17} /><span>{t(ru, en)}</span><ChevronRight size={14} className="nav-arrow" /></button>; })}
         <div className="side-label course-label">{t("ПРОГРАММА", "PROGRAM")}</div>
-        {course && <><strong className="side-course">{course.title}</strong><div className="bar"><i style={{ width: stats.percent + "%" }} /></div><small className="muted">{stats.percent}%</small>
+        {course && <>{enrolledCourses.length > 1 ? <select className="workspace-course-switch" aria-label={t("Активный курс", "Active course")} value={course.id} onChange={(e) => {const chosen = enrolledCourses.find((c) => c.id === e.target.value);if (chosen) openCourse(chosen);}}>{enrolledCourses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}</select> : <strong className="side-course">{course.title}</strong>}<div className="bar"><i style={{ width: stats.percent + "%" }} /></div><small className="muted">{stats.percent}%</small>
         <div className="lessons"><span className="side-label sub-label">{t("УРОКИ / ДНИ", "LESSONS / DAYS")}</span>{course.lessons.map((l, i) => <button key={l.id} className={"lesson-link " + (page === "lesson" && l.id === lesson?.id ? "selected" : "")} onClick={() => openLesson(course, l)}><span className="mono">{String(i + 1).padStart(2, "0")}</span><span>{l.title}</span>{lessonComplete(l, records) && <Check size={14} />}</button>)}</div>
         {Boolean(course.practice?.length) && <div className="side-group"><div className="side-label sub-label">PRACTICE LAB</div><button className="lesson-link" onClick={() => setPage("practice")}><Target size={14} /> {t("Открыть практикум", "Open practice")}</button></div>}
         {Boolean(course.documents?.length) && <div className="side-group"><div className="side-label sub-label">SOURCE MATERIALS</div>{course.documents.map((doc) => <button key={doc.id} className="lesson-link" onClick={() => openDocument(course, doc)}><BookOpen size={14}/><span>{doc.title}</span></button>)}</div>}
@@ -250,7 +320,7 @@ function App() {
         {!ready ? <div className="loading-view" aria-busy={!error}>{error ? <div className="card"><h2>{t("Не удалось загрузить рабочее пространство", "Unable to load workspace")}</h2><p>{error}</p><button className="secondary" onClick={() => window.location.reload()}>{t("Повторить", "Retry")}</button></div>
           : <><div className="skeleton-line short" /><div className="skeleton-hero"><div className="skeleton-line wide" /><div className="skeleton-line medium" /><div className="skeleton-line short" /></div><div className="skeleton-grid"><div className="skeleton-block" /><div className="skeleton-block" /><div className="skeleton-block" /></div><div className="skeleton-grid"><div className="skeleton-block tall" /><div className="skeleton-block tall" /></div></>}
         </div> : <>
-        {page === "home" && <>
+        {page === "home" && course && <>
           <div className="page-kicker"><span className="signal" /> WORKSPACE / 001 <span className="kicker-right">{new Intl.DateTimeFormat(language, {weekday:"long",day:"numeric",month:"long"}).format(new Date())}</span></div>
           <section className="hero">
             <div className="hero-copy"><div className="eyebrow hero-eyebrow">&gt; {t("ТВОЯ ТРАЕКТОРИЯ / НЕ ОСТАНАВЛИВАЙСЯ", "YOUR PATH / KEEP MOVING")}</div>
@@ -269,15 +339,16 @@ function App() {
           <div className="section-caption"><span>04 — {t("УЧЕБНЫЙ РИТМ", "LEARNING RHYTHM")}</span><button className="inline-link" onClick={() => setPage("calendar")}>{t("Вся активность", "All activity")} <ArrowUpRight size={15}/></button></div>
           <Calendar month={month} setMonth={setMonth} days={days} t={t} language={language} />
         </>}
-        {page === "courses" && <><PageTitle eyebrow="LIBRARY" title={t("Твои курсы", "Your courses")} /><div className="course-grid">{courses.slice().sort((a,b) => Number(b.id === courseId) - Number(a.id === courseId)).map((c) => {const p = progress(c, records); return <section className="card course-card" key={c.id}><span className="eyebrow">{c.lessons.length} LESSONS</span><h2>{c.title}</h2><p>{c.description}</p><div className="bar"><i style={{ width: p.percent + "%" }} /></div><div className="section-head"><span>{p.percent}%</span><button className="text-button" onClick={() => openLesson(c, c.lessons.find((l) => !lessonComplete(l, records)) || c.lessons[0])}>{t("Открыть", "Open")} <ArrowRight size={17} /></button></div></section>;})}</div></>}
+        {page === "courses" && <><PageTitle eyebrow="LIBRARY" title={t("Твои курсы", "Your courses")} /><button className="secondary" onClick={() => setPage("catalog")}>{t("Все курсы", "Explore all courses")} <ArrowRight size={15}/></button><div className="course-grid">{enrolledCourses.slice().sort((a,b) => Number(b.id === courseId) - Number(a.id === courseId)).map((c) => {const p = progress(c, records); return <section className="card course-card" key={c.id}><span className="eyebrow">{c.lessons.length} LESSONS</span><h2>{c.title}</h2><p>{c.description}</p><div className="bar"><i style={{ width: p.percent + "%" }} /></div><div className="section-head"><span>{p.percent}%</span><button className="text-button" onClick={() => openLesson(c, c.lessons.find((l) => !lessonComplete(l, records)) || c.lessons[0])}>{t("Открыть", "Open")} <ArrowRight size={17} /></button></div></section>;})}</div></>}
+        {page === "catalog" && <div className="workspace-catalog"><CatalogView courses={courses} enrolled={enrollments} english={language === "en"} onStart={enrollCourse} onOpen={openCourse} /></div>}
         {page === "lesson" && lesson && <>
           <div className="lesson-top"><span className="eyebrow">{course.title} / {lesson.module}</span><button className="secondary" onClick={() => openChat()}><MessageCircle size={16} /> AI mentor</button></div>
           <PageTitle eyebrow={lesson.kind === "practice" ? "PRACTICE LAB" : t("УРОК", "LESSON") + " " + String(lessonIndex + 1).padStart(2, "0")} title={lesson.title} />
           <div className="lesson-meta"><Clock size={15} /> {lesson.minutes} min <span>·</span> {lesson.tasks.filter((x) => records["task:" + x.id]).length}/{lesson.tasks.length} {t("заданий", "tasks")}</div>
           <article className="prose"><Md>{lesson.body}</Md></article>
           <h2 className="heading">{t("Задания", "Tasks")}</h2>
-          {lesson.tasks.map((task) => <section key={task.id} className="task"><div className="task-main"><div className="check-row"><input aria-label={task.text} type="checkbox" checked={records["task:" + task.id] === true} disabled={Boolean(pendingTasks[task.id])} onChange={(e) => toggleTask(task.id, e.target.checked)} /><div className="task-copy"><Md>{task.text}</Md><small className="eyebrow task-type">{task.type}{task.optional ? " · optional" : ""}</small></div></div><button className="icon" aria-label="Discuss task" onClick={() => openChat(task.id)}><MessageCircle size={18} /></button></div>{task.type !== "theory" && <Editor key={task.id} draftKey={"answer:" + task.id} label={t("Мой ответ / артефакт", "My answer / artifact")} initial={records["answer:" + task.id] || ""} onSave={(value) => save("answer", task.id, value)} t={t} />}</section>)}
-          <section className="card note-card"><h2>{t("Личные заметки", "Personal notes")}</h2><Editor key={lesson.id} draftKey={"note:" + lesson.id} label={t("Мысли, выводы, вопросы", "Thoughts, takeaways, questions")} initial={records["note:" + lesson.id] || ""} onSave={(value) => save("note", lesson.id, value)} t={t} /></section>
+          {lesson.tasks.map((task) => <section key={task.id} className="task"><div className="task-main"><div className="check-row"><input aria-label={task.text} type="checkbox" checked={records["task:" + task.id] === true} disabled={Boolean(pendingTasks[task.id])} onChange={(e) => toggleTask(task.id, e.target.checked)} /><div className="task-copy"><Md>{task.text}</Md><small className="eyebrow task-type">{task.type}{task.optional ? " · optional" : ""}</small></div></div><button className="icon" aria-label="Discuss task" onClick={() => openChat(task.id)}><MessageCircle size={18} /></button></div>{task.type !== "theory" && <Editor key={task.id} draftKey={"answer:" + task.id} label={t("Мой ответ / артефакт", "My answer / artifact")} initial={records["answer:" + task.id] || ""} onSave={(value) => save("answer", task.id, value)} t={t} namespace={accountPrefix} />}</section>)}
+          <section className="card note-card"><h2>{t("Личные заметки", "Personal notes")}</h2><Editor key={lesson.id} draftKey={"note:" + lesson.id} label={t("Мысли, выводы, вопросы", "Thoughts, takeaways, questions")} initial={records["note:" + lesson.id] || ""} onSave={(value) => save("note", lesson.id, value)} t={t} namespace={accountPrefix} /></section>
           <div className="lesson-nav"><button className="secondary" disabled={lessonIndex <= 0} onClick={() => openLesson(course, lessonUnits[lessonIndex - 1])}><ChevronLeft size={16} /> {t("Назад", "Previous")}</button><button className="primary" disabled={lessonIndex >= lessonUnits.length - 1} onClick={() => openLesson(course, lessonUnits[lessonIndex + 1])}>{lesson.kind === "practice" ? t("Следующая практика", "Next practice") : t("Следующий урок", "Next lesson")} <ArrowRight size={16} /></button></div>
         </>}
         {page === "practice" && <>
@@ -318,9 +389,9 @@ function App() {
           </section>
           <div className="two-col focus-cards"><section className="card"><div className="eyebrow">TODAY / {t("В ФОКУСЕ", "FOCUS")}</div><h2>{fmt(today)}</h2><p>{t("Время завершённых сессий сегодня", "Completed focus time today")}</p></section><section className="card"><div className="eyebrow">WEEK / {t("В ФОКУСЕ", "FOCUS")}</div><h2>{fmt(weekSeconds)}</h2><p>{t("Время завершённых сессий за неделю", "Completed focus time this week")}</p></section></div>
         </>}
-        {page === "artifacts" && <><PageTitle eyebrow="YOUR WORK" title={t("Твои материалы", "Your artifacts")} /><p className="muted">{t("Все сохранённые ответы и заметки по курсам.", "All saved course answers and notes.")}</p>{courses.flatMap((c) => [...c.lessons, ...(c.practice || [])].flatMap((l) => [{ id: l.id, title: t("Заметки", "Notes"), value: records["note:" + l.id] }, ...l.tasks.map((task) => ({ id: task.id, title: task.text, value: records["answer:" + task.id] }))].filter((item) => item.value).map((item) => <section className="card artifact" key={item.id}><div className="section-head"><span className="eyebrow">{c.title} / {l.title}</span><button className="text-button" onClick={() => openLesson(c, l)}>{t("Урок", "Lesson")} <ArrowUpRight size={15} /></button></div><h2>{item.title}</h2><div className="prose"><Md>{item.value}</Md></div></section>)))}{!Object.keys(records).some((key) => (key.startsWith("answer:") || key.startsWith("note:")) && records[key]) && <div className="card empty">{t("Здесь появятся твои первые сохранённые материалы.", "Your saved work will appear here.")}</div>}</>}
-        {page === "review" && <><PageTitle eyebrow="PRACTICE / REVIEW" title={t("Повторение", "Review")} /><p className="muted">{t("Возвращайся к навыкам ниже 3/4 и незавершённым проверкам. Самооценка не заменяет самостоятельное решение.", "Revisit skills below 3/4 and unfinished assessments. Self-rating does not replace independent work.")}</p>{courses.map((c) => <section className="card skill-card" key={c.id}><h2>{c.title}</h2>{c.skills.filter((skill) => Number.isInteger(records["skill:" + c.id + ":" + skill]) && records["skill:" + c.id + ":" + skill] < 3).map((skill) => <div className="section-head review-row" key={skill}><span>{skill} · {records["skill:" + c.id + ":" + skill]}/4</span><button className="text-button" onClick={() => {const l = c.lessons.find((l) => l.module === skill) || c.lessons[0]; openLesson(c, l); setMode("tutor"); openChat();}}>{t("Повторить", "Review")} <ArrowRight size={16} /></button></div>)}{c.lessons.filter((l) => l.tasks.some((task) => ["gate","assessment"].includes(task.type) && records["task:" + task.id] !== true) && l.tasks.some((task) => records["task:" + task.id] === true)).map((l) => <div className="section-head review-row" key={l.id}><span>{l.title}</span><button className="text-button" onClick={() => openLesson(c, l)}>{t("Проверка", "Assessment")} <ArrowRight size={16} /></button></div>)}<button className="text-button" onClick={() => {setCourseId(c.id); setLessonId(c.lessons[0].id); setTaskId(""); setMode("planner"); setChatOpen(true);}}>{t("План повторения с AI", "AI review plan")} <ArrowUpRight size={16} /></button></section>)}</>}
-        {page === "skills" && <><PageTitle eyebrow="SCORECARD" title={t("Карта компетенций", "Skill map")} /><p className="muted">{t("Самооценка 0–4. Оцени самостоятельное применение, а не просмотр уроков.", "Self-assessment 0–4. Rate independent ability, not watched lessons.")}</p>{courses.map((c) => <section className="card skill-card" key={c.id}><h2>{c.title}</h2>{c.skills.map((skill) => <div className="skill-row" key={skill}><span>{skill}</span><div className="skill-options">{[0,1,2,3,4].map((n) => <button className={records["skill:" + c.id + ":" + skill] === n ? "chosen" : ""} key={n} onClick={() => save("skill", c.id + ":" + skill, n)}>{n}</button>)}</div><small className="muted">{records["skill:" + c.id + ":" + skill] === undefined ? t("Не оценено", "Unrated") : t("Оценено", "Rated")}</small></div>)}
+        {page === "artifacts" && <><PageTitle eyebrow="YOUR WORK" title={t("Твои материалы", "Your artifacts")} /><p className="muted">{t("Все сохранённые ответы и заметки по курсам.", "All saved course answers and notes.")}</p>{enrolledCourses.flatMap((c) => [...c.lessons, ...(c.practice || [])].flatMap((l) => [{ id: l.id, title: t("Заметки", "Notes"), value: records["note:" + l.id] }, ...l.tasks.map((task) => ({ id: task.id, title: task.text, value: records["answer:" + task.id] }))].filter((item) => item.value).map((item) => <section className="card artifact" key={item.id}><div className="section-head"><span className="eyebrow">{c.title} / {l.title}</span><button className="text-button" onClick={() => openLesson(c, l)}>{t("Урок", "Lesson")} <ArrowUpRight size={15} /></button></div><h2>{item.title}</h2><div className="prose"><Md>{item.value}</Md></div></section>)))}{!Object.keys(records).some((key) => (key.startsWith("answer:") || key.startsWith("note:")) && records[key]) && <div className="card empty">{t("Здесь появятся твои первые сохранённые материалы.", "Your saved work will appear here.")}</div>}</>}
+        {page === "review" && <><PageTitle eyebrow="PRACTICE / REVIEW" title={t("Повторение", "Review")} /><p className="muted">{t("Возвращайся к навыкам ниже 3/4 и незавершённым проверкам. Самооценка не заменяет самостоятельное решение.", "Revisit skills below 3/4 and unfinished assessments. Self-rating does not replace independent work.")}</p>{enrolledCourses.map((c) => <section className="card skill-card" key={c.id}><h2>{c.title}</h2>{c.skills.filter((skill) => Number.isInteger(records["skill:" + c.id + ":" + skill]) && records["skill:" + c.id + ":" + skill] < 3).map((skill) => <div className="section-head review-row" key={skill}><span>{skill} · {records["skill:" + c.id + ":" + skill]}/4</span><button className="text-button" onClick={() => {const l = c.lessons.find((l) => l.module === skill) || c.lessons[0]; openLesson(c, l); setMode("tutor"); openChat();}}>{t("Повторить", "Review")} <ArrowRight size={16} /></button></div>)}{c.lessons.filter((l) => l.tasks.some((task) => ["gate","assessment"].includes(task.type) && records["task:" + task.id] !== true) && l.tasks.some((task) => records["task:" + task.id] === true)).map((l) => <div className="section-head review-row" key={l.id}><span>{l.title}</span><button className="text-button" onClick={() => openLesson(c, l)}>{t("Проверка", "Assessment")} <ArrowRight size={16} /></button></div>)}<button className="text-button" onClick={() => {setCourseId(c.id); setLessonId(c.lessons[0].id); setTaskId(""); setMode("planner"); setChatOpen(true);}}>{t("План повторения с AI", "AI review plan")} <ArrowUpRight size={16} /></button></section>)}</>}
+        {page === "skills" && <><PageTitle eyebrow="SCORECARD" title={t("Карта компетенций", "Skill map")} /><p className="muted">{t("Самооценка 0–4. Оцени самостоятельное применение, а не просмотр уроков.", "Self-assessment 0–4. Rate independent ability, not watched lessons.")}</p>{enrolledCourses.map((c) => <section className="card skill-card" key={c.id}><h2>{c.title}</h2>{c.skills.map((skill) => <div className="skill-row" key={skill}><span>{skill}</span><div className="skill-options">{[0,1,2,3,4].map((n) => <button className={records["skill:" + c.id + ":" + skill] === n ? "chosen" : ""} key={n} onClick={() => save("skill", c.id + ":" + skill, n)}>{n}</button>)}</div><small className="muted">{records["skill:" + c.id + ":" + skill] === undefined ? t("Не оценено", "Unrated") : t("Оценено", "Rated")}</small></div>)}
           {c.rubric?.length > 0 && <div className="rubric-block"><div className="section-head"><h3>{t("Рубрика комплексного кейса", "Case rubric")}</h3><span className="eyebrow">{c.rubric.reduce((sum, item) => sum + (records["rubric:" + c.id + ":" + item.id] || 0), 0)}/16</span></div>
             <p className="muted">{t("0 — не выполнено, 1 — частично, 2 — самостоятельно и корректно. Оцени только после своей попытки.", "0 = missing, 1 = partial, 2 = independent and correct. Rate after your own attempt.")}</p>
             {c.rubric.map((item) => <div className="skill-row" key={item.id}><span>{item.title}</span><div className="skill-options">{[0,1,2].map((n) => <button key={n} aria-label={item.title + " " + n} className={records["rubric:" + c.id + ":" + item.id] === n ? "chosen" : ""} onClick={() => save("rubric", c.id + ":" + item.id, n)}>{n}</button>)}</div><small className="muted">{records["rubric:" + c.id + ":" + item.id] === undefined ? t("Не оценено", "Unrated") : t("Оценено", "Rated")}</small></div>)}
@@ -335,8 +406,9 @@ function App() {
 }
 
 function PageTitle({ eyebrow, title }) { return <div className="page-title"><span className="eyebrow">{eyebrow}</span><h1>{title}</h1></div>; }
-function Editor({ label, initial, onSave, t, draftKey }) {
-  const [value, setValue] = useState(() => readLocal("draft:" + draftKey, initial));
+function Editor({ label, initial, onSave, t, draftKey, namespace = "" }) {
+  const draftStorageKey = namespace + "draft:" + draftKey;
+  const [value, setValue] = useState(() => readLocal(draftStorageKey, initial));
   const [saved, setSaved] = useState(initial);
   const [pending, setPending] = useState(false);
   const inFlight = useRef(false);
@@ -352,7 +424,7 @@ function Editor({ label, initial, onSave, t, draftKey }) {
   }
   useEffect(() => {
     if (value === saved || pending) return;
-    localStorage.setItem("draft:" + draftKey, JSON.stringify(value));
+    localStorage.setItem(draftStorageKey, JSON.stringify(value));
     const id = setTimeout(() => { void persist(value); }, 1200);
     return () => clearTimeout(id);
   }, [value, saved, draftKey, pending]);
@@ -360,7 +432,7 @@ function Editor({ label, initial, onSave, t, draftKey }) {
     function warn(e) { if (value !== saved) { e.preventDefault(); e.returnValue = ""; } }
     window.addEventListener("beforeunload", warn); return () => window.removeEventListener("beforeunload", warn);
   }, [value, saved]);
-  return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => { const next = e.target.value; localStorage.setItem("draft:" + draftKey, JSON.stringify(next)); setValue(next); }} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={() => persist(value)}>{t("Сохранить", "Save")}</button></div></div>;
+  return <div className="editor"><label>{label}</label>{preview ? <div className="prose preview"><Md>{value}</Md></div> : <textarea aria-label={label} value={value} onChange={(e) => { const next = e.target.value; localStorage.setItem(draftStorageKey, JSON.stringify(next)); setValue(next); }} rows={4} placeholder="Markdown / code / notes…" />}<div className="editor-actions"><button className="text-button" onClick={() => setPreview(!preview)}>{preview ? t("Редактировать", "Edit") : t("Предпросмотр", "Preview")}</button><span className="muted">{value === saved ? t("Сохранено", "Saved") : t("Есть изменения", "Unsaved changes")}</span><button disabled={pending || value === saved} className="secondary" onClick={() => persist(value)}>{t("Сохранить", "Save")}</button></div></div>;
 }
 function Calendar({ month, setMonth, days, t, language, records = {} }) {
   const [expanded, setExpanded] = useState(false);
