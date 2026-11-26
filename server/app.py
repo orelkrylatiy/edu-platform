@@ -44,6 +44,8 @@ def optional_user(
     # HTTP Basic credentials; new accounts authenticate with cookie sessions.
     password = os.getenv("WORKSPACE_PASSWORD", "")
     username = os.getenv("WORKSPACE_USER", "learner")
+    if request.cookies.get("lw_basic_signed_out") == "1":
+        return None
     if credentials and password and hmac.compare_digest(
         credentials.username.encode(), username.encode()
     ) and hmac.compare_digest(credentials.password.encode(), password.encode()):
@@ -59,6 +61,7 @@ def auth(user: dict | None = Depends(optional_user)):
 
 
 def set_session_cookie(response: Response, token: str, lifetime: int, remember: bool):
+    response.delete_cookie("lw_basic_signed_out", path="/")
     response.set_cookie(
         COOKIE, token, httponly=True, secure=os.getenv("WORKSPACE_COOKIE_SECURE", "1") == "1",
         samesite="lax", path="/", max_age=lifetime if remember else None,
@@ -98,7 +101,12 @@ def auth_config():
 
 
 @app.get("/api/auth/me")
-def me(user: dict | None = Depends(optional_user)):
+def me(request: Request, response: Response, user: dict | None = Depends(optional_user)):
+    # One-time upgrade for a browser which still sends the old HTTP Basic header.
+    # Afterwards the owner receives the same restart-safe cookie as new accounts.
+    if user and not request.cookies.get(COOKIE) and request.headers.get("authorization", "").lower().startswith("basic "):
+        token, lifetime = store.new_session(user["id"], True)
+        set_session_cookie(response, token, lifetime, True)
     return auth_payload(user) if user else {"user": None, "enrollments": []}
 
 
@@ -146,6 +154,10 @@ def logout(request: Request, response: Response):
     store.revoke_session(request.cookies.get(COOKIE))
     response.delete_cookie(COOKIE, path="/", samesite="lax",
                            secure=os.getenv("WORKSPACE_COOKIE_SECURE", "1") == "1")
+    # Prevent a cached Basic header from silently re-logging an old browser in.
+    response.set_cookie("lw_basic_signed_out", "1", httponly=True, samesite="lax",
+                        secure=os.getenv("WORKSPACE_COOKIE_SECURE", "1") == "1",
+                        max_age=30*86400, path="/")
     return {"signed_out": True}
 
 

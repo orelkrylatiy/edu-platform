@@ -3,7 +3,7 @@
 ## Services
 
 ```text
-Browser (React + Vite production assets)
+Guest landing + learner workspace (React + Vite assets)
     | HTTPS + Basic Authentication (reverse proxy)
 FastAPI + Uvicorn (one process, single-user application)
     |- /api/content: content-as-code course loader
@@ -16,7 +16,7 @@ FastAPI + Uvicorn (one process, single-user application)
     |   |- Humanizer HarnessProvider (optional installed dependency)
     |   `- OpenCode CLI (optional, isolated service account)
     `- /health: unauthenticated liveness
-SQLite: tasks, answers, notes, rubric, sessions, chat history
+SQLite: users/argon2id, hashed session tokens, enrollments, per-user records, AI quotas
 Browser localStorage: drafts, UI preferences and timer deadline
 ```
 
@@ -43,10 +43,9 @@ an AI mock is not an end-to-end test with live GLM/OpenAI credentials.
 and periodically perform a restore drill. Do not back up a single live WAL
 database file by naive copying while writes are in progress.
 
-The SPA uses debounced text saves and browser-local draft recovery. Mobile
+The SPA uses debounced text saves and per-account browser-local draft recovery. Mobile
 view uses the same API, so data syncs across browsers after reload.
-Simultaneous device edits currently use last-write-wins. No multi-user
-identity or per-user database separation is implemented.
+Simultaneous device edits currently use last-write-wins. Each user owns disjoint `user_records` rows and `enrollments` records; legacy rows are copied to the bootstrap owner.
 
 ## Content and progress
 
@@ -65,7 +64,7 @@ so no link or explanatory note is omitted from the structured view.
   Settings indicates configuration, not that a request was accepted.
 - No server-sent token streaming, semantic search, vector DB or background
   learning agent is implemented. They are deliberately out of the MVP.
-- Authentication is single-user HTTP Basic; do not expose via HTTP.
+- Authentication is multi-user Argon2id + HttpOnly SameSite=Lax cookie (Secure on HTTPS), with legacy owner Basic compatibility during transition. Registration is off by default; an invite code is recommended.
 - No data-import restore screen yet; export/backup remain supported.
 - The original Wiki labels all three source files AI-assisted and unreviewed.
   Editorial correctness is separate from faithful technical import.
