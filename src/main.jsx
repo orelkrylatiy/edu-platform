@@ -41,10 +41,10 @@ const wikiDocs = {
 };
 const interviewWikiUrl = "https://github.com/orelkrylatiy/personal-wiki/blob/main/01%20Projects/Career%20Offer/Interview%20Preparation%20Plan.md";
 function headingSlug(label) {
-  return String(label).toLocaleLowerCase().trim().replace(/[^\\p{L}\\p{N}]+/gu, "-").replace(/^-|-$/g, "");
+  return String(label).toLocaleLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
 }
 function linkWiki(raw) {
-  return String(raw || "").replace(/\\[\\[([^\\]]+)\\]\\]/g, (original, text) => {
+  return String(raw || "").replace(/\[\[([^\]]+)\]\]/g, (original, text) => {
     const [title, anchor] = text.split("#");
     const doc = wikiDocs[title.trim()];
     if (doc) return "[" + text + "](#workspace-doc/" + doc + "/" + encodeURIComponent(anchor || "") + ")";
@@ -69,8 +69,8 @@ function RenderMarkdown({ text }) {
 }
 function Md({ children }) {
   const content = linkWiki(children);
-  return <>{content.split(/(<details>[\\s\\S]*?<\\/details>)/g).map((segment, index) => {
-    const hint = segment.match(/^<details>\\s*<summary>([\\s\\S]*?)<\\/summary>([\\s\\S]*?)<\\/details>$/);
+  return <>{content.split(/(<details>[\s\S]*?<\/details>)/g).map((segment, index) => {
+    const hint = segment.match(/^<details>\s*<summary>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>$/);
     return hint
       ? <details className="study-hint" key={index}><summary>{hint[1].trim()}</summary><div className="prose"><RenderMarkdown text={hint[2].trim()} /></div></details>
       : <RenderMarkdown key={index} text={segment} />;
