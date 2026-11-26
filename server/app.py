@@ -1,4 +1,5 @@
 import hmac
+from collections import defaultdict
 import json
 import os
 import secrets
@@ -22,7 +23,7 @@ app = FastAPI(title="Learning Workspace", docs_url=None, redoc_url=None, openapi
 security = HTTPBasic(auto_error=False)
 store = Store(Path(os.getenv("WORKSPACE_DB", str(ROOT / "data/workspace.sqlite3"))))
 KINDS = {"task", "note", "answer", "skill", "session", "settings", "rubric"}
-chat_lock = Lock()
+chat_locks = defaultdict(Lock)
 
 
 COOKIE = "lw_session"
@@ -289,19 +290,20 @@ def chat(req: ChatRequest, user: dict = Depends(auth)):
         raise HTTPException(404, "Lesson not found")
     if not store.enrolled(user["id"], course["id"]):
         raise HTTPException(403, "Enroll in the course first")
-    daily = int(os.getenv("WORKSPACE_AI_DAILY_LIMIT", "20"))
-    if not store.charge_ai(user["id"], daily):
-        raise HTTPException(429, "Daily AI request limit reached")
-    if not chat_lock.acquire(blocking=False):
-        raise HTTPException(409, "Another AI request is running")
+    lock = chat_locks[user["id"]]
+    if not lock.acquire(blocking=False):
+        raise HTTPException(409, "Another AI request is running for this account")
     try:
+        daily = int(os.getenv("WORKSPACE_AI_DAILY_LIMIT", "20"))
+        if not store.charge_ai(user["id"], daily):
+            raise HTTPException(429, "Daily AI request limit reached")
         try:
             return run_chat(req, user)
         except Exception:
             store.refund_ai(user["id"])
             raise
     finally:
-        chat_lock.release()
+        lock.release()
 
 
 def run_chat(req: ChatRequest, user: dict):
