@@ -150,3 +150,42 @@ def test_long_chat_history_is_retained(monkeypatch, tmp_path):
     assert response.status_code == 200
     assert len(module.store.get("chat", key)) == 46
     assert module.store.get("chat", key)[0]["content"] == "answer 0"
+
+
+
+def test_chat_sessions_are_isolated_and_legacy_history_is_preserved(monkeypatch, tmp_path):
+    monkeypatch.setenv("WORKSPACE_PASSWORD", "test-password")
+    monkeypatch.setattr(module, "store", Store(tmp_path / "db.sqlite"))
+    captured = []
+
+    def fake(provider, messages):
+        captured.append(messages)
+        return "Reply", provider
+
+    monkeypatch.setattr(module, "generate", fake)
+    client = TestClient(module.app)
+    kw = {"auth": ("learner", "test-password"), "headers": {"X-Workspace": "1"}}
+    lesson = next(c["lessons"][0] for c in module.load_courses() if c["id"] == "system-analyst")
+    payload = {"lesson_id": lesson["id"], "mode": "reviewer"}
+    first = "11111111-1111-4111-8111-111111111111"
+    second = "22222222-2222-4222-8222-222222222222"
+    for session, message, length in [
+        (None, "Legacy message", 2),
+        (first, "First message", 2),
+        (second, "Second message", 2),
+        (first, "Continue first", 4),
+    ]:
+        response = client.post(
+            "/api/chat", **kw, json={**payload, "session_id": session, "text": message}
+        )
+        assert response.status_code == 200
+        assert len(response.json()["messages"]) == length
+    assert len(captured[1]) == len(captured[2]) == 3
+    assert captured[3][2]["content"] == "First message"
+    key = lesson["id"] + ":reviewer"
+    assert len(module.store.get("chat", key)) == 2
+    assert len(module.store.get("chat", key + ":" + first)) == 4
+    assert len(module.store.get("chat", key + ":" + second)) == 2
+    assert client.post(
+        "/api/chat", **kw, json={**payload, "session_id": "invalid", "text": "No"}
+    ).status_code == 422

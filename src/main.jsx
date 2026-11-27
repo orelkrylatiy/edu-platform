@@ -23,7 +23,55 @@ function PixelArt() {
   });
   return <div className="pixel-visual" aria-hidden="true"><div className="pixel-matrix">{cells}</div><div className="pixel-caption">BUILD / LEARN / REPEAT</div></div>;
 }
-const modes = [["tutor", "Наставник", "Tutor"], ["reviewer", "Ревью", "Reviewer"], ["interviewer", "Интервью", "Interviewer"], ["stakeholder", "Заказчик", "Stakeholder"], ["planner", "Планировщик", "Planner"]];
+const modes = [
+  ["tutor", "Наставник", "Tutor", "Объясняет тему и даёт подсказки шаг за шагом.", "Explains the topic and gives incremental hints."],
+  ["reviewer", "Ревью", "Reviewer", "Проверяет твою работу по критериям и предлагает улучшения.", "Reviews your work against criteria and suggests improvements."],
+  ["interviewer", "Интервью", "Interviewer", "Задаёт по одному вопросу без подсказок до твоего ответа.", "Asks one question at a time without hints before your attempt."],
+  ["stakeholder", "Заказчик", "Stakeholder", "Играет роль заказчика: выясняй требования своими вопросами.", "Roleplays a stakeholder; discover requirements by asking questions."],
+  ["planner", "Планировщик", "Planner", "Предлагает следующий учебный шаг на основе прогресса.", "Suggests the next learning action based on your progress."],
+];
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const panelWidth = (value, fallback, min, max) => Number.isFinite(value) ? clamp(value, min, max) : fallback;
+
+function PanelResize({ side, value, onChange, t }) {
+  const isNav = side === "nav";
+  const min = isNav ? 176 : 280;
+  const max = isNav ? 320 : 600;
+  const limit = () => Math.min(max, Math.floor(window.innerWidth * (isNav ? .28 : .42)));
+  const update = (width) => onChange(clamp(width, min, Math.max(min, limit())));
+  const drag = useRef(null);
+  const label = isNav ? t("Ширина навигации", "Navigation width") : t("Ширина чата", "Chat width");
+  return <div
+    className={"panel-resize resize-" + side}
+    role="separator" aria-orientation="vertical" aria-label={label}
+    aria-valuemin={min} aria-valuemax={max} aria-valuenow={value} tabIndex={0}
+    title={label}
+    onPointerDown={(e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      e.currentTarget.focus();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      drag.current = { x: e.clientX, width: e.currentTarget.parentElement.getBoundingClientRect().width };
+    }}
+    onPointerMove={(e) => {
+      if (drag.current && e.currentTarget.hasPointerCapture(e.pointerId)) {
+        update(drag.current.width + (e.clientX - drag.current.x) * (isNav ? 1 : -1));
+      }
+    }}
+    onLostPointerCapture={() => { drag.current = null; }}
+    onKeyDown={(e) => {
+      const current = e.currentTarget.parentElement.getBoundingClientRect().width;
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        update(current + (e.key === "ArrowRight" ? 16 : -16) * (isNav ? 1 : -1));
+      } else if (e.key === "Home" || e.key === "End") {
+        e.preventDefault();
+        update(e.key === "Home" ? min : max);
+      }
+    }}
+    onDoubleClick={() => update(isNav ? 224 : 360)}
+  />;
+}
 const readLocal = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
 };
@@ -148,24 +196,37 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const [language, setLanguage] = useState(stored("lang", "ru"));
   const [sidebar, setSidebar] = useState(() => window.innerWidth > 650);
   const [chatOpen, setChatOpen] = useState(false);
+  const [navWidth, setNavWidth] = useState(() => panelWidth(stored("nav-width", 224), 224, 176, 320));
+  const [chatWidth, setChatWidth] = useState(() => panelWidth(stored("chat-width", 360), 360, 280, 600));
+  const [chatSessions, setChatSessions] = useState(() => stored("chat-sessions-v1", {}));
+  const [previewMode, setPreviewMode] = useState(null);
   const chatPanel = useRef(null);
   const [taskId, setTaskId] = useState("");
   const [mode, setMode] = useState("tutor");
   const [provider, setProvider] = useState(stored("provider", "auto"));
   const [drafts, setDrafts] = useState({});
-  const [busy, setBusy] = useState(false);
+  const [busyKey, setBusyKey] = useState(null);
+  const busy = busyKey !== null;
   const [month, setMonth] = useState(new Date());
   const [timer, setTimer] = useState(() => stored("timer-v1", { length: 1500, left: 1500, end: null, id: null, started: null }));
   const [now, setNow] = useState(Date.now());
   const [savingTimer, setSavingTimer] = useState(false);
   const completing = useRef(false);
   const t = (ru, en) => language === "ru" ? ru : en;
-  useEffect(() => { if (chatOpen && window.innerWidth <= 650) chatPanel.current?.scrollIntoView({ block: "start" }); }, [chatOpen]);
+  useEffect(() => { if (chatOpen && window.innerWidth <= 1000) chatPanel.current?.scrollIntoView({ block: "start" }); }, [chatOpen]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(accountPrefix + "nav-width", JSON.stringify(navWidth));
+      localStorage.setItem(accountPrefix + "chat-width", JSON.stringify(chatWidth));
+      localStorage.setItem(accountPrefix + "chat-sessions-v1", JSON.stringify(chatSessions));
+    } catch { /* The workspace remains usable if browser storage is unavailable. */ }
+  }, [accountPrefix, navWidth, chatWidth, chatSessions]);
   useEffect(() => {
     const open = (event) => {
       setDocId(event.detail.id);
       setDocAnchor(event.detail.anchor || "");
       setCourseId("system-analyst");
+      setTaskId("");
       setPage("knowledge");
     };
     window.addEventListener("workspace:open-document", open);
@@ -200,8 +261,37 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const days = activity(records);
   const seconds = remaining(timer, now);
   const next = course?.lessons.find((l) => !lessonComplete(l, records)) || course?.lessons.at(-1);
-  const scope = page === "knowledge" && selectedDocument ? selectedDocument.id : (taskId || lesson?.id);
-  const chatKey = scope + ":" + mode;
+  const activeDocument = page === "knowledge" ? selectedDocument : null;
+  const activeTask = page !== "knowledge" ? lesson?.tasks.find((task) => task.id === taskId) : null;
+  const scope = activeDocument?.id || activeTask?.id || lesson?.id;
+  const chatScopeKey = scope + ":" + mode;
+  const sessionId = chatSessions[chatScopeKey] || "";
+  const chatKey = chatScopeKey + (sessionId ? ":" + sessionId : "");
+  const sessionPrefix = chatScopeKey + ":";
+  const sessionIds = [...new Set([
+    "",
+    ...Object.keys(records)
+      .filter((key) => key.startsWith("chat:" + sessionPrefix))
+      .map((key) => key.slice(("chat:" + sessionPrefix).length)),
+    ...Object.keys(drafts)
+      .filter((key) => key.startsWith(sessionPrefix) && drafts[key].trim())
+      .map((key) => key.slice(sessionPrefix.length)),
+    ...(busyKey?.startsWith(sessionPrefix) ? [busyKey.slice(sessionPrefix.length)] : []),
+    sessionId,
+  ])];
+  const modeHelp = modes.find(([id]) => id === (previewMode || mode));
+  function selectChatSession(id) {
+    setChatSessions((old) => ({ ...old, [chatScopeKey]: id }));
+  }
+  function newChatSession() {
+    selectChatSession(crypto.randomUUID());
+  }
+  function sessionLabel(id) {
+    if (!id) return t("Исходный чат", "Original chat");
+    const first = records["chat:" + chatScopeKey + ":" + id]?.find((message) => message.role === "user");
+    const pending = drafts[chatScopeKey + ":" + id]?.trim();
+    return (first ? first.content.slice(0, 40) : pending ? t("Черновик: ", "Draft: ") + pending.slice(0, 30) : t("Новая сессия", "New session")) + " · " + id.slice(0, 4);
+  }
   const messages = records["chat:" + chatKey] || [];
   const draft = drafts[chatKey] || "";
   const setDraft = (value) => setDrafts((old) => ({ ...old, [chatKey]: value }));
@@ -265,6 +355,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
     if (!c || !enrollments.includes(c.id)) return;
     setCourseId(c.id);
     setLessonId(c.lessons[0].id);
+    setTaskId("");
     setPage("home");
   }
   function openLesson(c, l) { if (!c || !l) return; setCourseId(c.id); setLessonId(l.id); setTaskId(""); setChatOpen(false); setPage("lesson"); }
@@ -274,12 +365,12 @@ function Workspace({ user, initialEnrollments, onLogout }) {
     event.preventDefault();
     if (!draft.trim() || busy || !lesson) return;
     const text = draft.trim(); const key = chatKey;
-    setBusy(true); setDraft("");
+    setBusyKey(key); setDraft("");
     try {
-      const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: page === "knowledge" ? null : (taskId || null), document_id: page === "knowledge" ? selectedDocument?.id : null, text, mode, provider, language }) });
+      const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: activeTask?.id || null, document_id: activeDocument?.id || null, session_id: sessionId || null, text, mode, provider, language }) });
       setRecords((old) => ({ ...old, ["chat:" + key]: result.messages }));
     } catch (e) { setError(e.message); setDrafts((old) => ({ ...old, [key]: old[key] || text })); }
-    finally { setBusy(false); }
+    finally { setBusyKey(null); }
   }
   function exportData() {
     const blob = new Blob([JSON.stringify({ version: 2, account: user.username, records }, null, 2)], { type: "application/json" });
@@ -310,8 +401,8 @@ function Workspace({ user, initialEnrollments, onLogout }) {
       <div className="top-right"><span className="account-pill" title={user.username}><UserRound size={15}/><span>{user.username}</span></span><span className="status"><i /> {t("ЛИЧНОЕ ПРОСТРАНСТВО", "PERSONAL SPACE")}</span><button className="top-timer" onClick={() => setPage("focus")} title={t("Открыть таймер", "Open focus timer")}><Clock size={14} /> {String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</button><button className="icon" aria-label={t("Сменить тему", "Toggle theme")} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={19} /> : <Sun size={19} />}</button><button className="icon" aria-label="Settings" onClick={() => setPage("settings")}><Settings size={19} /></button><button className="account-signout" onClick={() => void onLogout().catch((e) => setError(e.message))} aria-label={t("Выйти из аккаунта", "Sign out")}><LogOut size={15}/><span>{t("Выйти", "Sign out")}</span></button></div>
     </header>
     {error && <div className="error" role="alert">{error}<button className="icon" onClick={() => setError("")} aria-label="Close"><X size={16} /></button></div>}
-    <div className={"layout " + (sidebar ? "has-nav " : "") + (chatOpen && lesson ? "has-chat" : "")}>
-      {sidebar && <aside className="sidebar">
+    <div className={"layout " + (sidebar ? "has-nav " : "") + (chatOpen && lesson ? "has-chat" : "")} style={{ "--nav-width": navWidth + "px", "--chat-width": chatWidth + "px" }}>
+      {sidebar && <aside className="sidebar"><div className="sidebar-content">
         <div className="side-label">{t("НАВИГАЦИЯ", "NAVIGATION")}<button className="icon" onClick={() => setSidebar(false)} aria-label="Collapse navigation"><PanelLeftClose size={16} /></button></div>
         {nav.map(([id, ru, en]) => { const Icon = navIcons[id]; return <button key={id} className={"nav-item " + (page === id ? "selected" : "")} onClick={() => { setPage(id); if (window.innerWidth <= 650) setSidebar(false); }}><Icon size={17} /><span>{t(ru, en)}</span><ChevronRight size={14} className="nav-arrow" /></button>; })}
         <div className="side-label course-label">{t("ПРОГРАММА", "PROGRAM")}</div>
@@ -320,7 +411,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
         {Boolean(course.practice?.length) && <div className="side-group"><div className="side-label sub-label">PRACTICE LAB</div><button className="lesson-link" onClick={() => setPage("practice")}><Target size={14} /> {t("Открыть практикум", "Open practice")}</button></div>}
         {Boolean(course.documents?.length) && <div className="side-group"><div className="side-label sub-label">SOURCE MATERIALS</div>{course.documents.map((doc) => <button key={doc.id} className="lesson-link" onClick={() => openDocument(course, doc)}><BookOpen size={14}/><span>{doc.title}</span></button>)}</div>}
         </>}
-      </aside>}
+      </div><PanelResize side="nav" value={navWidth} onChange={setNavWidth} t={t}/></aside>}
       <main className="main">
         {!ready ? <div className="loading-view" aria-busy={!error}>{error ? <div className="card"><h2>{t("Не удалось загрузить рабочее пространство", "Unable to load workspace")}</h2><p>{error}</p><button className="secondary" onClick={() => window.location.reload()}>{t("Повторить", "Retry")}</button></div>
           : <><div className="skeleton-line short" /><div className="skeleton-hero"><div className="skeleton-line wide" /><div className="skeleton-line medium" /><div className="skeleton-line short" /></div><div className="skeleton-grid"><div className="skeleton-block" /><div className="skeleton-block" /><div className="skeleton-block" /></div><div className="skeleton-grid"><div className="skeleton-block tall" /><div className="skeleton-block tall" /></div></>}
@@ -405,8 +496,18 @@ function Workspace({ user, initialEnrollments, onLogout }) {
         {page === "settings" && <><PageTitle eyebrow="WORKSPACE" title={t("Настройки", "Settings")} /><section className="card settings-card"><h2>{t("Интерфейс", "Appearance")}</h2><label>{t("Тема", "Theme")}<select value={theme} onChange={(e) => setTheme(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label><label>{t("Язык", "Language")}<select value={language} onChange={(e) => setLanguage(e.target.value)}><option value="ru">Русский</option><option value="en">English</option></select></label><h2>AI provider</h2><label>{t("Провайдер", "Provider")}<select value={provider} onChange={(e) => setProvider(e.target.value)}>{["auto","openai","glm","humanizer","opencode"].map((p) => <option value={p} key={p} disabled={!providers[p]}>{p}{providers[p] ? "" : " (not configured)"}</option>)}</select></label><p className="muted">{t("Ключи задаются только на сервере. Статус означает наличие конфигурации, а не проверку соединения.", "Keys are configured on the server. Status indicates configuration, not connectivity.")}</p><h2>{t("Данные", "Data")}</h2><button className="secondary" onClick={exportData}>{t("Экспорт JSON", "Export JSON")} <ArrowUpRight size={16} /></button></section></>}
         </>}
       </main>
-      {chatOpen && lesson && <aside className="chat" ref={chatPanel}><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {page === "knowledge" && selectedDocument ? selectedDocument.title : lesson.title}{taskId && " / " + lesson.tasks.find((x) => x.id === taskId)?.type}</div><label className="mode-label">{t("Режим", "Mode")}<select value={mode} onChange={(e) => setMode(e.target.value)}>{modes.map(([id, ru, en]) => <option key={id} value={id}>{t(ru, en)}</option>)}</select></label><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Наставник видит урок, сохранённый ответ и заметки.", "Ask about this topic. Your mentor sees the lesson, saved answer and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
+      {chatOpen && lesson && <aside className="chat" id="mentor-panel" ref={chatPanel}><PanelResize side="chat" value={chatWidth} onChange={setChatWidth} t={t}/><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {activeDocument?.title || lesson.title}{activeTask && " / " + activeTask.type}</div><div className="chat-sessions">
+  <select aria-label={t("Сессия чата", "Chat session")} value={sessionId} onChange={(e) => selectChatSession(e.target.value)}>
+    {sessionIds.map((id) => <option key={id} value={id}>{sessionLabel(id)}</option>)}
+  </select>
+  <button type="button" className="secondary new-chat" title={t("Начать без предыдущей переписки", "Start without previous messages")} onClick={newChatSession}>{t("+ Новый чат", "+ New chat")}</button>
+</div>
+<div className="chat-modes" role="group" aria-label={t("Режим AI", "AI mode")}>
+  {modes.map(([id, ru, en, hintRu, hintEn]) => <button key={id} type="button" className="mode-choice" aria-pressed={mode === id} title={t(hintRu, hintEn)} aria-description={t(hintRu, hintEn)} onMouseEnter={() => setPreviewMode(id)} onMouseLeave={() => setPreviewMode(null)} onFocus={() => setPreviewMode(id)} onBlur={() => setPreviewMode(null)} onClick={() => setMode(id)}>{t(ru, en)}</button>)}
+</div>
+<p className="mode-help" role="tooltip">{t(modeHelp[3], modeHelp[4])}</p><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Новый чат не использует старую переписку, но видит учебные материалы, сохранённые ответы и заметки.", "Ask about this topic. A new chat ignores previous messages but still sees learning materials, saved answers and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{busyKey === chatKey ? t("Формируется ответ…", "Generating response…") : t("Ответ формируется в другом чате…", "Another chat is generating a response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
     </div>
+    {ready && lesson && <button className="chat-toggle" type="button" aria-expanded={chatOpen} aria-controls={chatOpen ? "mentor-panel" : undefined} aria-label={chatOpen ? t("Свернуть AI-чат", "Hide AI chat") : t("Открыть AI-чат", "Show AI chat")} title={chatOpen ? t("Свернуть AI-чат", "Hide AI chat") : t("Открыть AI-чат", "Show AI chat")} onClick={() => setChatOpen((open) => !open)}>{chatOpen ? <PanelRightClose size={18}/> : <MessageCircle size={18}/>}</button>}
   </div>;
 }
 
