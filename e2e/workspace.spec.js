@@ -27,7 +27,7 @@ test("course, notes, timer, theme and mobile navigation", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.locator(".lesson-top").getByRole("button", { name: "AI mentor" }).click();
   await expect(page.locator(".chat")).toBeVisible();
-  await expect(page.locator(".context")).toContainText(/диагностика/i);
+  await expect(page.getByRole("combobox", { name: "Сессия чата" })).toHaveAttribute("title", /диагностика/i);
   await page.screenshot({ path: "test-results/lesson-dark.png", fullPage: true });
   await page.getByRole("button", { name: "Close chat" }).click();
   await page.getByRole("button", { name: "Фокус", exact: true }).click();
@@ -78,9 +78,13 @@ test("mentor panels resize, collapse and start isolated chat sessions", async ({
   await navHandle.focus();
   await navHandle.press("ArrowRight");
   expect((await page.locator(".sidebar").boundingBox()).width).toBeGreaterThan(navBefore);
-  await page.getByRole("button", { name: "Интервью", exact: true }).hover();
-  await expect(page.getByRole("tooltip")).toContainText("без подсказок");
-  await page.getByRole("button", { name: "Интервью", exact: true }).click();
+  const mode = chat.getByRole("combobox", { name: "Режим AI" });
+  await mode.selectOption("interviewer");
+  await expect(mode).toHaveAttribute("title", /без подсказок/);
+  await expect(chat.locator(".chat-head, .context, .mode-help")).toHaveCount(0);
+  await expect(page.locator(".chat-toggle")).toHaveCount(0);
+  expect((await chat.locator(".chat-toolbar").boundingBox()).height).toBeLessThan(60);
+  expect((await chat.locator(".composer").boundingBox()).height).toBeLessThan(75);
   const requests = [];
   await page.route("**/api/chat", async (route) => {
     const body = route.request().postDataJSON();
@@ -88,8 +92,14 @@ test("mentor panels resize, collapse and start isolated chat sessions", async ({
     await route.fulfill({ json: { messages: [{ role: "user", content: body.text }, { role: "assistant", content: "Ответ" }] } });
   });
   const input = chat.getByRole("textbox", { name: "Message" });
+  const initialHeight = (await input.boundingBox()).height;
   await input.fill("Первый вопрос");
-  await chat.getByRole("button", { name: "Отправить" }).click();
+  await input.press("Shift+Enter");
+  await input.press("Shift+Enter");
+  await input.press("Shift+Enter");
+  expect((await input.boundingBox()).height).toBeGreaterThan(initialHeight);
+  await input.fill("Первый вопрос");
+  await input.press("Enter");
   await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();
   await chat.getByRole("button", { name: "+ Новый чат", exact: true }).click();
   await expect(chat.getByText("Первый вопрос", { exact: true })).toHaveCount(0);
@@ -102,11 +112,12 @@ test("mentor panels resize, collapse and start isolated chat sessions", async ({
   await expect(input).toHaveValue("Второй вопрос");
   await chat.getByRole("button", { name: "Отправить" }).click();
   await expect(chat.getByText("Второй вопрос", { exact: true })).toBeVisible();
+  expect(requests[0].mode).toBe("interviewer");
   expect(requests[0].session_id).toBeNull();
   expect(requests[1].session_id).toMatch(/^[a-f0-9-]{36}$/);
   await chat.getByRole("combobox", { name: "Сессия чата" }).selectOption("");
   await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Свернуть AI-чат" }).click();
+  await chat.getByRole("button", { name: "Close chat" }).click();
   await expect(chat).toHaveCount(0);
   await page.getByRole("button", { name: "Открыть AI-чат" }).click();
   await expect(chat.getByText("Первый вопрос", { exact: true })).toBeVisible();

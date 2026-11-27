@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUpRight, ArrowRight, LogOut, UserRound, Compass, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine, Target, BookOpen } from "lucide-react";
+import { ArrowUpRight, ArrowRight, ArrowUp, Plus, LogOut, UserRound, Compass, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Menu, MessageCircle, Moon, PanelLeftClose, PanelRightClose, Play, Pause, RotateCcw, Settings, Sun, X, ChartNoAxesColumn, LibraryBig, Sparkles, NotebookPen, ScanLine, Target, BookOpen } from "lucide-react";
 import { activity, dateKey, lessonComplete, monthCells, progress, remaining, getWeekDays, weekTotal, studyStreak, advanceCalendar } from "./learning.js";
 import "./style.css";
 import { Landing, CatalogView } from "./auth.jsx";
@@ -199,8 +199,9 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const [navWidth, setNavWidth] = useState(() => panelWidth(stored("nav-width", 224), 224, 176, 320));
   const [chatWidth, setChatWidth] = useState(() => panelWidth(stored("chat-width", 360), 360, 280, 600));
   const [chatSessions, setChatSessions] = useState(() => stored("chat-sessions-v1", {}));
-  const [previewMode, setPreviewMode] = useState(null);
   const chatPanel = useRef(null);
+  const messageList = useRef(null);
+  const composerInput = useRef(null);
   const [taskId, setTaskId] = useState("");
   const [mode, setMode] = useState("tutor");
   const [provider, setProvider] = useState(stored("provider", "auto"));
@@ -279,7 +280,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
     ...(busyKey?.startsWith(sessionPrefix) ? [busyKey.slice(sessionPrefix.length)] : []),
     sessionId,
   ])];
-  const modeHelp = modes.find(([id]) => id === (previewMode || mode));
+  const modeHelp = modes.find(([id]) => id === mode);
   function selectChatSession(id) {
     setChatSessions((old) => ({ ...old, [chatScopeKey]: id }));
   }
@@ -295,6 +296,16 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const messages = records["chat:" + chatKey] || [];
   const draft = drafts[chatKey] || "";
   const setDraft = (value) => setDrafts((old) => ({ ...old, [chatKey]: value }));
+  useEffect(() => {
+    const input = composerInput.current;
+    if (!chatOpen || !input) return;
+    input.style.height = "auto";
+    input.style.height = input.scrollHeight + "px";
+  }, [chatOpen, draft, chatWidth]);
+  useEffect(() => {
+    const list = messageList.current;
+    if (chatOpen && list) list.scrollTop = list.scrollHeight;
+  }, [chatOpen, chatKey, messages.length, busyKey]);
 
   async function save(kind, id, value) {
     const key = kind + ":" + id;
@@ -496,18 +507,37 @@ function Workspace({ user, initialEnrollments, onLogout }) {
         {page === "settings" && <><PageTitle eyebrow="WORKSPACE" title={t("Настройки", "Settings")} /><section className="card settings-card"><h2>{t("Интерфейс", "Appearance")}</h2><label>{t("Тема", "Theme")}<select value={theme} onChange={(e) => setTheme(e.target.value)}><option value="light">Light</option><option value="dark">Dark</option></select></label><label>{t("Язык", "Language")}<select value={language} onChange={(e) => setLanguage(e.target.value)}><option value="ru">Русский</option><option value="en">English</option></select></label><h2>AI provider</h2><label>{t("Провайдер", "Provider")}<select value={provider} onChange={(e) => setProvider(e.target.value)}>{["auto","openai","glm","humanizer","opencode"].map((p) => <option value={p} key={p} disabled={!providers[p]}>{p}{providers[p] ? "" : " (not configured)"}</option>)}</select></label><p className="muted">{t("Ключи задаются только на сервере. Статус означает наличие конфигурации, а не проверку соединения.", "Keys are configured on the server. Status indicates configuration, not connectivity.")}</p><h2>{t("Данные", "Data")}</h2><button className="secondary" onClick={exportData}>{t("Экспорт JSON", "Export JSON")} <ArrowUpRight size={16} /></button></section></>}
         </>}
       </main>
-      {chatOpen && lesson && <aside className="chat" id="mentor-panel" ref={chatPanel}><PanelResize side="chat" value={chatWidth} onChange={setChatWidth} t={t}/><div className="chat-head"><div><span className="eyebrow">LEARNING / AI</span><h2>Mentor</h2></div><button className="icon" onClick={() => setChatOpen(false)} aria-label="Close chat"><PanelRightClose size={19} /></button></div><div className="context"><span className="dot" /> {activeDocument?.title || lesson.title}{activeTask && " / " + activeTask.type}</div><div className="chat-sessions">
-  <select aria-label={t("Сессия чата", "Chat session")} value={sessionId} onChange={(e) => selectChatSession(e.target.value)}>
-    {sessionIds.map((id) => <option key={id} value={id}>{sessionLabel(id)}</option>)}
-  </select>
-  <button type="button" className="secondary new-chat" title={t("Начать без предыдущей переписки", "Start without previous messages")} onClick={newChatSession}>{t("+ Новый чат", "+ New chat")}</button>
-</div>
-<div className="chat-modes" role="group" aria-label={t("Режим AI", "AI mode")}>
-  {modes.map(([id, ru, en, hintRu, hintEn]) => <button key={id} type="button" className="mode-choice" aria-pressed={mode === id} title={t(hintRu, hintEn)} aria-description={t(hintRu, hintEn)} onMouseEnter={() => setPreviewMode(id)} onMouseLeave={() => setPreviewMode(null)} onFocus={() => setPreviewMode(id)} onBlur={() => setPreviewMode(null)} onClick={() => setMode(id)}>{t(ru, en)}</button>)}
-</div>
-<p className="mode-help" role="tooltip">{t(modeHelp[3], modeHelp[4])}</p><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Новый чат не использует старую переписку, но видит учебные материалы, сохранённые ответы и заметки.", "Ask about this topic. A new chat ignores previous messages but still sees learning materials, saved answers and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{busyKey === chatKey ? t("Формируется ответ…", "Generating response…") : t("Ответ формируется в другом чате…", "Another chat is generating a response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
+      {chatOpen && lesson && <aside className="chat" id="mentor-panel" ref={chatPanel} aria-label="AI Mentor">
+        <PanelResize side="chat" value={chatWidth} onChange={setChatWidth} t={t}/>
+        <div className="chat-toolbar">
+          <select className="chat-session-select" aria-label={t("Сессия чата", "Chat session")} title={(activeDocument?.title || lesson.title) + (activeTask ? " / " + activeTask.type : "")} value={sessionId} onChange={(e) => selectChatSession(e.target.value)}>
+            {sessionIds.map((id) => <option key={id} value={id}>{sessionLabel(id)}</option>)}
+          </select>
+          <select className="chat-mode-select" aria-label={t("Режим AI", "AI mode")} aria-description={t(modeHelp[3], modeHelp[4])} title={t(modeHelp[3], modeHelp[4])} value={mode} onChange={(e) => setMode(e.target.value)}>
+            {modes.map(([id, ru, en, hintRu, hintEn]) => <option key={id} value={id} title={t(hintRu, hintEn)}>{t(ru, en)}</option>)}
+          </select>
+          <button type="button" className="icon chat-action" aria-label={t("+ Новый чат", "+ New chat")} title={t("Начать новый чат", "Start a new chat")} onClick={newChatSession}><Plus size={17}/></button>
+          <button type="button" className="icon chat-action" aria-label="Close chat" title={t("Свернуть AI-чат", "Hide AI chat")} onClick={() => setChatOpen(false)}><PanelRightClose size={17}/></button>
+        </div>
+        <div className="messages" ref={messageList}>
+          {messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Новый чат не использует старую переписку, но видит учебные материалы, сохранённые ответы и заметки.", "Ask about this topic. A new chat ignores previous messages but still sees learning materials, saved answers and notes.")}</div>}
+          {messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}
+          {busy && <p className="muted" role="status">{busyKey === chatKey ? t("Формируется ответ…", "Generating response…") : t("Ответ формируется в другом чате…", "Another chat is generating a response…")}</p>}
+        </div>
+        <form className="composer" onSubmit={send}>
+          <div className="composer-field">
+            <textarea ref={composerInput} aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={1} onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.nativeEvent.keyCode !== 229) {
+                e.preventDefault();
+                e.currentTarget.form?.requestSubmit();
+              }
+            }}/>
+            <button type="submit" className="primary chat-send" aria-label={t("Отправить", "Send")} title={t("Отправить (Enter)", "Send (Enter)")} disabled={busy || !draft.trim()}><ArrowUp size={18}/></button>
+          </div>
+        </form>
+      </aside>}
     </div>
-    {ready && lesson && <button className="chat-toggle" type="button" aria-expanded={chatOpen} aria-controls={chatOpen ? "mentor-panel" : undefined} aria-label={chatOpen ? t("Свернуть AI-чат", "Hide AI chat") : t("Открыть AI-чат", "Show AI chat")} title={chatOpen ? t("Свернуть AI-чат", "Hide AI chat") : t("Открыть AI-чат", "Show AI chat")} onClick={() => setChatOpen((open) => !open)}>{chatOpen ? <PanelRightClose size={18}/> : <MessageCircle size={18}/>}</button>}
+    {ready && lesson && !chatOpen && <button className="chat-toggle" type="button" aria-expanded={false} aria-label={t("Открыть AI-чат", "Show AI chat")} title={t("Открыть AI-чат", "Show AI chat")} onClick={() => setChatOpen(true)}><MessageCircle size={18}/></button>}
   </div>;
 }
 
