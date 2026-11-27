@@ -94,6 +94,12 @@ test("mentor panels resize, collapse and start isolated chat sessions", async ({
   await chat.getByRole("button", { name: "+ Новый чат", exact: true }).click();
   await expect(chat.getByText("Первый вопрос", { exact: true })).toHaveCount(0);
   await input.fill("Второй вопрос");
+  const sessions = chat.getByRole("combobox", { name: "Сессия чата" });
+  const draftSession = await sessions.inputValue();
+  await chat.getByRole("button", { name: "+ Новый чат", exact: true }).click();
+  await expect(input).toHaveValue("");
+  await sessions.selectOption(draftSession);
+  await expect(input).toHaveValue("Второй вопрос");
   await chat.getByRole("button", { name: "Отправить" }).click();
   await expect(chat.getByText("Второй вопрос", { exact: true })).toBeVisible();
   expect(requests[0].session_id).toBeNull();

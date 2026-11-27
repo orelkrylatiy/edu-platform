@@ -205,7 +205,8 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const [mode, setMode] = useState("tutor");
   const [provider, setProvider] = useState(stored("provider", "auto"));
   const [drafts, setDrafts] = useState({});
-  const [busy, setBusy] = useState(false);
+  const [busyKey, setBusyKey] = useState(null);
+  const busy = busyKey !== null;
   const [month, setMonth] = useState(new Date());
   const [timer, setTimer] = useState(() => stored("timer-v1", { length: 1500, left: 1500, end: null, id: null, started: null }));
   const [now, setNow] = useState(Date.now());
@@ -266,9 +267,18 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   const chatScopeKey = scope + ":" + mode;
   const sessionId = chatSessions[chatScopeKey] || "";
   const chatKey = chatScopeKey + (sessionId ? ":" + sessionId : "");
-  const sessionIds = [...new Set(["", ...Object.keys(records)
-    .filter((key) => key.startsWith("chat:" + chatScopeKey + ":"))
-    .map((key) => key.slice(("chat:" + chatScopeKey + ":").length)), sessionId])];
+  const sessionPrefix = chatScopeKey + ":";
+  const sessionIds = [...new Set([
+    "",
+    ...Object.keys(records)
+      .filter((key) => key.startsWith("chat:" + sessionPrefix))
+      .map((key) => key.slice(("chat:" + sessionPrefix).length)),
+    ...Object.keys(drafts)
+      .filter((key) => key.startsWith(sessionPrefix) && drafts[key].trim())
+      .map((key) => key.slice(sessionPrefix.length)),
+    ...(busyKey?.startsWith(sessionPrefix) ? [busyKey.slice(sessionPrefix.length)] : []),
+    sessionId,
+  ])];
   const modeHelp = modes.find(([id]) => id === (previewMode || mode));
   function selectChatSession(id) {
     setChatSessions((old) => ({ ...old, [chatScopeKey]: id }));
@@ -279,7 +289,8 @@ function Workspace({ user, initialEnrollments, onLogout }) {
   function sessionLabel(id) {
     if (!id) return t("Исходный чат", "Original chat");
     const first = records["chat:" + chatScopeKey + ":" + id]?.find((message) => message.role === "user");
-    return first ? first.content.slice(0, 40) + " · " + id.slice(0, 4) : t("Новая сессия", "New session");
+    const pending = drafts[chatScopeKey + ":" + id]?.trim();
+    return (first ? first.content.slice(0, 40) : pending ? t("Черновик: ", "Draft: ") + pending.slice(0, 30) : t("Новая сессия", "New session")) + " · " + id.slice(0, 4);
   }
   const messages = records["chat:" + chatKey] || [];
   const draft = drafts[chatKey] || "";
@@ -354,12 +365,12 @@ function Workspace({ user, initialEnrollments, onLogout }) {
     event.preventDefault();
     if (!draft.trim() || busy || !lesson) return;
     const text = draft.trim(); const key = chatKey;
-    setBusy(true); setDraft("");
+    setBusyKey(key); setDraft("");
     try {
       const result = await api("chat", { method: "POST", body: JSON.stringify({ lesson_id: lesson.id, task_id: activeTask?.id || null, document_id: activeDocument?.id || null, session_id: sessionId || null, text, mode, provider, language }) });
       setRecords((old) => ({ ...old, ["chat:" + key]: result.messages }));
     } catch (e) { setError(e.message); setDrafts((old) => ({ ...old, [key]: old[key] || text })); }
-    finally { setBusy(false); }
+    finally { setBusyKey(null); }
   }
   function exportData() {
     const blob = new Blob([JSON.stringify({ version: 2, account: user.username, records }, null, 2)], { type: "application/json" });
@@ -494,7 +505,7 @@ function Workspace({ user, initialEnrollments, onLogout }) {
 <div className="chat-modes" role="group" aria-label={t("Режим AI", "AI mode")}>
   {modes.map(([id, ru, en, hintRu, hintEn]) => <button key={id} type="button" className="mode-choice" aria-pressed={mode === id} title={t(hintRu, hintEn)} aria-description={t(hintRu, hintEn)} onMouseEnter={() => setPreviewMode(id)} onMouseLeave={() => setPreviewMode(null)} onFocus={() => setPreviewMode(id)} onBlur={() => setPreviewMode(null)} onClick={() => setMode(id)}>{t(ru, en)}</button>)}
 </div>
-<p className="mode-help" role="tooltip">{t(modeHelp[3], modeHelp[4])}</p><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Новый чат не использует старую переписку, но видит учебные материалы, сохранённые ответы и заметки.", "Ask about this topic. A new chat ignores previous messages but still sees learning materials, saved answers and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{t("Формируется ответ…", "Generating response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
+<p className="mode-help" role="tooltip">{t(modeHelp[3], modeHelp[4])}</p><div className="messages">{messages.length === 0 && <div className="chat-empty">{t("Спроси о текущей теме. Новый чат не использует старую переписку, но видит учебные материалы, сохранённые ответы и заметки.", "Ask about this topic. A new chat ignores previous messages but still sees learning materials, saved answers and notes.")}</div>}{messages.map((m, i) => <article className={"message " + m.role} key={m.id || i}><span className="eyebrow">{m.role === "user" ? t("ТЫ", "YOU") : "MENTOR"} {m.provider || ""}</span><Md>{m.content}</Md></article>)}{busy && <p className="muted" role="status">{busyKey === chatKey ? t("Формируется ответ…", "Generating response…") : t("Ответ формируется в другом чате…", "Another chat is generating a response…")}</p>}</div><form className="composer" onSubmit={send}><textarea aria-label="Message" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Задай вопрос…", "Ask a question…")} rows={3} /><button className="primary" disabled={busy || !draft.trim()}>{t("Отправить", "Send")} <ArrowRight size={16} /></button></form></aside>}
     </div>
     {ready && lesson && <button className="chat-toggle" type="button" aria-expanded={chatOpen} aria-controls={chatOpen ? "mentor-panel" : undefined} aria-label={chatOpen ? t("Свернуть AI-чат", "Hide AI chat") : t("Открыть AI-чат", "Show AI chat")} title={chatOpen ? t("Свернуть AI-чат", "Hide AI chat") : t("Открыть AI-чат", "Show AI chat")} onClick={() => setChatOpen((open) => !open)}>{chatOpen ? <PanelRightClose size={18}/> : <MessageCircle size={18}/>}</button>}
   </div>;

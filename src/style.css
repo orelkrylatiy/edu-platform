@@ -482,4 +482,5 @@ select:hover {border-color:var(--muted);}
   .chat-toggle {bottom:12px;right:12px;}
   .chat .composer {padding-bottom:0;}
   .layout.has-chat {padding-bottom:46px;}
+  .chat,.layout.has-chat .chat,.layout.has-nav.has-chat .chat {max-height:none;}
 }
