@@ -58,7 +58,12 @@ test("every view renders on desktop and mobile without overflow", async ({ page 
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: "test-results/" + view.name + "-lesson.png", fullPage: true });
     await page.locator(".lesson-top").getByRole("button", { name: "AI mentor" }).click();
-    await expect(page.locator(".chat")).toBeVisible();
+    const chat = page.locator(".chat");
+    await expect(chat).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const panel = await chat.boundingBox();
+    const messages = await chat.locator(".messages").boundingBox();
+    expect(messages.height / panel.height).toBeGreaterThan(0.7);
     await page.waitForTimeout(250);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: "test-results/" + view.name + "-mentor.png", fullPage: true });
